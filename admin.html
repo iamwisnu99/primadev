@@ -596,6 +596,25 @@
             padding-top: 1.625rem;
             padding-bottom: 0.625rem;
         }
+
+        /* Filter Dropdown Specific */
+        .filter-dropdown .dropdown-trigger {
+            min-height: 45px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border-color: transparent;
+        }
+
+        .filter-dropdown .display-label {
+            font-size: 0.85rem;
+        }
+
+        .filter-dropdown .dropdown-options {
+            width: 250px;
+            right: 0;
+            left: auto;
+        }
     </style>
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -838,11 +857,28 @@
                     <!-- Toolbar -->
                     <div
                         class="p-4 border-bottom d-flex flex-wrap gap-3 justify-content-between align-items-center bg-white">
-                        <div class="position-relative flex-grow-1" style="max-width: 400px;">
-                            <i
-                                class="fa-solid fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                            <input type="text" id="searchInput" class="form-control ps-5 bg-light border-0"
-                                placeholder="Cari nama, email, atau key...">
+                        <div class="d-flex flex-wrap gap-2 align-items-center flex-grow-1">
+                            <div class="position-relative" style="min-width: 300px;">
+                                <i
+                                    class="fa-solid fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                                <input type="text" id="searchInput" class="form-control ps-5 bg-light border-0"
+                                    placeholder="Cari nama, email, atau key...">
+                            </div>
+
+                            <!-- Modern App Filter -->
+                            <div class="custom-dropdown filter-dropdown" id="dropdownFilterApp" style="width: auto; min-width: 200px;">
+                                <input type="hidden" id="filterAppId" value="all">
+                                <div class="dropdown-trigger" onclick="toggleCustomDropdown('dropdownFilterApp')">
+                                    <div class="d-flex align-items-center overflow-hidden">
+                                        <i class="fa-solid fa-filter me-2 text-muted small"></i>
+                                        <span class="text-truncate display-label">Semua Aplikasi</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-down trigger-chevron ms-2"></i>
+                                </div>
+                                <div class="dropdown-options" id="filterAppOptions">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
                         </div>
                         <button class="btn btn-primary fw-bold px-4 py-2" onclick="openCreateModal()">
                             <i class="fa-solid fa-plus me-2"></i>Create License
@@ -856,6 +892,7 @@
                                 <tr>
                                     <th>License Key</th>
                                     <th>User Details</th>
+                                    <th>App Name</th>
                                     <th class="d-none d-md-table-cell">Type</th>
                                     <th>Status</th>
                                     <th class="d-none d-md-table-cell">Device ID</th>
@@ -1437,11 +1474,51 @@
                     // 1. Update Dropdown in Create License
                     populateAppDropdown();
 
-                    // 2. Render App Table if App Section is visible
+                    // 2. Update Filter Dropdown in Toolbar
+                    populateFilterAppDropdown();
+
+                    // 3. Render App Table if App Section is visible
                     renderAppTable();
 
                 }, (error) => {
                     console.error("Products Realtime Error:", error);
+                });
+            };
+
+            const populateFilterAppDropdown = () => {
+                const optionsContainer = document.getElementById('filterAppOptions');
+                const displayLabel = document.querySelector('#dropdownFilterApp .display-label');
+                if (!optionsContainer) return;
+
+                optionsContainer.innerHTML = '';
+                
+                // Add "All Apps" option
+                const allDiv = document.createElement('div');
+                allDiv.className = 'option-item selected';
+                allDiv.onclick = () => {
+                    selectOption('dropdownFilterApp', 'all', 'Semua Aplikasi', '');
+                    applyGlobalFilter();
+                };
+                allDiv.innerHTML = `<div><span class="option-title">Semua Aplikasi</span></div><div class="option-check"><i class="fa-solid fa-check"></i></div>`;
+                optionsContainer.appendChild(allDiv);
+
+                const keys = Object.keys(productsData);
+                keys.forEach(key => {
+                    const app = productsData[key];
+                    const div = document.createElement('div');
+                    div.className = 'option-item';
+                    div.onclick = () => {
+                        selectOption('dropdownFilterApp', key, app.name, '');
+                        applyGlobalFilter();
+                    };
+
+                    div.innerHTML = `
+                        <div>
+                            <span class="option-title">${app.name}</span>
+                        </div>
+                        <div class="option-check"><i class="fa-solid fa-check"></i></div>
+                    `;
+                    optionsContainer.appendChild(div);
                 });
             };
 
@@ -2249,6 +2326,10 @@
                         <div class="fw-bold text-dark text-truncate" style="max-width: 150px;">${item.name || '-'}</div>
                         <div class="small text-muted text-truncate" style="max-width: 150px;">${item.email || '-'}</div>
                     </td>
+                    <td data-label="App Name">
+                        <div class="fw-bold text-primary small">${item.appName || '-'}</div>
+                        <div class="text-muted" style="font-size: 10px;">ID: ${item.appId || 'n/a'}</div>
+                    </td>
                     <td data-label="Type">${typeBadge}</td>
                     <td data-label="Status"><span class="badge-custom ${statusClass}">${status}</span></td>
                     <td data-label="Device ID"><span class="text-muted small">${item.deviceId ? item.deviceId.substring(0, 8) + '...' : 'None'}</span></td>
@@ -2288,29 +2369,36 @@
             };
 
             // --- GLOBAL SEARCH LOGIC ---
-            const setupSearch = () => {
-                const searchInput = document.getElementById('searchInput');
+            const applyGlobalFilter = () => {
+                const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+                const appId = document.getElementById('filterAppId').value;
 
-                searchInput.addEventListener('input', (e) => {
-                    const keyword = e.target.value.toLowerCase().trim();
+                let filtered = licensesData;
 
-                    if (keyword === '') {
-                        currentPage = 1;
-                        renderTable(licensesData);
-                        return;
-                    }
+                // 1. Filter by App
+                if (appId !== 'all') {
+                    filtered = filtered.filter(item => item.appId === appId);
+                }
 
-                    const filteredData = licensesData.filter(item => {
+                // 2. Filter by Search Keyword
+                if (keyword !== '') {
+                    filtered = filtered.filter(item => {
                         const name = (item.name || '').toLowerCase();
                         const email = (item.email || '').toLowerCase();
                         const key = (item.key || '').toLowerCase();
+                        const appName = (item.appName || '').toLowerCase();
 
-                        return name.includes(keyword) || email.includes(keyword) || key.includes(keyword);
+                        return name.includes(keyword) || email.includes(keyword) || key.includes(keyword) || appName.includes(keyword);
                     });
+                }
 
-                    currentPage = 1;
-                    renderTable(filteredData);
-                });
+                currentPage = 1;
+                renderTable(filtered);
+            };
+
+            const setupSearch = () => {
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', applyGlobalFilter);
             };
 
             setupSearch();

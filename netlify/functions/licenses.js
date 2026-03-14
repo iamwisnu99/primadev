@@ -148,7 +148,8 @@ exports.handler = async (event, context) => {
 
       const cleanType = (type || 'monthly').toLowerCase();
       let fixedPrice = 0;
-      const product = PRICING_DB['struk-spbu'] || {}
+      const product = PRICING_DB[appId] || PRICING_DB['struk-spbu'] || {};
+      
       if (product.price && product.price[cleanType]) {
         fixedPrice = product.price[cleanType];
       }
@@ -165,7 +166,7 @@ exports.handler = async (event, context) => {
         name,
         email,
         appId,
-        appName: appName || 'Aplikasi Struk SPBU',
+        appName: appName || product.name || 'Aplikasi Struk SPBU',
         package: body.package || '',
         paymentMethod: paymentMethod || 'Manual Admin',
         transactionId: autoTransactionId,
