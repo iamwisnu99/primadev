@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimaDev Digital Technology - Software Solutions</title>
+
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+    <link rel="shortcut icon" href="/public/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="PrimaDev" />
+    <link rel="manifest" href="/public/site.webmanifest" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --dark: #0f172a;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--dark);
+            overflow-x: hidden;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        .hero-section {
+            background: linear-gradient(120deg, #f8fafc 0%, #eef2ff 50%, #e0e7ff 100%);
+            padding: 140px 0 100px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .navbar {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 1030;
+            transition: all 0.3s;
+        }
+
+        /* --- BUBBLE ANIMATION CSS --- */
+        .bubble-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background-color: rgba(79, 70, 229, 0.08);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-120vh) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .b1 {
+            left: 10%;
+            width: 60px;
+            height: 60px;
+            animation-duration: 12s;
+            animation-delay: 0s;
+        }
+
+        .b2 {
+            left: 25%;
+            width: 40px;
+            height: 40px;
+            animation-duration: 15s;
+            animation-delay: 2s;
+        }
+
+        .b3 {
+            left: 40%;
+            width: 80px;
+            height: 80px;
+            animation-duration: 18s;
+            animation-delay: 4s;
+        }
+
+        .b4 {
+            left: 60%;
+            width: 50px;
+            height: 50px;
+            animation-duration: 14s;
+            animation-delay: 1s;
+        }
+
+        .b5 {
+            left: 75%;
+            width: 70px;
+            height: 70px;
+            animation-duration: 16s;
+            animation-delay: 3s;
+        }
+
+        .b6 {
+            left: 90%;
+            width: 45px;
+            height: 45px;
+            animation-duration: 13s;
+            animation-delay: 5s;
+        }
+
+        .b7 {
+            left: 15%;
+            width: 30px;
+            height: 30px;
+            animation-duration: 20s;
+            animation-delay: 7s;
+        }
+
+        .b8 {
+            left: 80%;
+            width: 35px;
+            height: 35px;
+            animation-duration: 19s;
+            animation-delay: 6s;
+            background-color: rgba(147, 51, 234, 0.08);
+            /* Variasi warna ungu dikit */
+        }
+
+        .position-relative-z {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #4f46e5, #9333ea);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card {
+            border: 1px solid #f1f5f9;
+            border-radius: 16px;
+            padding: 30px;
+            background: white;
+            transition: all 0.3s;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary);
+        }
+
+        .trust-badge {
+            opacity: 0.6;
+            transition: 0.3s;
+            filter: grayscale(100%);
+        }
+
+        .trust-badge:hover {
+            opacity: 1;
+            filter: grayscale(0%);
+        }
+
+        .footer {
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 60px 0 30px;
+        }
+
+        .footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top border-bottom py-3 shadow-sm">
+        <div class="container px-4">
+
+            <a class="navbar-brand py-0" href="#">
+                <img src="https://i.imgur.com/BZ1xLO3.png" alt="PrimaDev Logo" height="50">
+            </a>
+
+            <button class="navbar-toggler border-0 focus-ring focus-ring-light" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse mt-3 mt-lg-0" id="navbarNav">
+                <ul class="navbar-nav ms-auto fw-bold align-items-center">
+                    <li class="nav-item"><a class="nav-link px-3" href="#products">Produk</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#features">Keunggulan</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#contact">Kontak</a></li>
+                </ul>
+                <a href="store.html" class="btn btn-primary rounded-pill px-4 ms-lg-3 mt-3 mt-lg-0 fw-bold">
+                    <i class="fa-solid fa-shop me-2"></i>Lihat Toko
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section text-center">
+
+        <div class="bubble-container">
+            <div class="bubble b1"></div>
+            <div class="bubble b2"></div>
+            <div class="bubble b3"></div>
+            <div class="bubble b4"></div>
+            <div class="bubble b5"></div>
+            <div class="bubble b6"></div>
+            <div class="bubble b7"></div>
+            <div class="bubble b8"></div>
+        </div>
+
+        <div class="container position-relative-z">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-lg-10 col-xl-9">
+                    <span
+                        class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-3 fw-bold animate__animated animate__fadeInDown">
+                        🚀 Solusi Digital Terpercaya
+                    </span>
+                    <h1 class="display-3 hero-title mb-4 animate__animated animate__fadeInDown animate__delay-1s">
+                        Tingkatkan Efisiensi Bisnis dengan <span class="text-gradient">Software Premium</span>
+                    </h1>
+                    <p
+                        class="lead text-muted mb-5 mx-auto col-lg-10 animate__animated animate__fadeInUp animate__delay-1s">
+                        Kami menyediakan tools dan aplikasi pendukung bisnis yang aman, legal, dan mudah digunakan.
+                        Fokus pada bisnis Anda, biarkan kami menangani teknologinya.
+                    </p>
+                    <div
+                        class="d-flex gap-3 justify-content-center animate__animated animate__fadeInUp animate__delay-2s">
+                        <a href="store.html"
+                            class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-lg btn-hover-effect">
+                            Lihat Software
+                        </a>
+                        <a href="#contact" class="btn btn-outline-dark btn-lg rounded-pill px-5 fw-bold">
+                            Hubungi Kami
+                        </a>
+                    </div>
+
+                    <div class="mt-5 pt-4 animate__animated animate__fadeIn animate__delay-3s">
+                        <small class="text-muted fw-bold text-uppercase d-block mb-3"
+                            style="letter-spacing: 1px;">Partner Pembayaran Resmi:</small>
+                        <div class="d-flex gap-4 align-items-center justify-content-center grayscale-hover">
+                            <i class="fa-brands fa-cc-visa fa-2x text-muted transition-all"></i>
+                            <i class="fa-brands fa-cc-mastercard fa-2x text-muted transition-all"></i>
+                            <i class="fa-solid fa-qrcode fa-2x text-muted transition-all"></i>
+                            <span class="fw-bold text-muted h5 mb-0 transition-all"
+                                style="font-family: sans-serif;">Midtrans</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-5 text-center animate-on-scroll">
+                    <div class="position-relative d-inline-block">
+                        <div class="position-absolute top-50 start-50 translate-middle"
+                            style="width: 250px; height: 250px; background: rgba(79, 70, 229, 0.1); border-radius: 50%; filter: blur(40px); z-index: -1;">
+                        </div>
+
+                        <img src="https://i.imgur.com/BZ1xLO3.png" alt="PrimaDev Logo" class="img-fluid"
+                            style="max-height: 280px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));">
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-3 fw-bold">
+                        TEKNOLOGI & BISNIS
+                    </span>
+                    <h2 class="display-6 fw-bold mb-4" style="color: #1e293b;">
+                        Lebih Dari Sekadar <span class="text-primary">Software House</span>
+                    </h2>
+
+                    <p class="lead text-dark mb-3" style="font-size: 1.1rem; line-height: 1.6;">
+                        PrimaDev adalah perusahaan yang membangun solusi berbasis teknologi dan bisnis. Kami berfokus
+                        pada pengembangan aplikasi, website, dan sistem digital yang dirancang untuk membantu bisnis
+                        berjalan lebih efisien dan terukur.
+                    </p>
+
+                    <p class="text-muted mb-4" style="line-height: 1.7;">
+                        Di luar teknologi, PrimaDev juga aktif mengelola usaha di bidang kuliner, seperti kafe dan
+                        restoran, sebagai bagian dari komitmen kami untuk memahami langsung bagaimana teknologi bekerja
+                        dalam operasional bisnis sehari-hari.
+                    </p>
+
+                    <div
+                        class="d-flex align-items-center bg-light p-3 rounded-3 mb-4 border-start border-4 border-primary">
+                        <p class="mb-0 fst-italic text-dark small">
+                            "Bagi kami, teknologi bukan sekadar produk, melainkan alat untuk menciptakan pengalaman dan
+                            nilai yang nyata."
+                        </p>
+                    </div>
+
+                    <div class="d-flex gap-4">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-3">
+                                <i class="fa-solid fa-laptop-code text-primary fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Digital Expert</h6>
+                                <small class="text-muted">App & Web System</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning bg-opacity-10 p-2 rounded-circle me-3">
+                                <i class="fa-solid fa-utensils text-warning fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Real Business</h6>
+                                <small class="text-muted">Praktisi Kuliner</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-light rounded-4 my-5">
+        <div class="container">
+            <div class="row align-items-center gy-5 flex-row-reverse">
+                <div class="col-lg-7 order-2 order-lg-1">
+                    <h2 class="display-6 fw-bold mb-4" style="color: #1e293b;">
+                        Visi & Misi <span class="text-primary">Kami</span>
+                    </h2>
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4 d-flex">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
+                                    <i class="fa-solid fa-eye fs-4"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold">Visi</h5>
+                                <p class="mb-0 text-muted">Menjadi platform penyedia solusi digital nomor satu di
+                                    Indonesia yang memberdayakan bisnis lokal melalui teknologi yang mudah diakses dan
+                                    terjangkau.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4 d-flex">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success">
+                                    <i class="fa-solid fa-rocket fs-4"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold">Misi</h5>
+                                <ul class="mb-0 text-muted ps-3 small" style="line-height: 1.6;">
+                                    <li>Menyediakan software original dengan harga kompetitif.</li>
+                                    <li>Memberikan layanan purna jual (after-sales) yang responsif 24/7.</li>
+                                    <li>Terus berinovasi mengikuti perkembangan teknologi global.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5 text-center order-1 order-lg-2">
+                    <div class="position-relative d-inline-block p-5 bg-white rounded-circle shadow-lg">
+                        <i class="fa-solid fa-bullseye text-primary" style="font-size: 8rem;"></i>
+
+                        <div
+                            class="position-absolute top-0 start-100 translate-middle bg-warning p-3 rounded-circle shadow-sm">
+                            <i class="fa-solid fa-lightbulb text-white fs-4"></i>
+                        </div>
+                        <div
+                            class="position-absolute bottom-0 start-0 translate-middle bg-success p-3 rounded-circle shadow-sm">
+                            <i class="fa-solid fa-chart-line text-white fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Kenapa Memilih PrimaDev?</h2>
+                <p class="text-muted">Standar kualitas tinggi untuk kepuasan pelanggan.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="mb-3 text-primary"><i class="fa-solid fa-shield-halved fa-3x"></i></div>
+                        <h4>100% Aman & Legal</h4>
+                        <p class="text-muted">Software kami dikembangkan sendiri (in-house) dan bebas dari malware atau
+                            virus berbahaya.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="mb-3 text-success"><i class="fa-solid fa-bolt fa-3x"></i></div>
+                        <h4>Aktivasi Instan</h4>
+                        <p class="text-muted">Sistem otomatis 24 jam. Lisensi dikirim ke email detik itu juga setelah
+                            pembayaran sukses.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="mb-3 text-warning"><i class="fa-solid fa-headset fa-3x"></i></div>
+                        <h4>Support Prioritas</h4>
+                        <p class="text-muted">Tim support kami siap membantu kendala teknis Anda melalui Layanan
+                            Konsumen atau Customer Service.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-5 bg-light">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="fw-bold mb-4">Hubungi Kami</h2>
+                    <p class="text-muted mb-4">Punya pertanyaan seputar produk atau kerjasama? Jangan ragu untuk
+                        menghubungi kami.</p>
+
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="bg-white p-3 rounded-circle shadow-sm me-3 text-primary"><i
+                                class="fa-solid fa-location-dot fa-lg"></i></div>
+                        <div>
+                            <h5 class="fw-bold">Alamat Kantor</h5>
+                            <p class="text-muted mb-0">SPBU Pertamina 34.115.06<br>Jl. Kedoya Raya No. 23, Kedoya
+                                Selatan<br>Kebon Jeruk, Jakarta Barat, DKI Jakarta 11520</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="bg-white p-3 rounded-circle shadow-sm me-3 text-primary"><i
+                                class="fa-solid fa-envelope fa-lg"></i></div>
+                        <div>
+                            <h5 class="fw-bold">Email Support</h5>
+                            <p class="text-muted mb-0">wisnu.bussines99@gmail.com</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start">
+                        <div class="bg-white p-3 rounded-circle shadow-sm me-3 text-primary">
+                            <i class="fa-solid fa-headset fa-lg"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold">Customer Service</h5>
+                            <p class="text-muted mb-0"><a href="https://primadev.netlify.app/support">Hubungi
+                                    Customer Service</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-lg p-4">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d701.2119249558607!2d106.75766858452312!3d-6.177096844178755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f707e6c6ce2b%3A0x96502134a60b4021!2sSPBU%20Pertamina%2034.115.06!5e0!3m2!1sid!2sid!4v1769443196263!5m2!1sid!2sid"
+                            width="100%" height="350" style="border:0; border-radius: 12px;" allowfullscreen=""
+                            loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5 class="text-white fw-bold mb-3"><i class="fa-solid fa-cube me-2"></i>PrimaDev</h5>
+                    <p class="small">Penyedia solusi software terdepan untuk efisiensi bisnis Anda. Aman, Cepat, dan
+                        Terpercaya.</p>
+                    <div class="mt-4">
+                        <small class="text-white-50 d-block mb-2">Penasaran dapur pacu kami?</small>
+                        <button type="button" class="btn btn-outline-light btn-sm rounded-pill px-3"
+                            data-bs-toggle="modal" data-bs-target="#storyModal">
+                            <i class="fa-solid fa-microchip me-2"></i>Bagaimana PrimaDev Dibangun?
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h6 class="text-white fw-bold mb-3">Legalitas</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="legal.html#terms">Terms & Conditions</a></li>
+                        <li><a href="legal.html#privacy">Privacy Policy</a></li>
+                        <li><a href="legal.html#refund">Refund Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h6 class="text-white fw-bold mb-3">Pembayaran</h6>
+
+                    <div class="d-flex gap-2 mb-3">
+                        <i class="fa-brands fa-cc-visa fa-2x text-white-50"></i>
+                        <i class="fa-brands fa-cc-mastercard fa-2x text-white-50"></i>
+                        <i class="fa-solid fa-qrcode fa-2x text-white-50"></i>
+                    </div>
+
+                    <div>
+                        <small class="text-white-50 d-block mb-1" style="font-size: 10px;">POWERED BY</small>
+                        <a href="https://midtrans.com/" target="_blank" title="Official Payment Gateway Partner">
+                            <img src="https://i.imgur.com/FZKpvGu.png" alt="Midtrans Payment Gateway"
+                                style="height: 28px; filter: brightness(0) invert(1); opacity: 0.8; transition: all 0.3s;"
+                                onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="text-center small">
+                &copy; <span id="currentYear"></span> PT. PrimaDev Digital Technology. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="storyModal" tabindex="-1" aria-labelledby="storyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <div class="modal-header border-0 p-4 text-white"
+                    style="background: linear-gradient(135deg, #1e293b 0%, #4f46e5 100%);">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 p-2 rounded-3 me-3">
+                            <i class="fa-solid fa-robot fs-4 text-white"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold" id="storyModalLabel">Transaparansi Teknologi PrimaDev</h5>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4 p-md-5 bg-light">
+                    <div class="card border-0 bg-white shadow-sm p-4 rounded-4">
+                        <p class="lead text-dark mb-4" style="line-height: 1.8;">
+                            "PrimaDev dibangun dengan pendekatan modern yang menggabungkan
+                            <span class="fw-bold text-primary">keahlian manusia</span> dan
+                            <span class="fw-bold text-primary">kecerdasan buatan (AI)</span>.
+                        </p>
+
+                        <p class="text-muted mb-4">
+                            AI digunakan sebagai alat bantu untuk mempercepat eksplorasi solusi teknis dan pembuatan
+                            struktur kode, sementara setiap logika, desain, dan implementasi akhir tetap melalui proses
+                            evaluasi dan penyempurnaan ketat oleh tim kami.
+                        </p>
+
+                        <div
+                            class="d-flex align-items-start bg-primary bg-opacity-10 p-3 rounded-3 border-start border-4 border-primary">
+                            <i class="fa-solid fa-quote-left text-primary me-3 mt-1 fs-5"></i>
+                            <p class="fst-italic text-dark mb-0 fw-medium">
+                                Bagi PrimaDev, kualitas bukan soal siapa yang menulis kode, melainkan bagaimana solusi
+                                tersebut bekerja, bertahan, dan memberi nilai nyata bagi pengguna.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 bg-light px-4 pb-4">
+                    <button type="button" class="btn btn-dark rounded-pill px-4 fw-bold"
+                        data-bs-dismiss="modal">Mengerti</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Set current year
+            const yearElement = document.getElementById('currentYear');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+
+            requestAnimationFrame(() => {
+                document.body.classList.add("loaded");
+            });
+        });
+
+        // Handle back-forward cache (bfcache) to prevent blank page when clicking back button
+        window.addEventListener("pageshow", (event) => {
+            if (event.persisted) {
+                document.body.classList.add("loaded");
+            }
+        });
+
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                const target = this.getAttribute('href');
+
+                if (target &&
+                    !target.startsWith('#') &&
+                    !target.startsWith('javascript') &&
+                    !target.startsWith('mailto') &&
+                    this.target !== '_blank') {
+
+                    e.preventDefault();
+
+                    document.body.classList.remove("loaded");
+
+                    setTimeout(() => {
+                        window.location.href = target;
+                    }, 500);
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

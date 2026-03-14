@@ -1,0 +1,26 @@
+{
+  "struk-spbu": {
+    "name": "Aplikasi Struk SPBU",
+    "description": "Cetak struk BBM dengan mudah, akurat, dan mendukung semua jenis printer thermal.",
+    "icon": "fa-receipt",
+    "color": "text-primary",
+    "btnColor": "btn-outline-primary",
+    "price": {
+      "monthly": 80000,
+      "yearly": 860000,
+      "lifetime": 1599000
+    }
+  },
+  "wa-blaster": {
+    "name": "WA Blaster Pro",
+    "description": "Kirim pesan massal ke ribuan kontak tanpa takut blokir. Cocok untuk marketing.",
+    "icon": "fa-whatsapp",
+    "color": "text-success",
+    "btnColor": "btn-outline-success",
+    "price": {
+      "monthly": 50000,
+      "yearly": 450000,
+      "lifetime": 999000
+    }
+  }
+}

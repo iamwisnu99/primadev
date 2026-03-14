@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perpanjang Lisensi | PrimaDev</title>
+
+    <!-- Favicon & Manifest -->
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+    <link rel="shortcut icon" href="/public/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="PrimaDev" />
+    <link rel="manifest" href="/public/site.webmanifest" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-XXXXX"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Glass Card */
+        .decorative-blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            max-width: 480px;
+            width: 90%;
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .icon-box-main {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .input-group-custom {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border-radius: 14px;
+            border: 2px solid #f1f5f9;
+            background: #f8fafc;
+            color: #1e293b;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .form-control-custom:focus {
+            border-color: #4f46e5;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-control-custom:focus+.input-icon {
+            color: #4f46e5;
+        }
+
+        .btn-primary-premium {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border: none;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .btn-primary-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .fa-spin-slow {
+            animation: fa-spin 5s infinite linear;
+        }
+
+        .hover-link:hover {
+            color: #4f46e5 !important;
+            text-decoration: underline !important;
+        }
+
+        .license-info-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 18px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="decorative-blob" style="top: -50px; left: -50px;"></div>
+    <div class="decorative-blob"
+        style="bottom: -50px; right: -50px; background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);"></div>
+
+
+    <div class="glass-card">
+        <div class="text-center mb-4">
+            <div class="icon-box-main mx-auto mb-3">
+                <i class="fa-solid fa-arrows-rotate fa-spin-slow"></i>
+            </div>
+            <h3 class="fw-bold text-dark mb-1">Perpanjang Lisensi</h3>
+            <p class="text-muted small">Validasi data kepemilikan lisensi Anda</p>
+        </div>
+
+        <div id="step1">
+            <form onsubmit="checkLicense(event)">
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted">NAMA LENGKAP</label>
+                    <div class="input-group-custom">
+                        <i class="fa-solid fa-user input-icon"></i>
+                        <input type="text" id="buyerName" class="form-control-custom" placeholder="Nama saat pembelian"
+                            required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted">EMAIL TERDAFTAR</label>
+                    <div class="input-group-custom">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="email" id="buyerEmail" class="form-control-custom" placeholder="email@contoh.com"
+                            required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted">NOMOR WHATSAPP <span
+                            class="text-secondary fw-normal">(Opsional)</span></label>
+                    <div class="input-group-custom">
+                        <i class="fa-solid fa-phone input-icon"></i>
+                        <input type="tel" id="buyerPhone" class="form-control-custom"
+                            placeholder="081234567xxx (opsional)">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold small text-muted">LICENSE KEY</label>
+                    <div class="input-group-custom">
+                        <i class="fa-solid fa-key input-icon"></i>
+                        <input type="text" id="licenseKey" class="form-control-custom fw-bold"
+                            placeholder="PRIMA-XXXX-XXXX" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary-premium w-100 py-3 rounded-3 fw-bold shadow-lg">
+                    <i class="fa-solid fa-shield-check me-2"></i> Validasi Lisensi
+                </button>
+            </form>
+            <div class="text-center mt-4">
+                <a href="index.html" class="text-decoration-none small text-muted hover-link">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Kembali ke Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div id="step2" style="display: none;">
+            <div class="license-info-box">
+                <h6 class="fw-bold mb-1" id="infoAppName">Aplikasi Struk SPBU</h6>
+                <div class="d-flex justify-content-between text-muted small mb-2">
+                    <span>Status: <span id="infoStatus" class="fw-bold text-success">ACTIVE</span></span>
+                    <span>Type: <span id="infoType">YEARLY</span></span>
+                </div>
+                <div class="small text-danger fw-bold">
+                    Exp: <span id="infoExpiry">2026-12-31</span>
+                </div>
+            </div>
+
+            <h6 class="fw-bold mb-3">Pilih Durasi Perpanjangan:</h6>
+
+            <div class="list-group mb-4">
+                <label class="list-group-item d-flex gap-3 align-items-center p-3 border rounded-3 mb-2"
+                    style="cursor: pointer;">
+                    <input class="form-check-input flex-shrink-0" type="radio" name="duration" value="monthly" checked>
+                    <div class="d-flex justify-content-between w-100 align-items-center">
+                        <div>
+                            <strong class="d-block text-dark">1 Bulan</strong>
+                            <small class="text-muted">+30 Hari masa aktif</small>
+                        </div>
+                        <span class="fw-bold text-primary">Rp 80.000</span>
+                    </div>
+                </label>
+
+                <label class="list-group-item d-flex gap-3 align-items-center p-3 border rounded-3"
+                    style="cursor: pointer;">
+                    <input class="form-check-input flex-shrink-0" type="radio" name="duration" value="yearly">
+                    <div class="d-flex justify-content-between w-100 align-items-center">
+                        <div>
+                            <strong class="d-block text-dark">1 Tahun <span
+                                    class="badge bg-success ms-1">HEMAT</span></strong>
+                            <small class="text-muted">+365 Hari masa aktif</small>
+                        </div>
+                        <span class="fw-bold text-primary">Rp 860.000</span>
+                    </div>
+                </label>
+            </div>
+
+            <button onclick="processRenewal()" class="btn btn-success w-100 py-3 rounded-3 fw-bold shadow-sm mb-2">
+                <i class="fa-solid fa-shield-halved me-2"></i> Bayar & Perpanjang
+            </button>
+            <button onclick="resetStep()" class="btn btn-light w-100 py-2 text-muted small">Batal / Cek Key
+                Lain</button>
+        </div>
+    </div>
+
+    <script>
+        let currentLicenseData = null;
+
+        // Di Website Kamu
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const key = urlParams.get('key');
+            if (key) {
+                document.getElementById('licenseKey').value = key;
+            }
+        }
+
+        // 1. FUNGSI CEK LISENSI
+        async function checkLicense(e) {
+            e.preventDefault();
+            const key = document.getElementById('licenseKey').value.trim();
+            const name = document.getElementById('buyerName').value.trim();
+            const email = document.getElementById('buyerEmail').value.trim();
+            const phone = document.getElementById('buyerPhone').value.trim();
+
+            if (!key || !name || !email) return;
+
+            // Tampilkan Loading
+            Swal.fire({ title: 'Mengecek & Validasi...', didOpen: () => Swal.showLoading() });
+
+            try {
+                // Panggil Endpoint Backend untuk Cek Data
+                const res = await fetch(`/.netlify/functions/licenses?id=${key}`);
+                const data = await res.json();
+
+                if (res.ok && data) {
+                    // Validasi Kecocokan Nama dan Email (Case Insensitive)
+                    const dbName = (data.name || '').toLowerCase();
+                    const dbEmail = (data.email || '').toLowerCase();
+
+                    if (dbName === name.toLowerCase() && dbEmail === email.toLowerCase()) {
+                        Swal.close();
+                        data.key = key; // PASTIKAN KEY ADA (untuk pengiriman balik nanti)
+                        // Simpan phone tambahan ke object data untuk proses transaksi nanti
+                        data.phone = phone;
+                        currentLicenseData = data;
+                        showRenewalOptions(data);
+                    } else {
+                        throw new Error('Data Nama atau Email tidak cocok dengan License Key ini.');
+                    }
+                } else {
+                    throw new Error('License Key tidak ditemukan atau tidak valid.');
+                }
+            } catch (err) {
+                Swal.fire('Validasi Gagal', err.message, 'error');
+            }
+        }
+
+        // 2. TAMPILKAN PILIHAN DURASI
+        function showRenewalOptions(data) {
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+
+            document.getElementById('infoAppName').innerText = data.appName || 'Unknown App';
+            document.getElementById('infoStatus').innerText = (data.status || 'inactive').toUpperCase();
+            document.getElementById('infoType').innerText = (data.type || 'Standard').toUpperCase();
+            document.getElementById('infoExpiry').innerText = new Date(data.expiryDate).toLocaleDateString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            // Warnai status
+            const statEl = document.getElementById('infoStatus');
+            statEl.className = data.status === 'active' ? 'fw-bold text-success' : 'fw-bold text-danger';
+        }
+
+        // 3. PROSES PEMBAYARAN
+        async function processRenewal() {
+            const duration = document.querySelector('input[name="duration"]:checked').value;
+
+            // Hitung Harga (Bisa diambil dari config backend nanti biar aman)
+            const price = duration === 'monthly' ? 80000 : 860000;
+
+            Swal.fire({ title: 'Memproses Pembayaran...', didOpen: () => Swal.showLoading() });
+
+            try {
+                // Panggil Endpoint Create Transaction dengan mode RENEWAL
+                const res = await fetch('/.netlify/functions/public_order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        licenseKey: currentLicenseData.key,
+                        duration: duration,
+                        amount: price,
+                        name: currentLicenseData.name,
+                        email: currentLicenseData.email,
+                        phone: currentLicenseData.phone || '', // Tambahkan Nomor Telepon
+                        orderType: 'RENEWAL'
+                    })
+                });
+
+                const result = await res.json();
+
+                if (res.ok && result.token) {
+                    Swal.close();
+                    // Buka Snap Midtrans
+                    window.snap.pay(result.token, {
+                        onSuccess: async function (paymentResult) {
+                            Swal.fire({
+                                title: 'Memverifikasi...',
+                                text: 'Sedang mengaktifkan perpanjangan...',
+                                allowOutsideClick: false,
+                                didOpen: () => { Swal.showLoading(); }
+                            });
+
+                            try {
+                                // Manual trigger verification (Fail-safe for local dev/webhook delay)
+                                await fetch('/.netlify/functions/public_order', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        action: 'verify_payment',
+                                        orderId: result.orderId
+                                    })
+                                });
+
+                                Swal.fire('Berhasil!', 'Lisensi Anda telah diperpanjang.', 'success').then(() => location.reload());
+                            } catch (e) {
+                                console.error("Verification Error:", e);
+                                Swal.fire('Selesai', 'Pembayaran diterima. Jika lisensi belum update, tunggu beberapa saat.', 'info').then(() => location.reload());
+                            }
+                        },
+                        onPending: function (paymentResult) {
+                            Swal.fire('Pending', 'Silakan selesaikan pembayaran Anda.', 'warning');
+                        },
+                        onError: function (paymentResult) {
+                            Swal.fire('Gagal', 'Pembayaran gagal.', 'error');
+                        }
+                    });
+                } else {
+                    throw new Error(result.error || 'Gagal membuat transaksi');
+                }
+            } catch (err) {
+                Swal.fire('Error', err.message, 'error');
+            }
+        }
+
+        function resetStep() {
+            currentLicenseData = null;
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('licenseKey').value = '';
+            document.getElementById('buyerName').value = '';
+            document.getElementById('buyerEmail').value = '';
+            document.getElementById('buyerPhone').value = '';
+        }
+    </script>
+</body>
+
+</html>

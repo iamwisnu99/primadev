@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Documents - PrimaDev</title>
+
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+    <link rel="shortcut icon" href="/public/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="PrimaDev" />
+    <link rel="manifest" href="/public/site.webmanifest" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8fafc;
+            padding-top: 80px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        .legal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        h4 {
+            margin-top: 30px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        p,
+        li {
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        .nav-pills .nav-link {
+            color: #64748b;
+            font-weight: 600;
+            padding: 15px 25px;
+            border-radius: 10px;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-white border-bottom">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="home.html">← Kembali ke Home</a>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-lg-3 mb-4">
+                <div class="nav flex-column nav-pills me-3 sticky-top" style="top: 100px;" id="v-pills-tab"
+                    role="tablist">
+                    <button class="nav-link active" id="v-pills-terms-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-terms" type="button">Terms & Conditions</button>
+                    <button class="nav-link" id="v-pills-privacy-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-privacy" type="button">Privacy Policy</button>
+                    <button class="nav-link" id="v-pills-refund-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-refund" type="button">Refund Policy</button>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="tab-content legal-content" id="v-pills-tabContent">
+
+                    <div class="tab-pane fade show active" id="v-pills-terms" role="tabpanel">
+                        <h1>Syarat & Ketentuan</h1>
+                        <p class="text-muted">Terakhir diperbarui: 26 Januari 2026</p>
+                        <hr>
+
+                        <h4>1. Pendahuluan</h4>
+                        <p>Selamat datang di PrimaDev. Dengan mengakses atau membeli produk dari website ini, Anda
+                            menyetujui untuk terikat oleh Syarat dan Ketentuan ini.</p>
+
+                        <h4>2. Lisensi Penggunaan</h4>
+                        <p>Kami memberikan Anda lisensi terbatas, non-eksklusif, dan tidak dapat dipindahtangankan untuk
+                            menggunakan software kami. Anda dilarang keras untuk:</p>
+                        <ul>
+                            <li>Menjual kembali, menyewakan, atau mendistribusikan ulang license key.</li>
+                            <li>Melakukan reverse engineering atau memodifikasi source code aplikasi.</li>
+                            <li>Menggunakan software untuk kegiatan ilegal atau melanggar hukum di Indonesia.</li>
+                        </ul>
+
+                        <h4>3. Pembayaran</h4>
+                        <p>Semua pembayaran diproses melalui Payment Gateway resmi (Midtrans). Kami tidak menyimpan data
+                            kartu kredit Anda.</p>
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-privacy" role="tabpanel">
+                        <h1>Kebijakan Privasi</h1>
+                        <p class="text-muted">Kami menghargai privasi data Anda.</p>
+                        <hr>
+
+                        <h4>1. Data yang Kami Kumpulkan</h4>
+                        <p>Saat melakukan pembelian, kami mengumpulkan informasi berikut:</p>
+                        <ul>
+                            <li>Nama Lengkap</li>
+                            <li>Alamat Email (untuk pengiriman lisensi)</li>
+                            <li>Riwayat Transaksi</li>
+                        </ul>
+
+                        <h4>2. Penggunaan Data</h4>
+                        <p>Data Anda digunakan semata-mata untuk:</p>
+                        <ul>
+                            <li>Memproses pesanan dan mengirimkan License Key.</li>
+                            <li>Menghubungi Anda terkait update produk atau support.</li>
+                            <li>Memenuhi kewajiban hukum dan perpajakan.</li>
+                        </ul>
+                        <p>Kami <strong>TIDAK AKAN</strong> menjual data Anda kepada pihak ketiga manapun.</p>
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-refund" role="tabpanel">
+                        <h1>Kebijakan Pengembalian Dana</h1>
+                        <p class="text-muted">Mohon dibaca dengan seksama sebelum membeli.</p>
+                        <hr>
+
+                        <h4>1. Barang Digital</h4>
+                        <p>Karena sifat produk kami yang berupa <strong>Barang Digital (License Key)</strong> yang
+                            dikirim secara otomatis dan instan, maka:</p>
+                        <div class="alert alert-warning border-0">
+                            <strong>Semua penjualan bersifat FINAL dan TIDAK DAPAT DIKEMBALIKAN
+                                (Non-Refundable).</strong>
+                        </div>
+
+                        <h4>2. Pengecualian</h4>
+                        <p>Pengembalian dana (Refund) hanya dapat diproses jika:</p>
+                        <ul>
+                            <li>Terjadi kesalahan sistem ganda (double payment) untuk pesanan yang sama.</li>
+                            <li>License Key yang dikirimkan terbukti tidak valid atau tidak berfungsi karena kesalahan
+                                teknis dari pihak PrimaDev, dan tim support kami gagal memperbaikinya dalam waktu 3x24
+                                jam.</li>
+                        </ul>
+
+                        <h4>3. Cara Mengajukan Klaim</h4>
+                        <p>Hubungi tim support kami melalui email <strong>wisnu.bussines99@gmail.com</strong> dengan
+                            menyertakan bukti transaksi (Order ID).</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            requestAnimationFrame(() => {
+                document.body.classList.add("loaded");
+            });
+        });
+
+        // Handle back-forward cache (bfcache)
+        window.addEventListener("pageshow", (event) => {
+            if (event.persisted) {
+                document.body.classList.add("loaded");
+            }
+        });
+
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                const target = this.getAttribute('href');
+
+                if (target &&
+                    !target.startsWith('#') &&
+                    !target.startsWith('javascript') &&
+                    !target.startsWith('mailto') &&
+                    this.target !== '_blank') {
+
+                    e.preventDefault();
+
+                    document.body.classList.remove("loaded");
+                    setTimeout(() => {
+                        window.location.href = target;
+                    }, 500);
+                }
+            });
+
+            var hash = window.location.hash;
+            if (hash) {
+                var triggerEl = document.querySelector('button[data-bs-target="' + hash.replace('#', '#v-pills-') + '"]');
+                if (triggerEl) {
+                    var tab = new bootstrap.Tab(triggerEl);
+                    tab.show();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimaDev Admin Panel</title>
+
+    <!-- Favicon & Manifest -->
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+    <link rel="shortcut icon" href="/public/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="PrimaDev" />
+    <link rel="manifest" href="/public/site.webmanifest" />
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: #334155;
+            overflow-x: hidden;
+        }
+
+        #loginSection {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4f46e5 0%, #818cf8 100%);
+            position: relative;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .desktop-visual {
+            display: none;
+        }
+
+        .dashboard-layout-wrapper {
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            display: flex;
+            height: 90vh;
+            margin: 20px;
+        }
+
+        .sidebar-menu,
+        .main-content {
+            border-radius: 0 !important;
+        }
+
+        @media (min-width: 992px) {
+            #loginSection {
+                background: #ffffff;
+                padding: 0;
+                align-items: stretch;
+                justify-content: flex-start;
+                flex-direction: row;
+            }
+
+            .login-container {
+                width: 40%;
+                max-width: none;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+                background: #ffffff;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 4rem 5rem;
+                z-index: 1;
+                position: relative;
+            }
+
+            .desktop-visual {
+                display: flex;
+                width: 60%;
+                height: 100vh;
+                background: #1d4ed8;
+                background: linear-gradient(90deg, rgb(14, 79, 219) 100%, rgba(176, 204, 212, 1) 52%, rgb(14, 79, 219) 100%);
+                background-size: cover;
+                background-position: center;
+                align-items: center;
+                justify-content: center;
+                z-index: 2;
+                position: relative;
+                border-top-left-radius: 60px;
+                border-bottom-left-radius: 60px;
+                margin-left: -20px;
+                overflow: hidden;
+            }
+
+            .desktop-visual::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(79, 70, 229, 0.1);
+                z-index: 1;
+            }
+
+            .floating-logo {
+                width: 400px;
+                z-index: 2;
+                filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.2));
+                animation: float 6s ease-in-out infinite;
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            font-size: 1.5rem;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .blink {
+            animation: blinker 1s linear infinite;
+            font-weight: bold;
+            margin: 0 2px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .main-card {
+            background: #fff;
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            color: #64748b;
+            padding: 1.25rem 1rem;
+            border: none;
+        }
+
+        .table tbody td {
+            padding: 1.25rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+
+        .license-key {
+            font-family: 'Courier New', Courier, monospace;
+            background: #f1f5f9;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .badge-custom {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .badge-gold {
+            background-color: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fcd34d;
+        }
+
+        .badge-blue {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .badge-green {
+            background-color: #f0fdf4;
+            color: #15803d;
+            border: 1px solid #86efac;
+        }
+
+        .badge-status-active {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-status-banned {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-status-expired {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin-left: 6px;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.15);
+        }
+
+        .btn-edit {
+            background-color: #eff6ff;
+            color: #3b82f6;
+        }
+
+        .btn-delete {
+            background-color: #fef2f2;
+            color: #ef4444;
+        }
+
+        .form-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+            cursor: pointer;
+        }
+
+        .form-switch .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            transition: opacity 0.5s ease;
+        }
+
+        @media screen and (max-width: 768px) {
+            .table thead {
+                display: none;
+            }
+
+            .table tr {
+                display: block;
+                margin-bottom: 1rem;
+                background-color: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
+
+            .table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #f1f5f9;
+                padding: 12px 16px;
+                text-align: right;
+            }
+
+            .table td:last-child {
+                border-bottom: none;
+            }
+
+            .table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                font-size: 0.75rem;
+                color: #64748b;
+                text-transform: uppercase;
+                margin-right: 10px;
+                text-align: left;
+            }
+
+            .table td:last-child {
+                display: block;
+                text-align: center;
+                background-color: #f8fafc;
+            }
+
+            .table td:last-child .d-flex {
+                justify-content: center !important;
+            }
+        }
+
+        .form-control,
+        .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background-color: #fff;
+            font-size: 0.95rem;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            background-color: #fff;
+        }
+
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%234f46e5' stroke='%234f46e5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-size: 12px 12px;
+        }
+
+        .form-floating>label {
+            padding-left: 1rem;
+            color: #64748b;
+        }
+
+        /* Custom Tabs Styling */
+        .custom-pills .nav-link {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #64748b;
+            border: 2px solid transparent;
+        }
+
+        .custom-pills .nav-link.active {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .custom-pills .nav-link:hover:not(.active) {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        .bg-purple {
+            background-color: #a855f7 !important;
+        }
+
+        .text-purple {
+            color: #a855f7 !important;
+        }
+
+        /* --- 1. TAB ANIMATION & MODAL DROPDOWN STYLES --- */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-tab-content {
+            animation: fadeSlideUp 0.4s ease-out forwards;
+        }
+
+        /* --- CUSTOM MODERN DROPDOWN --- */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .dropdown-trigger {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            min-height: 58px;
+            /* Match form-floating height roughly */
+        }
+
+        .dropdown-trigger:hover {
+            border-color: var(--primary-color);
+            background: #f8faff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .custom-dropdown.active .dropdown-trigger {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .dropdown-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8f0;
+            z-index: 1055;
+            /* Higher than modal */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            padding: 8px;
+        }
+
+        .custom-dropdown.active .dropdown-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .option-item {
+            padding: 10px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            margin-bottom: 4px;
+        }
+
+        .option-item:hover {
+            background: #f1f5f9;
+        }
+
+        .option-item.selected {
+            background: #eff6ff;
+            border-color: var(--primary-color);
+        }
+
+        .option-title {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .option-desc {
+            display: block;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .option-check {
+            color: var(--primary-color);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.2s;
+        }
+
+        .option-item.selected .option-check {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .trigger-chevron {
+            transition: transform 0.3s;
+            color: #94a3b8;
+        }
+
+        .custom-dropdown.active .trigger-chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Custom Dropdown Style override */
+        .modal .form-select {
+            background-color: #f8fafc;
+            /* Light gray background */
+            border: 1px solid #e2e8f0;
+            font-weight: 500;
+            color: #334155;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%2364748b' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        }
+
+        .modal .form-select:focus {
+            background-color: #ffffff;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .modal .form-floating>.form-select {
+            padding-top: 1.625rem;
+            padding-bottom: 0.625rem;
+        }
+    </style>
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
+
+    <style>
+        /* Responsive Card Table for Mobile */
+        @media (max-width: 768px) {
+            #appTable thead {
+                display: none;
+            }
+
+            #appTable tbody,
+            #appTable tr,
+            #appTable td {
+                display: block;
+                width: 100%;
+            }
+
+            #appTable tr {
+                margin-bottom: 1rem;
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 1rem;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            }
+
+            #appTable td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+            #appTable td:last-child {
+                border-bottom: none;
+                justify-content: center;
+                padding-top: 1rem;
+                margin-top: 0.5rem;
+                padding-right: 0 !important;
+            }
+
+            #appTable td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                color: #64748b;
+                margin-right: 1rem;
+                text-align: left;
+            }
+
+            /* Custom handling for first column (Icon + Name) */
+            #appTable td:first-child {
+                flex-direction: row-reverse;
+                /* Put content on right? No, standard flex is fine. */
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- LOGIN SECTION -->
+    <div id="loginSection">
+
+        <div class="login-container">
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-4">
+                    <img src="https://i.imgur.com/BZ1xLO3.png" alt="Logo" width="301" height="98" class="rounded me-2">
+                </div>
+
+                <h2 class="fw-bold text-dark display-6">Welcome Back!</h2>
+                <p class="text-muted">Masuk untuk mengelola lisensi.</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control bg-light border-0" id="loginEmail"
+                        placeholder="name@example.com" required style="border-radius: 12px;">
+                    <label for="loginEmail">Email Address</label>
+                    <div class="invalid-feedback" id="emailError">Email tidak ditemukan!</div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="input-group has-validation">
+
+                        <div class="form-floating">
+                            <input type="password" class="form-control bg-light border-0" id="loginPassword"
+                                placeholder="Password" required style="border-radius: 12px 0 0 12px;">
+                            <label for="loginPassword">Password</label>
+                        </div>
+
+                        <button class="btn btn-light border-0" type="button" onclick="togglePassword()"
+                            style="border-radius: 0 12px 12px 0; z-index: 3;">
+                            <i class="fa-solid fa-eye text-muted" id="toggleIcon"></i>
+                        </button>
+
+                        <div class="invalid-feedback" id="passwordError">
+                            Password salah!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                        <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#" class="small text-decoration-none text-primary fw-bold"
+                        onclick="handleForgotPassword()">
+                        Lupa Password?
+                    </a>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg fw-bold py-3" style="border-radius: 12px;">
+                        Login to Dashboard <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-4 text-center">
+                <p class="small text-muted">Butuh akses? <a href="#" class="fw-bold text-primary text-decoration-none"
+                        onclick="Swal.fire('Hubungi Wisnu')">Hubungi Owner</a></p>
+            </div>
+        </div>
+
+        <div class="desktop-visual">
+            <img src="https://i.imgur.com/WGBCK1s.png" alt="PrimaDev 3D Logo" class="floating-logo">
+
+            <div class="position-absolute bottom-0 start-0 p-5 text-white" style="z-index: 3;">
+                <h3 class="fw-bold">Manage Licenses with Style.</h3>
+                <p class="opacity-75">Sistem manajemen lisensi yang terintegrasi dengan Firebase.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DASHBOARD SECTION -->
+    <div id="dashboardSection" class="d-none">
+        <nav class="navbar navbar-expand-lg sticky-top">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="https://i.imgur.com/kT6aLBx.png" alt="Logo" width="40" height="40" class="me-2 rounded">
+
+                    <span>PrimaDev</span>
+                </a>
+                <button class="btn btn-light btn-sm text-danger fw-bold ms-auto" onclick="handleLogout()">
+                    <i class="fa-solid fa-power-off me-2"></i>Logout
+                </button>
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <div class="container py-5">
+
+            <!-- Tabs Navigation -->
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <ul class="nav nav-pills custom-pills p-1 bg-white rounded-pill shadow-sm" id="mainTabs">
+                    <li class="nav-item">
+                        <button class="nav-link active rounded-pill px-4 fw-bold" data-section="licenses">
+                            <i class="fa-solid fa-key me-2"></i>Licenses
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link rounded-pill px-4 fw-bold" data-section="apps">
+                            <i class="fa-solid fa-cubes me-2"></i>App Manager
+                        </button>
+                    </li>
+                </ul>
+                <div class="d-none d-md-block">
+                    <span class="badge bg-light text-dark border p-2">
+                        <i class="fa-regular fa-clock me-1"></i> <span id="clock">00:00</span>
+                    </span>
+                    <button class="btn btn-sm btn-outline-primary ms-2" onclick="refreshCurrentSection()"
+                        title="Refresh Data">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- LICENSES SECTION -->
+            <div id="licensesSection" class="dashboard-section">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1 text-dark">License Manager</h2>
+                        <p class="text-muted mb-0">Manage and monitor issued license keys</p>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="stat-card d-flex align-items-center">
+                            <div class="stat-icon bg-primary bg-opacity-10 text-primary me-3">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Total
+                                    Licenses
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-dark" id="totalLicenses">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card d-flex align-items-center">
+                            <div class="stat-icon bg-success bg-opacity-10 text-success me-3">
+                                <i class="fa-solid fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Active
+                                    Users
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-dark" id="activeLicenses">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card d-flex align-items-center">
+                            <div class="stat-icon bg-danger bg-opacity-10 text-danger me-3">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Issues
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-dark" id="expiredLicenses">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Card -->
+                <div class="main-card">
+                    <!-- Toolbar -->
+                    <div
+                        class="p-4 border-bottom d-flex flex-wrap gap-3 justify-content-between align-items-center bg-white">
+                        <div class="position-relative flex-grow-1" style="max-width: 400px;">
+                            <i
+                                class="fa-solid fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                            <input type="text" id="searchInput" class="form-control ps-5 bg-light border-0"
+                                placeholder="Cari nama, email, atau key...">
+                        </div>
+                        <button class="btn btn-primary fw-bold px-4 py-2" onclick="openCreateModal()">
+                            <i class="fa-solid fa-plus me-2"></i>Create License
+                        </button>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-responsive">
+                        <table class="table mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th>License Key</th>
+                                    <th>User Details</th>
+                                    <th class="d-none d-md-table-cell">Type</th>
+                                    <th>Status</th>
+                                    <th class="d-none d-md-table-cell">Device ID</th>
+                                    <th class="d-none d-md-table-cell">Expiry</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="licenseTableBody">
+                            </tbody>
+                        </table>
+                        <div id="paginationControls"
+                            class="d-flex flex-wrap justify-content-between align-items-center p-3 border-top bg-light d-none">
+
+                            <div class="d-flex align-items-center gap-2 mb-2 mb-md-0">
+                                <span class="text-muted small">Show:</span>
+                                <select id="rowsPerPage" class="form-select form-select-sm" style="width: 70px;"
+                                    onchange="changeRowsPerPage()">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                </select>
+                                <span class="text-muted small ms-2">
+                                    Page <span id="currentPageDisplay" class="fw-bold">1</span> of <span
+                                        id="totalPagesDisplay">1</span>
+                                </span>
+                            </div>
+
+                            <div class="btn-group">
+                                <button class="btn btn-white border" onclick="changePage(-1)" id="btnPrev">
+                                    <i class="fa-solid fa-chevron-left"></i> Prev
+                                </button>
+                                <button class="btn btn-white border" onclick="changePage(1)" id="btnNext">
+                                    Next <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Empty State -->
+                    <div id="emptyState" class="text-center py-5 d-none">
+                        <div class="mb-3">
+                            <i class="fa-solid fa-folder-open text-muted opacity-25" style="font-size: 4rem;"></i>
+                        </div>
+                        <h5 class="fw-bold text-muted">Data Kosong</h5>
+                        <p class="text-muted small">Belum ada data lisensi.</p>
+                    </div>
+                </div>
+
+            </div>
+            <!-- APPS SECTION -->
+            <div id="appsSection" class="dashboard-section d-none">
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1 text-dark">App Manager</h2>
+                        <p class="text-muted mb-0">Configure your products and pricing</p>
+                    </div>
+                </div>
+
+                <!-- Stats Cards for Apps -->
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="stat-card d-flex align-items-center">
+                            <div class="stat-icon bg-info bg-opacity-10 text-info me-3">
+                                <i class="fa-solid fa-box"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Total
+                                    Apps</h6>
+                                <h3 class="fw-bold mb-0 text-dark" id="totalApps">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card d-flex align-items-center">
+                            <div class="stat-icon bg-warning bg-opacity-10 text-warning me-3">
+                                <i class="fa-solid fa-sync"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">
+                                    Revenue Sync</h6>
+                                <h3 class="fw-bold mb-0 text-dark">Active</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card d-flex align-items-center">
+                            <div class="stat-icon bg-purple bg-opacity-10 text-purple me-3">
+                                <i class="fa-solid fa-tags"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">
+                                    Pricing Status</h6>
+                                <h3 class="fw-bold mb-0 text-dark">Global</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="main-card">
+                    <div
+                        class="p-4 border-bottom d-flex flex-wrap gap-3 justify-content-between align-items-center bg-white">
+                        <div class="position-relative flex-grow-1" style="max-width: 400px;">
+                            <i
+                                class="fa-solid fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                            <input type="text" id="appSearchInput" class="form-control ps-5 bg-light border-0"
+                                placeholder="Cari nama aplikasi...">
+                        </div>
+                        <button class="btn btn-primary fw-bold px-4 py-2" onclick="openCreateAppModal()">
+                            <i class="fa-solid fa-plus me-2"></i>Add Application
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table mb-0 align-middle" id="appTable">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4" style="min-width: 200px;">Application Name</th>
+                                    <th style="min-width: 150px;">App ID</th>
+                                    <th style="min-width: 150px;">Package Name</th>
+                                    <th style="min-width: 120px;">Monthly</th>
+                                    <th style="min-width: 120px;">Yearly</th>
+                                    <th style="min-width: 120px;">Lifetime</th>
+                                    <th class="text-end pe-4" style="min-width: 100px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="appEmptyState" class="text-center py-5 d-none">
+                        <div class="mb-3">
+                            <i class="fa-solid fa-cubes text-muted opacity-25" style="font-size: 4rem;"></i>
+                        </div>
+                        <h5 class="fw-bold text-muted">Belum ada Aplikasi</h5>
+                        <p class="text-muted small">Tambahkan aplikasi pertama Anda.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Modal -->
+        <div class="modal fade" id="createModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0">
+                    <div class="modal-header border-0 pb-0 px-4 pt-4">
+                        <h5 class="modal-title fw-bold">New License</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <form id="createForm" onsubmit="handleCreateSubmit(event)">
+                            <div class="mb-3">
+                                <label class="form-label small text-muted ms-1">Pilih Aplikasi</label>
+                                <div class="custom-dropdown" id="dropdownAppId">
+                                    <input type="hidden" id="createAppId" value="">
+                                    <div class="dropdown-trigger" onclick="toggleCustomDropdown('dropdownAppId')">
+                                        <div>
+                                            <span class="d-block fw-bold display-label">Pilih Aplikasi</span>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-down trigger-chevron"></i>
+                                    </div>
+                                    <div class="dropdown-options" id="appDropdownOptions">
+                                        <!-- Populated via JS -->
+                                        <div class="text-center p-3 text-muted small">Loading apps...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="createName" required placeholder="Name">
+                                <label>Customer Name</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="createEmail" required placeholder="Email">
+                                <label>Email Address</label>
+                            </div>
+
+                            <div class="mb-3 text-start">
+                                <label class="form-label small text-muted">Nominal Harga (Rp)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">Rp</span>
+                                    <input type="text" class="form-control border-start-0 bg-light" id="createPrice"
+                                        readonly required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div class="mb-0">
+                                        <label class="form-label small text-muted ms-1">Metode Bayar</label>
+                                        <div class="custom-dropdown" id="dropdownPayment">
+                                            <input type="hidden" id="createPaymentCategory" value="">
+                                            <div class="dropdown-trigger"
+                                                onclick="toggleCustomDropdown('dropdownPayment')">
+                                                <div>
+                                                    <span class="d-block fw-bold display-label">Pilih Kategori</span>
+                                                </div>
+                                                <i class="fa-solid fa-chevron-down trigger-chevron"></i>
+                                            </div>
+                                            <div class="dropdown-options">
+                                                <div class="option-item"
+                                                    onclick="selectOption('dropdownPayment', 'Transfer Bank', 'Transfer Bank', 'Manual Check')">
+                                                    <div><span class="option-title">Transfer Bank</span><span
+                                                            class="option-desc">Manual Check</span></div>
+                                                    <div class="option-check"><i class="fa-solid fa-check"></i></div>
+                                                </div>
+                                                <div class="option-item"
+                                                    onclick="selectOption('dropdownPayment', 'e-Wallet', 'e-Wallet', 'Gopay, OVO, Dana')">
+                                                    <div><span class="option-title">e-Wallet</span><span
+                                                            class="option-desc">Gopay, OVO, Dana</span></div>
+                                                    <div class="option-check"><i class="fa-solid fa-check"></i></div>
+                                                </div>
+                                                <div class="option-item"
+                                                    onclick="selectOption('dropdownPayment', 'QRIS', 'QRIS', 'Scan & Pay')">
+                                                    <div><span class="option-title">QRIS</span><span
+                                                            class="option-desc">Scan & Pay</span></div>
+                                                    <div class="option-check"><i class="fa-solid fa-check"></i></div>
+                                                </div>
+                                                <div class="option-item"
+                                                    onclick="selectOption('dropdownPayment', 'CASH', 'CASH', 'Tunai')">
+                                                    <div><span class="option-title">CASH</span><span
+                                                            class="option-desc">Tunai</span></div>
+                                                    <div class="option-check"><i class="fa-solid fa-check"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="d-none" id="providerContainer">
+                                        <label class="form-label small text-muted ms-1" id="providerLabel">Nama Bank /
+                                            Wallet</label>
+                                        <input type="text" class="form-control bg-white" id="createPaymentProvider"
+                                            placeholder="Detail" style="height: 58px; border-radius: 12px;">
+                                    </div>
+
+                                    <div class="d-none" id="emptyContainer">
+                                        <label class="form-label small text-muted ms-1">&nbsp;</label>
+                                        <input type="text" class="form-control-plaintext" readonly
+                                            style="height: 58px;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control bg-light" id="createTransactionId"
+                                        value="Dibuat Otomatis oleh Sistem" disabled readonly>
+                                    <label>Transaction ID</label>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <div class="mb-0">
+                                        <label class="form-label small text-muted ms-1">License Type</label>
+                                        <div class="custom-dropdown" id="dropdownType">
+                                            <input type="hidden" id="createType" value="Monthly">
+                                            <div class="dropdown-trigger"
+                                                onclick="toggleCustomDropdown('dropdownType')">
+                                                <div>
+                                                    <span class="d-block fw-bold display-label">Monthly</span>
+                                                    <small class="text-muted display-sub">30 Days Access</small>
+                                                </div>
+                                                <i class="fa-solid fa-chevron-down trigger-chevron"></i>
+                                            </div>
+                                            <div class="dropdown-options">
+                                                <div class="option-item selected"
+                                                    onclick="selectOption('dropdownType', 'Monthly', 'Monthly', '30 Days Access')">
+                                                    <div><span class="option-title">Monthly</span><span
+                                                            class="option-desc">30 Days Access</span></div>
+                                                    <div class="option-check"><i class="fa-solid fa-check"></i></div>
+                                                </div>
+                                                <div class="option-item"
+                                                    onclick="selectOption('dropdownType', 'Yearly', 'Yearly', 'Save ~15%')">
+                                                    <div><span class="option-title">Yearly</span><span
+                                                            class="option-desc">Save ~15%</span></div>
+                                                    <div class="option-check"><i class="fa-solid fa-check"></i></div>
+                                                </div>
+                                                <div class="option-item"
+                                                    onclick="selectOption('dropdownType', 'Lifetime', 'Lifetime', 'One-time Payment')">
+                                                    <div><span class="option-title">Lifetime</span><span
+                                                            class="option-desc">One-time Payment</span></div>
+                                                    <div class="option-check"><i class="fa-solid fa-check"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div>
+                                        <label class="form-label small text-muted ms-1">Expiry Date</label>
+                                        <input type="text" class="form-control bg-white" id="createExpiry" required
+                                            placeholder="Select Date"
+                                            style="height: 58px; border-radius: 12px; background-color: #fff !important; width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- License Key dihapus agar tidak membingungkan, backend yang akan buat -->
+
+                            <div
+                                class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3 mb-4 border">
+                                <div>
+                                    <span class="fw-bold d-block text-dark">Kirim Email Otomatis?</span>
+                                    <span class="small text-muted">Akan diproses oleh Server.</span>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="sendEmailCheck"
+                                        checked>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold">Generate & Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create/Edit App Modal -->
+        <div class="modal fade" id="appModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0">
+                    <div class="modal-header border-0 pb-0 px-4 pt-4">
+                        <h5 class="modal-title fw-bold" id="appModalTitle">New Application</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <form id="appForm" onsubmit="handleAppSubmit(event)">
+                            <input type="hidden" id="appFormId">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="appId" required
+                                    placeholder="App ID (e.g. wa-blaster)">
+                                <label>App ID (e.g. wa-blaster)</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="appName" required
+                                    placeholder="Application Name">
+                                <label>Application Name</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="appPackage" required
+                                    placeholder="Package Name (e.g. com.primadev.app)">
+                                <label>Package Name (e.g. com.primadev.app)</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" id="appDescription" placeholder="Description"
+                                    style="height: 100px"></textarea>
+                                <label>Description</label>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-12">
+                                    <label class="small text-muted fw-bold mb-2">Pricing (IDR)</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="priceMonthly" required
+                                            placeholder="Monthly">
+                                        <label>Monthly</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="priceYearly" required
+                                            placeholder="Yearly">
+                                        <label>Yearly</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="priceLifetime" required
+                                            placeholder="Lifetime">
+                                        <label>Lifetime</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold" id="appSubmitBtn">Save
+                                    Application</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0">
+                    <div class="modal-header border-0 pb-0 px-4 pt-4">
+                        <h5 class="modal-title fw-bold">Edit Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <form id="editForm" onsubmit="handleEditSubmit(event)">
+                            <input type="hidden" id="editId">
+
+                            <div class="text-center mb-4 p-3 bg-light rounded-3 border border-dashed">
+                                <small class="text-muted d-block mb-1">SELECTED KEY</small>
+                                <code id="displayEditKey" class="fw-bold fs-5 text-primary"></code>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="mb-0">
+                                        <label class="form-label small text-muted ms-1">Status</label>
+                                        <div class="custom-dropdown" id="dropdownStatus">
+                                            <input type="hidden" id="editStatus" value="Active">
+                                            <div class="dropdown-trigger"
+                                                onclick="toggleCustomDropdown('dropdownStatus')">
+                                                <div>
+                                                    <span class="d-block fw-bold display-label">Active</span>
+                                                </div>
+                                                <i class="fa-solid fa-chevron-down trigger-chevron"></i>
+                                            </div>
+                                            <div class="dropdown-options">
+                                                <div class="option-item"
+                                                    onclick="selectOption('dropdownStatus', 'Active', 'Active', 'License is Valid')">
+                                                    <div><span class="option-title">Active</span><span
+                                                            class="option-desc">License is Valid</span></div>
+                                                    <div class="option-check"><i class="fa-solid fa-check"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="option-item"
+                                                    onclick="selectOption('dropdownStatus', 'Banned', 'Banned', 'Access Revoked')">
+                                                    <div><span class="option-title">Banned</span><span
+                                                            class="option-desc">Access Revoked</span></div>
+                                                    <div class="option-check"><i class="fa-solid fa-check"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="option-item"
+                                                    onclick="selectOption('dropdownStatus', 'Expired', 'Expired', 'Time Ended')">
+                                                    <div><span class="option-title">Expired</span><span
+                                                            class="option-desc">Time Ended</span></div>
+                                                    <div class="option-check"><i class="fa-solid fa-check"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div>
+                                        <label class="form-label small text-muted ms-1">Expiry Date</label>
+                                        <input type="text" class="form-control bg-white flatpickr-input" id="editExpiry"
+                                            placeholder="Select Date" required
+                                            style="height: 58px; border-radius: 12px; background-color: #fff !important; width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="small text-muted fw-bold mb-2">Device Lock</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control text-muted" id="editDeviceId" readonly
+                                        placeholder="No device locked">
+                                    <button type="button" class="btn btn-outline-danger" onclick="resetDeviceLock()">
+                                        <i class="fa-solid fa-unlock me-1"></i> Reset
+                                    </button>
+                                </div>
+                                <div class="form-text small mt-1">Reset ini kalau user ganti HP baru.
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold">Save
+                                    Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
+            <div id="pwaToast" class="toast align-items-center border-0 shadow-lg" role="alert" aria-live="assertive"
+                aria-atomic="true" data-bs-autohide="false">
+                <div class="d-flex p-2 bg-white rounded-3 border">
+                    <div class="flex-shrink-0">
+                        <img src="https://i.imgur.com/kT6aLBx.png" alt="App Logo" width="50" height="50"
+                            class="rounded-3">
+                    </div>
+
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-1 fw-bold text-dark">Install App?</h6>
+                        <p class="mb-2 small text-muted lh-sm" id="pwaText">
+                            Akses dashboard lebih cepat tanpa buka browser.
+                        </p>
+
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-primary fw-bold px-3" id="btnPwaInstall">
+                                <i class="fa-solid fa-download me-1"></i> Install
+                            </button>
+                            <button type="button" class="btn btn-sm btn-light border" data-bs-dismiss="toast">
+                                Nanti Saja
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- Flatpickr JS -->
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+        <!-- Firebase & App Logic -->
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+            import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+            import { getDatabase, ref, get, query, orderByChild, equalTo, onValue, set, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+            // --- GLOBAL UTILITIES (Definisikan di awal agar UI tetap jalan walau Firebase gagal) ---
+            window.togglePassword = () => {
+                const passInput = document.getElementById('loginPassword');
+                const icon = document.getElementById('toggleIcon');
+                if (passInput) {
+                    const isPass = passInput.type === 'password';
+                    passInput.type = isPass ? 'text' : 'password';
+                    if (icon) icon.classList.replace(isPass ? 'fa-eye' : 'fa-eye-slash', isPass ? 'fa-eye-slash' : 'fa-eye');
+                }
+            };
+
+            // Placeholder handlers (agar tidak Error: function not defined)
+            window.handleLogin = () => { Swal.fire('Error', 'System belum siap. Coba refresh atau cek koneksi.', 'error'); };
+            window.handleLogout = () => { location.reload(); };
+
+            // --- GET CONFIG DYNAMICALLY ---
+            let firebaseConfig;
+            let app, auth, db;
+
+            try {
+                const configRes = await fetch('/.netlify/functions/get-config');
+                if (!configRes.ok) throw new Error('Failed to load config');
+                firebaseConfig = await configRes.json();
+
+                if (!firebaseConfig || !firebaseConfig.apiKey) {
+                    throw new Error('Firebase API Key is missing. Check Environment Variables.');
+                }
+
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getDatabase(app);
+            } catch (err) {
+                console.error("Initialization Error:", err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'System Error',
+                    text: 'Gagal memuat konfigurasi Firebase. Pastikan Environment Variables (API Key, dll) sudah diatur di Netlify.',
+                    footer: '<a href="https://app.netlify.com/" target="_blank">Buka Dashboard Netlify</a>'
+                });
+            }
+
+            const API_URL = '/api/licenses';
+
+            // UI References
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loginSection = document.getElementById('loginSection');
+            const dashboardSection = document.getElementById('dashboardSection');
+
+            // State
+            let licensesData = [];
+            let currentEditId = null;
+            let currentPage = 1;
+            let itemsPerPage = 10;
+            let deferredPrompt;
+            let productsData = {};
+
+            // --- LOAD PRODUCTS DATA (Refactored for App Manager) ---
+            const loadProducts = () => {
+                const productsRef = ref(db, 'products');
+                onValue(productsRef, (snapshot) => {
+                    const data = snapshot.val();
+                    productsData = data || {};
+
+                    // 1. Update Dropdown in Create License
+                    populateAppDropdown();
+
+                    // 2. Render App Table if App Section is visible
+                    renderAppTable();
+
+                }, (error) => {
+                    console.error("Products Realtime Error:", error);
+                });
+            };
+
+            const populateAppDropdown = () => {
+                const optionsContainer = document.getElementById('appDropdownOptions');
+                const displayLabel = document.querySelector('#dropdownAppId .display-label');
+                const updateInput = document.getElementById('createAppId');
+
+                if (!optionsContainer) return;
+
+                optionsContainer.innerHTML = '';
+                // Reset Selection
+                if (updateInput) updateInput.value = '';
+                if (displayLabel) displayLabel.innerText = 'Pilih Aplikasi';
+
+                const keys = Object.keys(productsData);
+                if (keys.length === 0) {
+                    optionsContainer.innerHTML = '<div class="text-center p-2 text-muted small">No apps found</div>';
+                    return;
+                }
+
+                keys.forEach(key => {
+                    const app = productsData[key];
+                    const div = document.createElement('div');
+                    div.className = 'option-item';
+                    div.onclick = () => selectOption('dropdownAppId', key, app.name, app.description || 'App ID: ' + key);
+
+                    div.innerHTML = `
+                        <div>
+                            <span class="option-title">${app.name}</span>
+                            <span class="option-desc">${app.description || key}</span>
+                        </div>
+                        <div class="option-check"><i class="fa-solid fa-check"></i></div>
+                    `;
+                    optionsContainer.appendChild(div);
+                });
+            };
+
+            // --- APP MANAGER UI FUNCTIONS ---
+            window.renderAppTable = () => {
+                const tbody = document.getElementById('appTableBody');
+                const emptyState = document.getElementById('appEmptyState');
+                if (!tbody) return;
+
+                tbody.innerHTML = '';
+                const keys = Object.keys(productsData);
+
+                if (keys.length === 0) {
+                    emptyState.classList.remove('d-none');
+                    return;
+                }
+                emptyState.classList.add('d-none');
+
+                keys.forEach(key => {
+                    const app = productsData[key];
+                    const tr = document.createElement('tr');
+
+                    const formatPrice = (p) => "Rp " + (p || 0).toLocaleString('id-ID');
+
+                    tr.innerHTML = `
+                        <td class="fw-bold text-dark ps-4" data-label="Application">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" style="width:40px; height:40px;">
+                                    <i class="fa-solid ${app.icon || 'fa-box'} text-primary display-6" style="font-size: 1.2rem;"></i>
+                                </div>
+                                <div class="text-dark">${app.name}</div>
+                            </div>
+                        </td>
+                        <td data-label="App ID"><span class="badge bg-light text-secondary border font-monospace px-3 py-2 rounded-pill">${key}</span></td>
+                        <td data-label="Package"><span class="small text-muted font-monospace">${app.package || '-'}</span></td>
+                        <td data-label="Monthly"><span class="fw-bold text-dark">${formatPrice(app.price?.monthly)}</span></td>
+                        <td class="text-muted" data-label="Yearly">${formatPrice(app.price?.yearly)}</td>
+                        <td class="text-muted" data-label="Lifetime">${formatPrice(app.price?.lifetime)}</td>
+                        <td class="text-end pe-4" data-label="Actions">
+                             <button class="btn btn-light btn-sm rounded-circle me-1" onclick="openEditAppModal('${key}')" 
+                                data-bs-toggle="tooltip" title="Edit App">
+                                <i class="fa-solid fa-pen text-secondary"></i>
+                             </button>
+                             <button class="btn btn-light btn-sm rounded-circle text-danger" onclick="deleteAppFunc('${key}')"
+                                data-bs-toggle="tooltip" title="Delete">
+                                <i class="fa-solid fa-trash-can"></i>
+                             </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            };
+
+            window.openCreateAppModal = () => {
+                const form = document.getElementById('appForm');
+                if (form) form.reset();
+                document.getElementById('appFormId').value = '';
+                document.getElementById('appId').readOnly = false;
+                document.getElementById('appModalTitle').innerText = "New Application";
+                document.getElementById('appSubmitBtn').innerText = "Save Application";
+                new bootstrap.Modal(document.getElementById('appModal')).show();
+            };
+
+            window.openEditAppModal = (key) => {
+                const app = productsData[key];
+                if (!app) return;
+
+                document.getElementById('appFormId').value = key;
+                document.getElementById('appId').value = key;
+                document.getElementById('appId').readOnly = true; // Cannot edit ID
+                document.getElementById('appName').value = app.name;
+                document.getElementById('appPackage').value = app.package || '';
+                document.getElementById('appDescription').value = app.description || '';
+                document.getElementById('priceMonthly').value = app.price?.monthly || 0;
+                document.getElementById('priceYearly').value = app.price?.yearly || 0;
+                document.getElementById('priceLifetime').value = app.price?.lifetime || 0;
+
+                document.getElementById('appModalTitle').innerText = "Edit Application";
+                document.getElementById('appSubmitBtn').innerText = "Update Application";
+
+                new bootstrap.Modal(document.getElementById('appModal')).show();
+            };
+
+
+
+            // --- 1. THE GAME CHANGER: AUTH LISTENER ---
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("User logged in:", user.email);
+                    loginSection.style.display = 'none';
+                    dashboardSection.classList.remove('d-none');
+
+                    fetchData();
+                    loadProducts(); // Load products when user is authenticated
+
+                } else {
+                    console.log("User logged out.");
+                    loginSection.style.display = 'flex';
+                    dashboardSection.classList.add('d-none');
+
+                    loadingOverlay.style.display = 'none';
+                }
+            });
+
+            // --- AUTH ACTIONS ---
+            window.handleLogin = async (e) => {
+                e.preventDefault();
+                if (!auth) {
+                    Swal.fire('Error', 'Firebase tidak terinisialisasi. Cek API Key di Netlify.', 'error');
+                    return;
+                }
+
+                const emailInput = document.getElementById('loginEmail');
+                const passInput = document.getElementById('loginPassword');
+                const emailErr = document.getElementById('emailError');
+                const passErr = document.getElementById('passwordError');
+                const btn = e.target.querySelector('button');
+
+                emailInput.classList.remove('is-invalid');
+                passInput.classList.remove('is-invalid');
+
+                const originalBtn = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking Access...';
+                btn.disabled = true;
+
+                const email = emailInput.value;
+                const password = passInput.value;
+
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+
+                    Swal.fire({ icon: 'success', title: 'Access Granted', text: 'Welcome back, Admin!', timer: 1500, showConfirmButton: false });
+
+                } catch (error) {
+                    console.error("Login Error:", error.code);
+
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Akses Ditolak!',
+                            text: 'Maaf, akun Anda tidak terdaftar dalam sistem kami. Anda tidak diizinkan mengakses dashboard ini.',
+                            footer: '<span class="text-muted">Pastikan anda mengisi dengan benar jika telah memeiliki akun.</span>',
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'Saya Mengerti'
+                        });
+                        emailInput.classList.add('is-invalid');
+                        emailErr.innerText = "Email tidak dikenali sistem.";
+                    }
+
+                    else if (error.code === 'auth/wrong-password') {
+                        passInput.classList.add('is-invalid');
+                        passErr.innerText = "Password salah! Coba ingat-ingat lagi.";
+
+                        btn.classList.add('animate__animated', 'animate__shakeX');
+                        setTimeout(() => btn.classList.remove('animate__animated', 'animate__shakeX'), 1000);
+                    }
+
+                    else if (error.code === 'auth/invalid-credential') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Login Gagal',
+                            text: 'Email atau Password salah, atau akun Anda belum didaftarkan oleh Owner.',
+                            confirmButtonColor: '#4f46e5'
+                        });
+                    }
+                    else {
+                        Swal.fire('Error', error.message, 'error');
+                    }
+
+                } finally {
+                    btn.innerHTML = originalBtn;
+                    btn.disabled = false;
+                }
+            };
+
+            // 2. HANDLER LUPA PASSWORD (POPUP MANUAL)
+            window.handleForgotPassword = () => {
+                Swal.fire({
+                    title: 'Lupa Password?',
+                    icon: 'warning',
+                    html: `
+                    <div class="text-start small text-muted">
+                        <p>Karena ini Private Admin Panel, prosedurnya manual ya bos:</p>
+                        <ol>
+                            <li>Buka <strong>Firebase Console</strong> lu.</li>
+                            <li>Masuk menu <strong>Authentication</strong>.</li>
+                            <li>Cari email admin ini, lalu klik <strong>Delete Account</strong>.</li>
+                            <li>Balik ke sini, lalu login aja pake password baru yang lu mau.</li>
+                        </ol>
+                        <div class="alert alert-success d-flex align-items-center mt-3" role="alert">
+                            <i class="fa-solid fa-database me-2 fs-4"></i>
+                            <div>
+                                <strong>Data Aman!</strong><br>
+                                Menghapus akun admin TIDAK AKAN menghapus database lisensi. Data tersimpan terpisah.
+                            </div>
+                        </div>
+                    </div>
+                `,
+                    confirmButtonText: 'Oke, Paham',
+                    confirmButtonColor: '#4f46e5'
+                });
+            };
+
+            window.handleLogout = () => {
+                Swal.fire({
+                    title: 'Sign Out?',
+                    text: "Yakin mau ninggalin dashboard ini, Nu?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#cbd5e1',
+                    confirmButtonText: 'Ya, Logout',
+                    cancelButtonText: 'Batal'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Signing out...',
+                            html: 'Membersihkan sesi dan token...',
+                            timer: 1500,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        }).then(async () => {
+                            await signOut(auth);
+
+                        });
+                    }
+                });
+            };
+
+            // --- API HELPER ---
+            const callApi = async (method, body = null, queryString = '') => {
+                if (!auth.currentUser) throw new Error("Not logged in");
+                const token = await auth.currentUser.getIdToken();
+
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                };
+
+                if (body) options.body = JSON.stringify(body);
+
+                const res = await fetch(`${API_URL}${queryString}`, options);
+                if (!res.ok) {
+                    const text = await res.text();
+                    let errMsg = `HTTP Error ${res.status}`;
+                    try {
+                        const json = JSON.parse(text);
+                        if (json.error) errMsg = json.error;
+                    } catch (e) { }
+                    throw new Error(errMsg);
+                }
+                return res.json();
+            };
+
+            // --- DATA FETCHING ---
+            const fetchData = () => {
+                const tbody = document.getElementById('licenseTableBody');
+                const emptyState = document.getElementById('emptyState');
+
+                // Tampilkan loading state awal saja
+                if (licensesData.length === 0) {
+                    tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="spinner-border text-primary mb-2" role="status" style="width: 2rem; height: 2rem;"></div>
+                            <p class="text-muted small fw-bold animate-pulse mb-0">Mengambil Database...</p>
+                        </td>
+                    </tr>
+                `;
+                }
+
+                const licensesRef = ref(db, 'licenses');
+
+                onValue(licensesRef, (snapshot) => {
+                    const data = snapshot.val();
+
+                    if (data) {
+                        const dataArray = Object.keys(data).map(k => ({
+                            id: k,
+                            key: data[k].key || k,
+                            ...data[k]
+                        }));
+
+                        processData(dataArray);
+
+                    } else {
+                        processData([]);
+                    }
+                }, (error) => {
+                    console.error("Realtime Error:", error);
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Koneksi Terputus: ${error.message}</td></tr>`;
+                });
+            };
+
+            const processData = (dataArray) => {
+                licensesData = dataArray;
+                licensesData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                renderTable(licensesData);
+                updateStats();
+            };
+
+            const generateRandomKey = () => {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = 'PRIMA';
+                for (let i = 0; i < 3; i++) {
+                    result += '-';
+                    for (let j = 0; j < 4; j++) {
+                        result += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                }
+                return result;
+            };
+
+            // --- HELPER 2: CEK DATABASE (SATPAM) ---
+            const isKeyExists = async (key) => {
+                const snapshot = await get(query(ref(db, 'licenses'), orderByChild('key'), equalTo(key)));
+                return snapshot.exists();
+            };
+            window.handleCreateSubmit = async (e) => {
+                e.preventDefault();
+
+                const btn = e.target.querySelector('button[type="submit"]');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+                btn.disabled = true;
+
+                try {
+                    const payCategory = document.getElementById('createPaymentCategory').value;
+                    const payProvider = document.getElementById('createPaymentProvider').value;
+
+                    let finalPaymentMethod = payCategory;
+                    if (payCategory === 'Transfer Bank' && payProvider) {
+                        finalPaymentMethod = `Transfer Bank - ${payProvider}`;
+                    } else if (payCategory === 'e-Wallet' && payProvider) {
+                        finalPaymentMethod = `e-Wallet (${payProvider})`;
+                    }
+
+                    const selectedAppId = document.getElementById('createAppId').value;
+                    const type = document.getElementById('createType').value.toLowerCase();
+
+                    // Get price from selected app
+                    let price = 0;
+                    if (selectedAppId && productsData[selectedAppId] && productsData[selectedAppId].price) {
+                        price = productsData[selectedAppId].price[type] || 0;
+                    }
+
+                    const payload = {
+                        appId: selectedAppId,
+                        name: document.getElementById('createName').value,
+                        email: document.getElementById('createEmail').value,
+                        type: type,
+                        expiryDate: document.getElementById('createExpiry').value,
+                        sendEmailCheck: document.getElementById('sendEmailCheck').checked,
+                        price: price,
+                        package: (selectedAppId && productsData[selectedAppId]) ? productsData[selectedAppId].package : '',
+                        paymentMethod: finalPaymentMethod,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    const response = await callApi('POST', payload);
+                    const generatedKey = response.data ? response.data.key : 'Unknown';
+
+                    Swal.fire({
+                        title: 'Success',
+                        text: `License created! Key: ${generatedKey}`,
+                        icon: 'success'
+                    });
+
+                    bootstrap.Modal.getInstance(document.getElementById('createModal')).hide();
+                    document.getElementById('createForm').reset();
+
+                } catch (error) {
+                    console.error(error);
+                    Swal.fire('Error', error.message, 'error');
+                } finally {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            };
+
+            window.handleEditSubmit = async (e) => {
+                e.preventDefault();
+                const payload = {
+                    id: currentEditId,
+                    status: document.getElementById('editStatus').value.toLowerCase(),
+                    expiryDate: document.getElementById('editExpiry').value,
+                    deviceId: document.getElementById('editDeviceId').value
+                };
+
+                try {
+                    await callApi('PUT', payload);
+                    bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+                    Swal.fire('Updated', 'Data saved.', 'success');
+                } catch (error) {
+                    Swal.fire('Error', error.message, 'error');
+                }
+            };
+
+            window.deleteFunc = (id) => {
+                Swal.fire({
+                    title: 'Delete License?', text: "Irreversible action!", icon: 'warning',
+                    showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Yes, Delete it!'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            await callApi('DELETE', null, `?id=${id}`);
+                            Swal.fire('Deleted!', 'License removed.', 'success');
+                        } catch (e) {
+                            Swal.fire('Error', e.message, 'error');
+                        }
+                    }
+                });
+            };
+
+
+            // --- HELPERS ---
+            const getEmailTemplate = (data) => {
+                return `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        .hover-btn:hover { background-color: #4338ca !important; }
+                    </style>
+                </head>
+                <body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td align="center" style="padding: 40px 0;">
+                                
+                                <table role="presentation" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden;">
+                                    
+                                    <tr>
+                                        <td style="background-color: #4f46e5; padding: 30px; text-align: center;">
+                                            <img src="https://i.imgur.com/BZ1xLO3.png" alt="PrimaDev Logo" width="120" style="display: block; margin: 0 auto 15px auto; border: 0;">
+                                            
+                                            <h1 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 1px;">SPBU Struk</h1>
+                                            <p style="color: #e0e7ff; margin: 5px 0 0 0; font-size: 14px;">Official Lisensi</p>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td style="padding: 40px 30px;">
+                                            <p style="color: #374151; font-size: 16px; margin-bottom: 20px;">
+                                                Hi <strong>${data.name}</strong>,
+                                            </p>
+                                            <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
+                                                Terima kasih telah membeli Lisensi untuk <strong>SPBU Struk</strong>. Pembayaran anda telah dikonfirmasi. Dibawah ini adalah Lisensi penuh anda, silahkan gunakan untuk mengaktifkan aplikasi.
+                                            </p>
+
+                                            <div style="background-color: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 30px;">
+                                                <p style="color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px 0; font-weight: bold;">License Key</p>
+                                                <code style="font-family: 'Courier New', Courier, monospace; font-size: 24px; font-weight: bold; color: #4f46e5; letter-spacing: 2px; display: block;">${data.key}</code>
+                                            </div>
+
+                                            <table width="100%" style="margin-bottom: 30px;">
+                                                <tr>
+                                                    <td width="50%" style="padding-right: 10px;">
+                                                        <div style="background-color: #eff6ff; padding: 15px; border-radius: 8px;">
+                                                            <p style="margin: 0; color: #1e40af; font-size: 11px; font-weight: bold; text-transform: uppercase;">Plan Type</p>
+                                                            <p style="margin: 5px 0 0 0; color: #1e3a8a; font-weight: bold; font-size: 14px;">${data.type.toUpperCase()}</p>
+                                                        </div>
+                                                    </td>
+                                                    <td width="50%" style="padding-left: 10px;">
+                                                        <div style="background-color: #f0fdf4; padding: 15px; border-radius: 8px;">
+                                                            <p style="margin: 0; color: #166534; font-size: 11px; font-weight: bold; text-transform: uppercase;">Valid Until</p>
+                                                            <p style="margin: 5px 0 0 0; color: #14532d; font-weight: bold; font-size: 14px;">${data.expiryDate}</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                            <div style="text-align: center; margin-top: 20px;">
+                                                <a href="https://primadev.netlify.app/.netlify/functions/invoice?id=${data.id}" target="_blank" style="display: inline-block; background-color: #f1f5f9; color: #475569; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: bold; border: 1px solid #cbd5e1;">
+                                                    <i class="fa-solid fa-file-arrow-down"></i> Unduh Invoice Resmi
+                                                </a>
+                                            </div>
+
+                                            <p style="text-align: center; color: #f73f23; font-size: 12px; margin-top: 10px;">
+                                                * Simpan baik-baik lisensi ini dan jangan bagikan ke siapapun.
+                                            </p>
+                                            
+                                            <p style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 30px;">
+                                                Contact Me:
+                                                wisnu.bussines99@gmail.com
+                                            </p>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+                                            <p style="color: #9ca3af; font-size: 11px; margin: 0;">
+                                                &copy; ${new Date().getFullYear()} PrimaDev Digital Technology All rights reserved.<br>
+                                                Jakarta, Indonesia
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+                </html>
+            `;
+            };
+
+            const startRealtimeClock = () => {
+                const updateTime = () => {
+                    const clockEl = document.getElementById('clock');
+                    if (!clockEl) return;
+
+                    const now = new Date();
+
+                    const timeString = now.toLocaleTimeString('id-ID', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+
+                    clockEl.innerHTML = timeString.replace(/:/g, '<span class="text-primary blink">:</span>');
+                };
+
+                updateTime();
+                setInterval(updateTime, 1000);
+            };
+
+            document.addEventListener("DOMContentLoaded", () => {
+                flatpickr("#createExpiry", {
+                    dateFormat: "Y-m-d",
+                    minDate: "today",
+                    animate: true,
+                    static: true
+                });
+
+                flatpickr("#editExpiry", {
+                    dateFormat: "Y-m-d",
+                    animate: true,
+                    static: true
+                });
+            });
+
+            startRealtimeClock();
+
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(reg => console.log('Service Worker: Ready!', reg))
+                        .catch(err => console.log('Service Worker: Gagal!', err));
+                });
+            }
+
+            const pwaToastEl = document.getElementById('pwaToast');
+            const btnPwaInstall = document.getElementById('btnPwaInstall');
+            const pwaText = document.getElementById('pwaText');
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+            if (isStandalone) {
+                console.log("Aplikasi sedang berjalan dalam mode App. Toast disembunyikan.");
+            } else {
+
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('/sw.js');
+                }
+
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+
+                    const toast = new bootstrap.Toast(pwaToastEl);
+                    toast.show();
+                });
+
+                btnPwaInstall.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        console.log(`User memilih: ${outcome}`);
+                        deferredPrompt = null;
+
+                        const toastInstance = bootstrap.Toast.getInstance(pwaToastEl);
+                        toastInstance.hide();
+                    }
+                });
+
+                const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+
+                if (isIos) {
+                    pwaText.innerHTML = "Tap tombol <strong>Share</strong> <i class='fa-solid fa-share-from-square'></i> lalu pilih <strong>'Add to Home Screen'</strong> <i class='fa-regular fa-square-plus'></i>";
+                    btnPwaInstall.style.display = 'none';
+
+                    setTimeout(() => {
+                        const toast = new bootstrap.Toast(pwaToastEl);
+                        toast.show();
+                    }, 3000);
+                }
+            }
+
+            window.openEditFunc = (id) => {
+                const item = licensesData.find(x => x.id === id);
+                if (!item) return;
+                currentEditId = id;
+
+                const displayEditKeyEl = document.getElementById('displayEditKey');
+                const editStatusEl = document.getElementById('editStatus');
+                const editExpiryEl = document.getElementById('editExpiry');
+                const editDeviceIdEl = document.getElementById('editDeviceId');
+                const editModalEl = document.getElementById('editModal');
+
+                if (!displayEditKeyEl || !editStatusEl || !editExpiryEl || !editDeviceIdEl || !editModalEl) {
+                    console.error('Edit modal elements not found');
+                    return;
+                }
+
+                displayEditKeyEl.innerText = item.key;
+                editStatusEl.value = (item.status || 'active').charAt(0).toUpperCase() + (item.status || 'active').slice(1);
+                editExpiryEl.value = item.expiryDate;
+                editDeviceIdEl.value = item.deviceId || '';
+
+                new bootstrap.Modal(editModalEl).show();
+            };
+
+            window.generateRandomKey = () => { const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; const seg = () => Array(4).fill(0).map(() => chars.charAt(Math.floor(Math.random() * chars.length))).join(''); document.getElementById('createKey').value = `PRIMA-${seg()}-${seg()}-${seg()}`; };
+            window.resetDeviceLock = () => { document.getElementById('editDeviceId').value = ''; };
+            const updateStats = () => { document.getElementById('totalLicenses').innerText = licensesData.length; const activeCount = licensesData.filter(i => (i.status || '').toLowerCase() === 'active').length; document.getElementById('activeLicenses').innerText = activeCount; document.getElementById('expiredLicenses').innerText = licensesData.length - activeCount; };
+
+            // --- 2. FUNGSI UPDATE HARGA & EXPIRY OTOMATIS ---
+            window.updatePriceAndExpiry = () => {
+                const appSelect = document.getElementById('createAppId');
+                const typeSelect = document.getElementById('createType');
+                const type = typeSelect.value.toLowerCase();
+                const priceInput = document.getElementById('createPrice');
+
+                // Get selected app
+                const selectedAppId = appSelect.value;
+
+                // Update price based on selected app
+                if (selectedAppId && productsData[selectedAppId]) {
+                    const appPricing = productsData[selectedAppId].price;
+                    if (appPricing && appPricing[type]) {
+                        priceInput.value = appPricing[type].toLocaleString('id-ID');
+                        priceInput.dataset.value = appPricing[type];
+                    }
+                } else {
+                    // Default fallback pricing if no app selected
+                    const PRICING = {
+                        monthly: 80000,
+                        yearly: 860000,
+                        lifetime: 1599000
+                    };
+                    if (PRICING[type]) {
+                        priceInput.value = PRICING[type].toLocaleString('id-ID');
+                        priceInput.dataset.value = PRICING[type];
+                    }
+                }
+
+                const dateInput = document.getElementById('createExpiry');
+                const today = new Date();
+
+                if (type === 'monthly') today.setMonth(today.getMonth() + 1);
+                else if (type === 'yearly') today.setFullYear(today.getFullYear() + 1);
+                else today.setFullYear(today.getFullYear() + 100);
+
+                dateInput.value = today.toISOString().split('T')[0];
+
+                if (dateInput._flatpickr) {
+                    dateInput._flatpickr.setDate(today);
+                }
+            };
+
+            window.openCreateModal = () => {
+                document.getElementById('createForm').reset();
+                window.updatePriceAndExpiry();
+                new bootstrap.Modal(document.getElementById('createModal')).show();
+            };
+
+            // --- LOGIKA TAMPILAN METODE BAYAR ---
+            window.togglePaymentProvider = () => {
+                const category = document.getElementById('createPaymentCategory').value;
+                const container = document.getElementById('providerContainer');
+                const input = document.getElementById('createPaymentProvider');
+                const label = document.getElementById('providerLabel');
+
+                // Reset dulu
+                container.classList.add('d-none');
+                input.value = '';
+                input.required = false;
+
+                if (category === 'Transfer Bank') {
+                    container.classList.remove('d-none');
+                    label.innerText = 'Nama Bank (Cth: Mandiri)';
+                    input.placeholder = 'Mandiri';
+                    input.required = true;
+                }
+                else if (category === 'e-Wallet') {
+                    container.classList.remove('d-none');
+                    label.innerText = 'Nama Wallet (Cth: Gopay)';
+                    input.placeholder = 'Gopay';
+                    input.required = true;
+                }
+            };
+
+            window.renderTable = (data = licensesData) => {
+                const tbody = document.getElementById('licenseTableBody');
+                const emptyState = document.getElementById('emptyState');
+                const paginationControls = document.getElementById('paginationControls');
+                const searchInput = document.getElementById('searchInput');
+
+                // --- LOGIKA EMPTY STATE ---
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '';
+                    emptyState.classList.remove('d-none');
+                    paginationControls.classList.add('d-none');
+
+                    if (searchInput && searchInput.value.trim() !== '') {
+
+                        emptyState.innerHTML = `
+                        <div class="mb-3">
+                            <i class="fa-solid fa-magnifying-glass-location text-warning opacity-50" style="font-size: 4rem;"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark">Data Tidak Ditemukan</h5>
+                        <p class="text-muted small">
+                            Tidak ada lisensi dengan kata kunci "<strong>${searchInput.value}</strong>".<br>
+                            Coba cari pakai Key, Nama, atau Email lain.
+                        </p>
+                    `;
+                    } else {
+                        emptyState.innerHTML = `
+                        <div class="mb-3">
+                            <i class="fa-solid fa-folder-open text-muted opacity-25" style="font-size: 4rem;"></i>
+                        </div>
+                        <h5 class="fw-bold text-muted">Data Kosong Melompong</h5>
+                        <p class="text-muted small">Belum ada korban... eh, customer.</p>
+                    `;
+                    }
+                    return;
+                }
+
+                emptyState.classList.add('d-none');
+                paginationControls.classList.remove('d-none');
+
+                const totalPages = Math.ceil(data.length / itemsPerPage);
+                if (currentPage < 1) currentPage = 1;
+                if (currentPage > totalPages) currentPage = totalPages;
+
+                const start = (currentPage - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                const paginatedItems = data.slice(start, end);
+
+                tbody.innerHTML = '';
+
+                paginatedItems.forEach(item => {
+                    const type = (item.type || '').toLowerCase();
+                    let typeBadge = type === 'lifetime' ? '<span class="badge-custom badge-gold">Lifetime</span>' : type === 'yearly' ? '<span class="badge-custom badge-blue">Yearly</span>' : '<span class="badge-custom badge-green">Monthly</span>';
+
+                    const status = (item.status || '').toLowerCase();
+                    let statusClass = status === 'active' ? 'badge-status-active' : status === 'banned' ? 'badge-status-banned' : 'badge-status-expired';
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                    <td data-label="License Key">
+                        <div class="license-key" style="font-size: 0.9rem;">${item.key}</div>
+                    </td>
+                    <td data-label="User Info">
+                        <div class="fw-bold text-dark text-truncate" style="max-width: 150px;">${item.name || '-'}</div>
+                        <div class="small text-muted text-truncate" style="max-width: 150px;">${item.email || '-'}</div>
+                    </td>
+                    <td data-label="Type">${typeBadge}</td>
+                    <td data-label="Status"><span class="badge-custom ${statusClass}">${status}</span></td>
+                    <td data-label="Device ID"><span class="text-muted small">${item.deviceId ? item.deviceId.substring(0, 8) + '...' : 'None'}</span></td>
+                    <td data-label="Expiry" class="small fw-bold text-secondary">${item.expiryDate || '-'}</td>
+                    <td data-label="Actions" class="text-end">
+                        <div class="d-flex justify-content-end gap-1">
+                            <a href="/.netlify/functions/invoice?id=${item.id}" target="_blank" class="btn btn-action btn-info text-white" title="Cek Invoice">
+                                <i class="fa-solid fa-file-invoice"></i>
+                            </a>
+
+                            <button class="btn btn-action btn-edit" onclick="openEditFunc('${item.id}')"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-action btn-delete" onclick="deleteFunc('${item.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>
+                `;
+                    tbody.appendChild(tr);
+                });
+
+                document.getElementById('currentPageDisplay').innerText = currentPage;
+                document.getElementById('totalPagesDisplay').innerText = totalPages;
+
+                document.getElementById('btnPrev').disabled = (currentPage === 1);
+                document.getElementById('btnNext').disabled = (currentPage === totalPages);
+            };
+
+            // --- HELPER PAGINATION ---
+            window.changePage = (direction) => {
+                currentPage += direction;
+                renderTable();
+            };
+
+            window.changeRowsPerPage = () => {
+                const select = document.getElementById('rowsPerPage');
+                itemsPerPage = parseInt(select.value);
+                currentPage = 1;
+                renderTable();
+            };
+
+            // --- GLOBAL SEARCH LOGIC ---
+            const setupSearch = () => {
+                const searchInput = document.getElementById('searchInput');
+
+                searchInput.addEventListener('input', (e) => {
+                    const keyword = e.target.value.toLowerCase().trim();
+
+                    if (keyword === '') {
+                        currentPage = 1;
+                        renderTable(licensesData);
+                        return;
+                    }
+
+                    const filteredData = licensesData.filter(item => {
+                        const name = (item.name || '').toLowerCase();
+                        const email = (item.email || '').toLowerCase();
+                        const key = (item.key || '').toLowerCase();
+
+                        return name.includes(keyword) || email.includes(keyword) || key.includes(keyword);
+                    });
+
+                    currentPage = 1;
+                    renderTable(filteredData);
+                });
+            };
+
+            setupSearch();
+
+            // --- TAB SWITCHING ---
+            // --- TAB SWITCHING WITH ANIMATION ---
+            document.querySelectorAll('#mainTabs button[data-section]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // Update Active State
+                    document.querySelectorAll('#mainTabs button').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    // Animation Reset Logic
+                    const targetKey = e.target.dataset.section;
+                    let targetSectionId = '';
+
+                    document.querySelectorAll('.dashboard-section').forEach(s => {
+                        s.classList.add('d-none');
+                        s.classList.remove('animate-tab-content'); // Reset animation class
+                    });
+
+                    if (targetKey === 'licenses') {
+                        targetSectionId = 'licensesSection';
+                    } else if (targetKey === 'apps') {
+                        targetSectionId = 'appsSection';
+                        renderAppTable();
+                    }
+
+                    const activeSection = document.getElementById(targetSectionId);
+                    if (activeSection) {
+                        activeSection.classList.remove('d-none');
+                        // Trigger reflow to restart animation
+                        void activeSection.offsetWidth;
+                        activeSection.classList.add('animate-tab-content');
+                    }
+                });
+            });
+
+            // --- IMPLEMENTASI LENGKAP HANDLE APP SUBMIT (Re-writing to use imported SET) ---
+            window.handleAppSubmit = async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('appSubmitBtn');
+                const originalText = btn.innerText;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+                try {
+                    const id = document.getElementById('appId').value.trim();
+                    const name = document.getElementById('appName').value.trim();
+
+                    if (!id) throw new Error("App ID is required");
+
+                    const productData = {
+                        name: name,
+                        package: document.getElementById('appPackage').value.trim(),
+                        description: document.getElementById('appDescription').value.trim() || "Official Application",
+                        icon: "fa-box",
+                        price: {
+                            monthly: parseInt(document.getElementById('priceMonthly').value) || 0,
+                            yearly: parseInt(document.getElementById('priceYearly').value) || 0,
+                            lifetime: parseInt(document.getElementById('priceLifetime').value) || 0,
+                        },
+                        updatedAt: Date.now()
+                    };
+
+                    await set(ref(db, 'products/' + id), productData);
+
+                    bootstrap.Modal.getInstance(document.getElementById('appModal')).hide();
+                    Swal.fire('Success', 'Application saved!', 'success');
+
+                } catch (error) {
+                    console.error(error);
+                    Swal.fire('Error', error.message, 'error');
+                } finally {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            };
+
+            window.deleteAppFunc = (id) => {
+                Swal.fire({
+                    title: 'Delete App?',
+                    text: "Produk akan dihapus permanen dari database.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    confirmButtonText: 'Yes, Delete it!'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            await remove(ref(db, 'products/' + id));
+                            Swal.fire('Deleted!', 'App removed.', 'success');
+                        } catch (e) {
+                            Swal.fire('Error', e.message, 'error');
+                        }
+                    }
+                });
+            };
+
+            // --- MODERN DROPDOWN LOGIC ---
+            window.toggleCustomDropdown = (id) => {
+                const current = document.getElementById(id);
+                // Close others
+                document.querySelectorAll('.custom-dropdown').forEach(el => {
+                    if (el.id !== id) el.classList.remove('active');
+                });
+                current.classList.toggle('active');
+            };
+
+            window.selectOption = (dropdownId, value, label, sub) => {
+                const dropdown = document.getElementById(dropdownId);
+                const input = dropdown.querySelector('input[type="hidden"]');
+                const displayLabel = dropdown.querySelector('.display-label');
+                const displaySub = dropdown.querySelector('.display-sub');
+
+                // Update Value
+                input.value = value;
+                if (displayLabel) displayLabel.innerText = label;
+                if (displaySub) displaySub.innerText = sub;
+
+                // Visual Selection
+                dropdown.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+                // Highlight matching option based on label text or other attribute
+                dropdown.querySelectorAll('.option-item').forEach(el => {
+                    const titleEl = el.querySelector('.option-title');
+                    if (titleEl && titleEl.innerText === label) el.classList.add('selected');
+                });
+
+                dropdown.classList.remove('active');
+
+                dropdown.classList.remove('active');
+
+                // Trigger Side Effects
+                if (dropdownId === 'dropdownType' || dropdownId === 'dropdownAppId') updatePriceAndExpiry();
+                if (dropdownId === 'dropdownPayment') togglePaymentProvider();
+            };
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.custom-dropdown')) {
+                    document.querySelectorAll('.custom-dropdown').forEach(el => el.classList.remove('active'));
+                }
+            });
+
+            // --- INIT FLATPICKR ---
+            document.addEventListener('DOMContentLoaded', () => {
+                flatpickr("#createExpiry", {
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                    altInput: true,
+                    altFormat: "j F Y, H:i",
+                    minDate: "today",
+                    disableMobile: "true" // Force custom UI even on mobile
+                });
+
+                flatpickr("#editExpiry", {
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                    altInput: true,
+                    altFormat: "j F Y, H:i",
+                    minDate: "today",
+                    disableMobile: "true"
+                });
+            });
+
+            window.fetchData = fetchData;
+
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+.env
+strukmaker-3327d110-firebase-adminsdk-fbsvc-28cd459e84.json
+dist/
+.vscode/
+.idea/
+3d.png
+# Local Netlify folder
+.netlify

@@ -1,0 +1,13 @@
+{
+  "name": "primadev-license-backend",
+  "version": "1.0.0",
+  "description": "Backend sakral punya Wisnu",
+  "main": "index.js",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.93.3",
+    "firebase-admin": "^12.7.0",
+    "midtrans-client": "^1.4.3",
+    "node-fetch": "^2.7.0",
+    "pdfkit": "^0.12.3"
+  }
+}
