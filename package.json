@@ -1,7 +1,7 @@
 {
-  "name": "primadev-license-backend",
+  "name": "primadev-backend",
   "version": "1.0.0",
-  "description": "Backend sakral punya Wisnu",
+  "description": "Backend Netlify",
   "main": "index.js",
   "dependencies": {
     "@supabase/supabase-js": "^2.93.3",

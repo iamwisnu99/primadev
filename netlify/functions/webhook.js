@@ -42,10 +42,14 @@ if (!admin.apps.length) {
         privateKey: raw.private_key.replace(/\\n/g, '\n') // Sanitasi juga
       };
     }
-    // CARA 3: File Lokal (Untuk Localhost)
-    else {
-      console.log("[INIT] Mencari File JSON Lokal...");
-      serviceAccount = require('../../strukmaker-3327d110-firebase-adminsdk-fbsvc-28cd459e84.json');
+    // CARA 3: File Lokal (Hanya di Localhost)
+    else if (!process.env.NETLIFY) {
+      try {
+        const localKey = '../../strukmaker-3327d110-firebase-adminsdk-fbsvc-28cd459e84.json';
+        serviceAccount = require(localKey);
+      } catch (e) {
+        console.log("[INIT] File JSON lokal tidak ditemukan.");
+      }
     }
 
   } catch (err) {
