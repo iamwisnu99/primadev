@@ -91,7 +91,7 @@ Proyek ini dilindungi hak cipta oleh **PT. PrimaDev Digital Technology**. Penggu
 
 - **Owner**: Wisnu
 - **Email**: [wisnu.bussines99@gmail.com](mailto:wisnu.bussines99@gmail.com)
-- **Website**: [apps-primadev.netlify.app](https://apps-apps-primadev.netlify.app)
+- **Website**: [apps-primadev.netlify.app](https://apps-primadev.netlify.app)
 
 ---
 *I Love You, No.*
