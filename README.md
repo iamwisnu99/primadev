@@ -1,6 +1,6 @@
 # 🚀 PrimaDev Digital Technology
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/your-netlify-id/deploy-status)](https://primadev.netlify.app)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/88f0f9b0-35e8-4888-a3e5-195c2175c6be/deploy-status)](https://app.netlify.com/projects/apps-primadev/deploys)
 [![Tech](https://img.shields.io/badge/Tech-VanillaJS%20%7C%20Bootstrap%205-blueviolet)](https://primadev.netlify.app)
 [![Backend](https://img.shields.io/badge/Backend-Netlify%20Functions-00C7B7)](https://www.netlify.com/products/functions/)
 
