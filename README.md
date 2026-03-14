@@ -1,14 +1,14 @@
-# 🚀 PrimaDev Digital Technology
+# PrimaDev Digital Technology
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/88f0f9b0-35e8-4888-a3e5-195c2175c6be/deploy-status)](https://app.netlify.com/projects/apps-primadev/deploys)
-[![Tech](https://img.shields.io/badge/Tech-VanillaJS%20%7C%20Bootstrap%205-blueviolet)](https://primadev.netlify.app)
+[![Tech](https://img.shields.io/badge/Tech-VanillaJS%20%7C%20Bootstrap%205-blueviolet)](https://apps-apps-primadev.netlify.app)
 [![Backend](https://img.shields.io/badge/Backend-Netlify%20Functions-00C7B7)](https://www.netlify.com/products/functions/)
 
 **PrimaDev Digital Technology** adalah platform solusi digital terpadu yang dirancang untuk mempermudah operasional bisnis melalui software premium yang aman, legal, dan terefisiensi. Kami menggabungkan keahlian manusia dengan teknologi kecerdasan buatan untuk menghadirkan produk digital berkualitas tinggi.
 
 ---
 
-## 🌟 Fitur Utama
+## Fitur Utama
 
 - **Automated Storefront**: Pembelian lisensi software secara otomatis dengan aktivasi instan 24/7.
 - **Admin Dashboard Sakral**: Panel kontrol komprehensif untuk manajemen lisensi, aplikasi, dan pemantauan transaksi.
@@ -17,7 +17,7 @@
 - **Customer Service Panel**: Sistem komunikasi terintegrasi untuk membantu kendala pengguna secara cepat.
 - **Responsive Design**: Tampilan modern yang dioptimalkan untuk berbagai perangkat (Desktop, Tablet, Mobile).
 
-## 🛠️ Stack Teknologi
+## Stack Teknologi
 
 | Komponen | Teknologi |
 |----------|-----------|
@@ -42,11 +42,11 @@
 └── package.json        # Dependensi Project
 ```
 
-## 🚀 Instalasi Lokal
+## Instalasi Lokal
 
 1. **Clone repository ini:**
    ```bash
-   git clone https://github.com/username/Primadev-App.git
+   git clone https://github.com/iamwisnu99/Primadev-App.git
    ```
 
 2. **Instal dependensi:**
@@ -83,15 +83,16 @@
 
 ---
 
-## 📄 Lisensi
+## Lisensi
 
 Proyek ini dilindungi hak cipta oleh **PT. PrimaDev Digital Technology**. Penggunaan source code ini untuk tujuan komersial tanpa izin tertulis adalah dilarang. Lihat file [LICENSE](./LICENSE) untuk detail lebih lanjut.
 
-## 📞 Kontak
+## Kontak
 
 - **Owner**: Wisnu
 - **Email**: [wisnu.bussines99@gmail.com](mailto:wisnu.bussines99@gmail.com)
-- **Website**: [primadev.netlify.app](https://primadev.netlify.app)
+- **Website**: [apps-primadev.netlify.app](https://apps-apps-primadev.netlify.app)
 
 ---
-*Dibuat dengan ❤️ oleh Tim PrimaDev Digital Technology.*
+*I Love You, No.*
+*We Love You. Yes.*

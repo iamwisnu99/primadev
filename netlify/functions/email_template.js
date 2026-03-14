@@ -2,10 +2,10 @@
 
 const getPremiumTemplate = (data) => {
     // URL Website kamu (Ganti kalau beda domain)
-    const BASE_URL = "https://primadev.netlify.app";
+    const BASE_URL = "https://apps-primadev.netlify.app";
     const LOGO_URL = "https://i.imgur.com/BZ1xLO3.png";
-    const HOME_URL = "https://primadev.netlify.app/home";
-    const LEGAL_URL = "https://primadev.netlify.app/legal#privacy";
+    const HOME_URL = "https://apps-primadev.netlify.app/home";
+    const LEGAL_URL = "https://apps-primadev.netlify.app/legal#privacy";
 
     return `
     <!DOCTYPE html>
@@ -93,7 +93,7 @@ const getPremiumTemplate = (data) => {
 
 
 const getRenewalTemplate = (data) => {
-    const BASE_URL = "https://primadev.netlify.app";
+    const BASE_URL = "https://apps-primadev.netlify.app";
     const LOGO_URL = "https://i.imgur.com/BZ1xLO3.png";
 
     return `
