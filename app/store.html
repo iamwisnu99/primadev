@@ -1216,9 +1216,9 @@
                                         <input class="form-check-input" type="checkbox" id="termsCheck">
                                         <label class="form-check-label text-muted" for="termsCheck"
                                             style="line-height: 1.5;">
-                                            Dengan melanjutkan transaksi, Anda menyetujui <a href="legal"
+                                            Dengan melanjutkan transaksi, Anda menyetujui <a href="/app/legal"
                                                 target="_blank" class="text-primary text-decoration-none fw-bold">Syarat
-                                                & Ketentuan</a> dan <a href="legal" target="_blank"
+                                                & Ketentuan</a> dan <a href="/app/legal" target="_blank"
                                                 class="text-primary text-decoration-none fw-bold">Kebijakan Privasi</a>
                                             yang berlaku.
                                         </label>
@@ -1975,7 +1975,7 @@
 
                             setTimeout(() => {
                                 localStorage.setItem('last_order_status', 'success');
-                                window.location.href = result.redirect_url || "/thankyou";
+                                window.location.href = result.redirect_url || "/app/thankyou";
                             }, 5000);
                         } else {
                             // Update badge with current status (e.g. pending)
@@ -2064,7 +2064,7 @@
                 html: `
                     <p class="mb-4 text-muted">Tim kami siap membantu jika ada kendala pembayaran atau aktivasi lisensi.</p>
                     <div class="d-grid gap-2">
-                        <a href="https://apps-primadev.netlify.app/support" target="_blank" class="btn btn-success fw-bold py-2">
+                        <a href="https://apps-primadev.netlify.app/app/support" target="_blank" class="btn btn-success fw-bold py-2">
                             <i class="fa-solid fa-headset me-2 fa-lg"></i> Hubungi CS
                         </a>
                         <a href="mailto:wisnu.bussines99@gmail.com" class="btn btn-outline-primary fw-bold py-2">
