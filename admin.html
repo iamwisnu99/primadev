@@ -111,7 +111,6 @@
                 display: flex;
                 width: 60%;
                 height: 100vh;
-                background: #1d4ed8;
                 background: linear-gradient(90deg, rgb(14, 79, 219) 100%, rgba(176, 204, 212, 1) 52%, rgb(14, 79, 219) 100%);
                 background-size: cover;
                 background-position: center;
@@ -687,7 +686,7 @@
         <div class="login-container">
             <div class="mb-4">
                 <div class="d-flex align-items-center mb-4">
-                    <img src="https://i.imgur.com/BZ1xLO3.png" alt="Logo" width="301" height="98" class="rounded me-2">
+                    <img src="/public/logo.png" alt="Logo" height="100" class="me-2">
                 </div>
 
                 <h2 class="fw-bold text-dark display-6">Welcome Back!</h2>
@@ -762,9 +761,7 @@
         <nav class="navbar navbar-expand-lg sticky-top">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="#">
-                    <img src="https://i.imgur.com/kT6aLBx.png" alt="Logo" width="40" height="40" class="me-2 rounded">
-
-                    <span>PrimaDev</span>
+                    <img src="/public/logo.png" alt="Logo" height="40" class="me-2">
                 </a>
                 <button class="btn btn-light btn-sm text-danger fw-bold ms-auto" onclick="handleLogout()">
                     <i class="fa-solid fa-power-off me-2"></i>Logout
@@ -866,7 +863,8 @@
                             </div>
 
                             <!-- Modern App Filter -->
-                            <div class="custom-dropdown filter-dropdown" id="dropdownFilterApp" style="width: auto; min-width: 200px;">
+                            <div class="custom-dropdown filter-dropdown" id="dropdownFilterApp"
+                                style="width: auto; min-width: 200px;">
                                 <input type="hidden" id="filterAppId" value="all">
                                 <div class="dropdown-trigger" onclick="toggleCustomDropdown('dropdownFilterApp')">
                                     <div class="d-flex align-items-center overflow-hidden">
@@ -1491,7 +1489,7 @@
                 if (!optionsContainer) return;
 
                 optionsContainer.innerHTML = '';
-                
+
                 // Add "All Apps" option
                 const allDiv = document.createElement('div');
                 allDiv.className = 'option-item selected';

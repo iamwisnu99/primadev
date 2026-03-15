@@ -66,7 +66,7 @@
         .hero-title {
             font-weight: 800;
             letter-spacing: -1px;
-            background: linear-gradient(135deg, #1e293b 0%, #4f46e5 100%);
+            background: linear-gradient(135deg, #1f6cdf 0%, #1865ca 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -305,25 +305,7 @@
             transform: rotate(180deg);
         }
 
-        /* --- CARD INPUT STYLING --- */
-        .card-input-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
 
-        .card-input-container input {
-            padding-right: 50px !important;
-        }
-
-        .card-type-icon {
-            position: absolute;
-            right: 15px;
-            font-size: 1.6rem;
-            color: #cbd5e1;
-            pointer-events: none;
-            transition: color 0.3s;
-        }
 
         /* --- PAYMENT MODAL / OVERLAY --- */
         #paymentOverlay {
@@ -462,88 +444,7 @@
             opacity: 1;
         }
 
-        .card-type-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.5rem;
-            color: #cbd5e1;
-            transition: all 0.3s;
-        }
 
-        .card-type-icon.visa {
-            color: #1a1f71;
-        }
-
-        .card-type-icon.mastercard {
-            color: #eb001b;
-        }
-
-        /* Credit Card Input Validation */
-        .form-control.is-valid {
-            border-color: var(--success);
-            background-image: none;
-        }
-
-        .form-control.is-invalid {
-            border-color: #e74c3c;
-            background-image: none;
-        }
-
-        .card-info-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
-            padding: 20px;
-            color: white;
-            margin-bottom: 20px;
-            min-height: 180px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-info-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image:
-                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-        }
-
-        .card-info-display {
-            position: relative;
-            z-index: 1;
-        }
-
-        .card-number-display {
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-            margin: 10px 0;
-        }
-
-        .card-expiry-cvv {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            margin-top: 15px;
-        }
-
-        .card-cardholder-display {
-            font-size: 0.85rem;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
 
         /* --- MODERN PAYMENT MODAL --- */
         .payment-modal {
@@ -931,7 +832,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="home.html">
+            <a class="navbar-brand" href="/">
                 <img src="https://i.imgur.com/BZ1xLO3.png" alt="PrimaDev Logo" height="50">
             </a>
             <button class="btn btn-sm btn-outline-dark rounded-pill px-3" onclick="showHelp()">
@@ -1185,7 +1086,7 @@
                                                     </div>
                                                     <div class="payment-option"
                                                         onclick="setPaymentMethod('cimb', this)">
-                                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/CIMB_Niaga_logo.svg/2560px-CIMB_Niaga_logo.svg.png"
+                                                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/CIMB_Niaga_logo.svg"
                                                             alt="CIMB Niaga">
                                                         <span class="payment-name">CIMB Niaga Virtual Account</span>
                                                         <div class="selection-circle"></div>
@@ -1305,84 +1206,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- CREDIT/DEBIT CARD -->
-                                        <div class="accordion-item" id="group-card">
-                                            <div class="accordion-header" onclick="toggleAccordion('card')">
-                                                <div class="d-flex align-items-center">
-                                                    <i class="fa-solid fa-credit-card main-icon"></i>
-                                                    <div>
-                                                        <span class="d-block">Kartu Kredit/Debit</span>
-                                                        <small class="text-muted fw-normal"
-                                                            style="font-size: 0.7rem;">Visa, Mastercard & berbagai
-                                                            bank</small>
-                                                    </div>
-                                                </div>
-                                                <i class="fa-solid fa-chevron-down chevron-icon"></i>
-                                            </div>
-                                            <div class="accordion-content">
-                                                <div class="payment-option-list p-3" id="card-input-section"
-                                                    style="display: none;">
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold text-muted small">NOMOR
-                                                            KARTU</label>
-                                                        <div class="card-input-container">
-                                                            <input type="text" class="form-control py-2 ps-3"
-                                                                id="cardNumber" placeholder="1234 5678 9012 3456"
-                                                                maxlength="19"
-                                                                oninput="formatCardNumber(this); detectCardType(this)">
-                                                            <i class="card-type-icon fa-regular fa-credit-card"></i>
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="row">
-                                                        <div class="col-8">
-                                                            <label
-                                                                class="form-label fw-bold text-muted small">BULAN/TAHUN</label>
-                                                            <input type="text" class="form-control py-2" id="cardExpiry"
-                                                                placeholder="MM/YY" maxlength="5"
-                                                                oninput="formatExpiry(this)">
-                                                        </div>
-                                                        <div class="col-4">
-                                                            <label
-                                                                class="form-label fw-bold text-muted small">CVV</label>
-                                                            <input type="text" class="form-control py-2" id="cardCVV"
-                                                                placeholder="123" maxlength="4"
-                                                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mt-3">
-                                                        <label class="form-label fw-bold text-muted small">NAMA PEMILIK
-                                                            KARTU</label>
-                                                        <input type="text" class="form-control py-2" id="cardholderName"
-                                                            placeholder="Nama Sesuai Kartu"
-                                                            oninput="this.value = this.value.toUpperCase()">
-                                                    </div>
-
-                                                    <div class="form-check mt-3 small">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="cardSaveCheck">
-                                                        <label class="form-check-label text-muted" for="cardSaveCheck">
-                                                            Simpan kartu untuk transaksi berikutnya
-                                                        </label>
-                                                    </div>
-
-                                                    <button type="button" onclick="selectCardPayment()"
-                                                        class="btn btn-primary w-100 mt-3 py-2 fw-bold rounded-3">
-                                                        Gunakan Kartu Ini <i class="fa-solid fa-check ms-2"></i>
-                                                    </button>
-                                                </div>
-
-                                                <div class="text-center p-3" id="card-selection-view">
-                                                    <p class="text-muted small mb-3">Klik tombol di bawah untuk
-                                                        memasukkan detail kartu Anda</p>
-                                                    <button type="button" onclick="showCardInput()"
-                                                        class="btn btn-outline-primary w-100 py-2 fw-bold rounded-3">
-                                                        <i class="fa-solid fa-plus me-2"></i>Input Kartu Baru
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
 
                                     </div>
 
@@ -1392,9 +1216,9 @@
                                         <input class="form-check-input" type="checkbox" id="termsCheck">
                                         <label class="form-check-label text-muted" for="termsCheck"
                                             style="line-height: 1.5;">
-                                            Dengan melanjutkan transaksi, Anda menyetujui <a href="legal.html"
+                                            Dengan melanjutkan transaksi, Anda menyetujui <a href="legal"
                                                 target="_blank" class="text-primary text-decoration-none fw-bold">Syarat
-                                                & Ketentuan</a> dan <a href="legal.html" target="_blank"
+                                                & Ketentuan</a> dan <a href="legal" target="_blank"
                                                 class="text-primary text-decoration-none fw-bold">Kebijakan Privasi</a>
                                             yang berlaku.
                                         </label>
@@ -1762,11 +1586,7 @@
                 return;
             }
 
-            // Validate credit card if selected
-            if (paymentMethod === 'card' && !window.creditCardData) {
-                Swal.fire('Kartu Belum Dipilih', 'Silakan masukkan detail kartu Anda terlebih dahulu.', 'warning');
-                return;
-            }
+
 
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
             btn.disabled = true;
@@ -1783,17 +1603,7 @@
                     paymentMethod
                 };
 
-                // If payment method is card, include card data for backend tokenization
-                if (paymentMethod === 'card') {
-                    btn.innerHTML = '<i class="fa-solid fa-lock me-2"></i> Mengenkripsi Pembayaran...';
-                    requestBody.cardData = {
-                        cardNumber: window.creditCardData.cardNumber,
-                        cardExpMonth: window.creditCardData.month,
-                        cardExpYear: window.creditCardData.year,
-                        cardCvv: window.creditCardData.cvv,
-                        cardholderName: window.creditCardData.cardholderName
-                    };
-                }
+
 
                 const response = await fetch('/.netlify/functions/public_order', {
                     method: 'POST',
@@ -2082,47 +1892,7 @@
                             </a>
                         </div>
                     `;
-            } else if (data.payment_type === 'credit_card') {
-                if (data.redirect_url) {
-                    content = `
-                        <div class="text-center py-4">
-                            <div class="mb-4 position-relative d-inline-block">
-                                <div class="icon-box icon-blue mx-auto rounded-circle shadow-sm" style="width: 80px; height: 80px; font-size: 2rem;">
-                                    <i class="fa-solid fa-shield-halved"></i>
-                                </div>
-                                <div class="position-absolute top-0 end-0 bg-danger rounded-circle border border-2 border-white" style="width: 20px; height: 20px;"></div>
-                            </div>
-                            
-                            <h4 class="fw-bold mb-2">Verifikasi Kartu Kredit</h4>
-                            <p class="text-muted mb-4 mx-auto" style="max-width: 400px;">
-                                Sistem keamanan bank memerlukan verifikasi Anda. Klik tombol di bawah untuk melanjutkan proses otentikasi 3D Secure.
-                            </p>
-                            
-                            <a href="${data.redirect_url}" target="_blank" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-lg">
-                                <i class="fa-solid fa-lock me-2"></i>Selesaikan Verifikasi
-                            </a>
 
-                            <div class="alert alert-info bg-opacity-10 border-0 text-info small rounded-3 mx-auto mt-4" style="max-width: 400px;">
-                                <i class="fa-solid fa-circle-info me-2"></i>Anda akan diarahkan ke halaman verifikasi bank. Proses ini aman dan terenkripsi.
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    content = `
-                        <div class="text-center py-4">
-                            <div class="mb-4">
-                                <div class="icon-box icon-green mx-auto rounded-circle shadow-sm" style="width: 80px; height: 80px; font-size: 2rem;">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </div>
-                            
-                            <h4 class="fw-bold mb-2">Pembayaran Diproses</h4>
-                            <p class="text-muted mb-4 mx-auto" style="max-width: 400px;">
-                                Pembayaran kartu Anda sedang diproses. Anda akan mendapatkan notifikasi segera setelah pembayaran berhasil.
-                            </p>
-                        </div>
-                    `;
-                }
             }
 
             step3.innerHTML = `
@@ -2205,7 +1975,7 @@
 
                             setTimeout(() => {
                                 localStorage.setItem('last_order_status', 'success');
-                                window.location.href = result.redirect_url || "/thankyou.html";
+                                window.location.href = result.redirect_url || "/thankyou";
                             }, 5000);
                         } else {
                             // Update badge with current status (e.g. pending)
@@ -2308,111 +2078,7 @@
             });
         }
 
-        // --- CREDIT CARD FUNCTIONS ---
-        function showCardInput() {
-            document.getElementById('card-selection-view').style.display = 'none';
-            document.getElementById('card-input-section').style.display = 'block';
-            setPaymentMethod('card', null);
-        }
 
-        function formatCardNumber(el) {
-            let value = el.value.replace(/\s+/g, '').replace(/[^0-9]/g, '');
-            let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
-            el.value = formattedValue;
-        }
-
-        function formatExpiry(el) {
-            let value = el.value.replace(/[^0-9]/g, '');
-            if (value.length >= 2) {
-                value = value.slice(0, 2) + '/' + value.slice(2, 4);
-            }
-            el.value = value;
-        }
-
-        function detectCardType(el) {
-            const cardNumber = el.value.replace(/\s+/g, '');
-            const icon = document.querySelector('.card-type-icon');
-
-            if (!icon) return;
-
-            // Reset
-            icon.className = 'card-type-icon fa-regular fa-credit-card';
-
-            // Visa: starts with 4
-            if (/^4[0-9]{12}(?:[0-9]{3})?$/.test(cardNumber)) {
-                icon.className = 'card-type-icon fa-brands fa-cc-visa visa';
-            }
-            // Mastercard: starts with 5
-            else if (/^5[1-5][0-9]{14}$/.test(cardNumber)) {
-                icon.className = 'card-type-icon fa-brands fa-cc-mastercard mastercard';
-            }
-        }
-
-        function selectCardPayment() {
-            const cardNumber = document.getElementById('cardNumber').value.replace(/\s+/g, '');
-            const cardExpiry = document.getElementById('cardExpiry').value;
-            const cardCVV = document.getElementById('cardCVV').value;
-            const cardholderName = document.getElementById('cardholderName').value;
-
-            // Validation
-            if (cardNumber.length < 13 || cardNumber.length > 19) {
-                Swal.fire('Nomor Kartu Tidak Valid', 'Nomor kartu harus antara 13-19 digit.', 'error');
-                return;
-            }
-
-            if (!cardExpiry.match(/^\d{2}\/\d{2}$/)) {
-                Swal.fire('Format Bulan/Tahun Salah', 'Format harus MM/YY.', 'error');
-                return;
-            }
-
-            if (cardCVV.length < 3 || cardCVV.length > 4) {
-                Swal.fire('CVV Tidak Valid', 'CVV harus 3-4 digit.', 'error');
-                return;
-            }
-
-            if (!cardholderName.trim()) {
-                Swal.fire('Nama Pemilik Kosong', 'Silakan masukkan nama yang tertera di kartu.', 'error');
-                return;
-            }
-
-            // Parse expiry
-            const [month, year] = cardExpiry.split('/');
-            const fullYear = '20' + year;
-
-            // Store temporarily (will be tokenized during payment)
-            window.creditCardData = {
-                cardNumber,
-                month: month.padStart(2, '0'),
-                year: fullYear,
-                cvv: cardCVV,
-                cardholderName: cardholderName.trim()
-            };
-
-            document.getElementById('selectedPaymentMethod').value = 'card';
-            document.getElementById('card-input-section').style.display = 'none';
-            document.getElementById('card-selection-view').innerHTML = `
-                <div class="text-success mb-3">
-                    <i class="fa-solid fa-circle-check fa-2x"></i>
-                </div>
-                <p class="text-muted small mb-2">Kartu sudah dipilih:</p>
-                <p class="fw-bold small" id="selected-card-display">
-                    •••• •••• •••• ${cardNumber.slice(-4)}
-                </p>
-                <button type="button" onclick="showCardInput()" class="btn btn-sm btn-outline-primary mt-3 rounded-pill">
-                    <i class="fa-solid fa-edit me-1"></i>Ubah Kartu
-                </button>
-            `;
-            document.getElementById('card-selection-view').style.display = 'block';
-
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Kartu berhasil dipilih!',
-                showConfirmButton: false,
-                timer: 2000
-            });
-        }
 
         initStore();
     </script>

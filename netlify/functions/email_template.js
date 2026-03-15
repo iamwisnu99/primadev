@@ -17,12 +17,12 @@ const getPremiumTemplate = (data) => {
         <style>
             body { margin: 0; padding: 0; background-color: #f1f5f9; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
             .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin-top: 20px; margin-bottom: 20px; }
-            .header { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); padding: 40px 20px; text-align: center; }
+            .header { background: linear-gradient(135deg, #4d74f3ff 0%, #314fd4ff 100%); padding: 40px 20px; text-align: center; }
             .content { padding: 40px 30px; color: #334155; line-height: 1.6; }
             .key-box { background-color: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 25px; text-align: center; margin: 30px 0; }
-            .license-key { font-family: 'Courier New', monospace; font-size: 24px; font-weight: 800; color: #4f46e5; letter-spacing: 2px; display: block; margin-bottom: 5px; }
+            .license-key { font-family: 'Courier New', monospace; font-size: 24px; font-weight: bold; color: #000000ff; letter-spacing: 2px; display: block; margin-bottom: 5px; }
             .label-key { font-size: 11px; text-transform: uppercase; color: #64748b; letter-spacing: 1px; font-weight: 600; }
-            .btn-invoice { background-color: #4f46e5; color: #ffffff !important; padding: 14px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3); }
+            .btn-invoice { background-color: #3a80e9ff; color: #ffffff !important; padding: 14px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3); }
             .details-table td { padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
             .footer { background-color: #1e293b; color: #94a3b8; padding: 30px; text-align: center; font-size: 12px; line-height: 1.5; }
             .social-link { color: #ffffff; text-decoration: none; margin: 0 5px; }
@@ -67,7 +67,7 @@ const getPremiumTemplate = (data) => {
 
                 <div style="text-align: center; margin-top: 40px;">
                     <a href="${BASE_URL}/.netlify/functions/invoice?id=${data.key}" class="btn-invoice">
-                        Lihat INVOICE &rarr;
+                        Lihat INVOICE
                     </a>
                     <p style="margin-top: 15px; font-size: 12px; color: #94a3b8;">
                         ID Transaksi: ${data.transactionId}
@@ -76,11 +76,11 @@ const getPremiumTemplate = (data) => {
             </div>
 
             <div class="footer">
-                <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PT. PRIMADEV DIGITAL INDONESIA</p>
+                <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PT. PRIMADEV DIGITAL TECHNOLOGY</p>
                 <p>SPBU Pertamina 34.115.06<br>Jl. Kedoya Raya No. 23, Kedoya Selatan<br>Kebon Jeruk, Jakarta Barat, DKI Jakarta 11520</p>
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
-                    &copy; ${new Date().getFullYear()} PrimaDev. All rights reserved.<br>
+                    &copy; ${new Date().getFullYear()} PrimaDev Digital Technology. All rights reserved.<br>
                     <a href="${HOME_URL}" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
                     <a href="${LEGAL_URL}" style="color: #6366f1; text-decoration: none;">Privacy Policy</a>
                 </p>
@@ -140,7 +140,7 @@ const getRenewalTemplate = (data) => {
                 </div>
             </div>
             <div class="footer">
-                <p>&copy; ${new Date().getFullYear()} PrimaDev Digital Indonesia. All rights reserved.</p>
+                <p>&copy; ${new Date().getFullYear()} PrimaDev Digital Technology. All rights reserved.</p>
             </div>
         </div>
     </body>

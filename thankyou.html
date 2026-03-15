@@ -13,68 +13,281 @@
     <meta name="apple-mobile-web-app-title" content="PrimaDev" />
     <link rel="manifest" href="/public/site.webmanifest" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         body {
-            background: #f8fafc;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f7ff;
+            /* Light blue tint background */
+            color: #334155;
+            overflow-x: hidden;
+        }
+
+        /* Card Container */
+        .success-card {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(0, 123, 255, 0.05);
+            max-width: 480px;
+            width: 100%;
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Green Infinity Pulse Animation */
+        .icon-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
         }
 
-        .card-success {
-            border: none;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            max-width: 500px;
+        .pulse-ring {
+            position: absolute;
             width: 100%;
-            text-align: center;
+            height: 100%;
+            background-color: rgba(34, 197, 94, 0.2);
+            border-radius: 50%;
+            z-index: 1;
+            animation: pulse 2.2s infinite ease-in-out;
         }
 
-        .header-icon {
-            background: #dcfce7;
-            color: #16a34a;
-            width: 100px;
-            height: 100px;
+        .icon-circle {
+            position: relative;
+            z-index: 2;
+            width: 75px;
+            height: 75px;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 3rem;
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
+            color: white;
+            font-size: 2.2rem;
+        }
+
+        /* Detail Box */
+        .order-details {
+            background-color: #f8fbff;
+            border: 1px solid #e2efff;
+            border-radius: 16px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+            padding-top: 0.75rem;
+            border-top: 1px dashed #cbdcf0;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #1a1a1a;
+        }
+
+        .text-label {
+            color: #64748b;
+        }
+
+        .text-value {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        /* Updated Blue Button Style */
+        .btn-primary-blue {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            /* Modern light blue gradient */
+            color: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary-blue:hover {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-outline-light {
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            padding: 13px 28px;
+            border-radius: 14px;
+            font-weight: 600;
+            background: #ffffff;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline-light:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        /* Keyframes */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.9);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.4);
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container p-3">
-        <div class="card card-success mx-auto p-5">
-            <div class="header-icon animate__animated animate__bounceIn">
-                <i class="fa-solid fa-check"></i>
+
+    <div class="container vh-100 d-flex justify-content-center align-items-center p-3">
+
+        <div class="success-card p-4 p-md-5 text-center">
+
+            <!-- Green Infinity Pulse (As Requested) -->
+            <div class="icon-wrapper">
+                <div class="pulse-ring"></div>
+                <div class="icon-circle">
+                    <i class="fas fa-check"></i>
+                </div>
             </div>
-            <h2 class="fw-bold text-dark mb-3">Pembayaran Berhasil!</h2>
-            <p class="text-muted mb-4">Terima kasih, pembayaran Anda telah kami terima. Sistem kami sedang mengirimkan
-                <b>License Key</b> ke email Anda.
+
+            <h2 class="fw-bold mb-2" style="color: #0f172a; letter-spacing: -0.5px;">Pembayaran Berhasil!</h2>
+            <p class="text-muted mb-4" style="font-size: 0.9rem; line-height: 1.6;">
+                Terima kasih sudah mendukung aplikasi kami! <br>
+                <b>License Key</b> kamu telah aktif dan detailnya sudah kami kirimkan ke email tujuan Anda.
             </p>
 
-            <div class="alert alert-info border-0 bg-opacity-10 bg-primary text-primary small">
-                <i class="fa-solid fa-envelope me-2"></i> Cek Folder <b>Inbox</b> atau <b>Spam</b> di email Anda.
+            <div class="alert alert-info border-0 bg-opacity-10 bg-primary text-primary small mb-4">
+                <i class="fas fa-envelope me-2"></i> Cek Folder <b>Inbox</b> atau <b>Spam</b> di email Anda.
             </div>
 
-            <div class="d-grid gap-2 mt-4">
-                <a href="/store" class="btn btn-primary fw-bold py-3 rounded-pill">Kembali ke Toko</a>
-                <a href="https://apps-primadev.netlify.app/support"
-                    class="btn btn-outline-success fw-bold py-3 rounded-pill"><i
-                        class="fa-solid fa-headset me-2"></i>Hubungi bila ada Kendala</a>
+            <!-- Refined Detail Box -->
+            <div class="order-details p-3 p-md-4 text-start mb-4">
+                <div class="detail-row">
+                    <span class="text-label">Produk</span>
+                    <span class="text-value text-end">Software License Key</span>
+                </div>
+                <div class="detail-row">
+                    <span class="text-label">No. Transaksi</span>
+                    <span id="order-id" class="text-value text-end">#PROSESING...</span>
+                </div>
+                <div class="detail-row">
+                    <span class="text-label">Tanggal</span>
+                    <span id="order-date" class="text-value text-end">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="text-label">Status</span>
+                    <span class="text-value text-end"><span class="badge bg-success bg-opacity-10 text-success">Berhasil</span></span>
+                </div>
+                <div class="detail-row mt-2">
+                    <span>Informasi</span>
+                    <span class="small text-muted">Cek Email Anda</span>
+                </div>
             </div>
+
+            <!-- The Two Buttons -->
+            <div class="d-grid gap-3">
+                <a href="/store" class="btn btn-primary-blue">
+                    <i class="fas fa-store me-2"></i>Kembali ke Toko
+                </a>
+                <button onclick="showHelpPopup()" class="btn btn-outline-light">
+                    <i class="fas fa-headset me-2"></i>Hubungi bila ada Kendala
+                </button>
+            </div>
+
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Try to get order ID from URL or auto-generate
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('order_id') || urlParams.get('id') || 'PD-' + Math.floor(Date.now() / 1000);
+        document.getElementById('order-id').textContent = '#' + orderId;
+
+        // Set Today's Date with format "12 Jan 2026 | 19.21"
+        const now = new Date();
+        const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+        const day = now.getDate();
+        const month = months[now.getMonth()];
+        const year = now.getFullYear();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        
+        document.getElementById('order-date').textContent = `${day} ${month} ${year} | ${hours}.${minutes}`;
+
+        function showHelpPopup() {
+            Swal.fire({
+                title: 'Butuh Bantuan?',
+                text: 'Tim kami siap membantu jika ada kendala aktivasi lisensi.',
+                icon: 'question',
+                showCancelButton: false,
+                showConfirmButton: false,
+                showCloseButton: true,
+                html: `
+                    <p class="text-muted mb-4">Pilih metode bantuan yang Anda inginkan:</p>
+                    <div class="d-grid gap-3">
+                        <a href="/support" class="btn btn-primary px-4 py-3 rounded-4 fw-bold shadow-sm" style="background-color: #3b82f6; border: none;">
+                            <i class="fas fa-comments me-2"></i>Live Chat Support
+                        </a>
+                        <a href="mailto:wisnu.bussines99@gmail.com" class="btn btn-light px-4 py-3 rounded-4 fw-bold border shadow-sm">
+                            <i class="fas fa-envelope me-2"></i>Kirim Email
+                        </a>
+                    </div>
+                `,
+                customClass: {
+                    popup: 'rounded-5 p-4',
+                    title: 'fw-bold mb-3'
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

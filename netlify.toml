@@ -4,6 +4,9 @@
 [functions]
   included_files = ["public/logo.png"]
 
+[build.processing.html]
+  pretty_urls = true
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"

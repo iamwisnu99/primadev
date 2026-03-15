@@ -214,7 +214,7 @@ exports.handler = async (event, context) => {
                 }
             } else if (paymentMethod === 'gopay' || paymentMethod === 'shopeepay') {
                 parameter.payment_type = paymentMethod;
-                parameter[paymentMethod] = { callback_url: "https://apps-primadev.netlify.app/thankyou.html" };
+                parameter[paymentMethod] = { callback_url: "https://apps-primadev.netlify.app/thankyou" };
             } else if (paymentMethod === 'ovo' || paymentMethod === 'dana') {
                 parameter.payment_type = 'qris';
                 parameter.qris = { acquirer: 'gopay' };
