@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpanjang Lisensi | PrimaDev</title>
+    <title>Perpanjang Lisensi | PrimaDev Store</title>
+    <meta name="description" content="Perpanjang lisensi software PrimaDev Anda dengan mudah. Validasi key, pilih durasi, dan bayar dengan berbagai metode pembayaran.">
 
-    <!-- Favicon & Manifest -->
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
     <link rel="shortcut icon" href="/public/favicon.ico" />
@@ -14,389 +14,1554 @@
     <meta name="apple-mobile-web-app-title" content="PrimaDev" />
     <link rel="manifest" href="/public/site.webmanifest" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Midtrans Core API JS (bukan Snap) -->
+    <script id="midtrans-js" src="https://api.sandbox.midtrans.com/v2/assets/js/midtrans.min.js"
+        onload="console.log('✅ Midtrans Core API Loaded')"
+        onerror="console.error('❌ Midtrans Core API Failed')"></script>
 
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-XXXXX"></script>
     <style>
+        /* =================== VARIABLES =================== */
+        :root {
+            --primary: #1865ca;
+            --primary-dark: #1456a8;
+            --primary-light: #e8f0fe;
+            --primary-glow: rgba(24, 101, 202, 0.15);
+            --accent: #1f6cdf;
+            --accent-light: #dbeafe;
+            --bg-page: #f0f4f8;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #5f6368;
+            --text-tertiary: #94a3b8;
+            --border: #e0e7ef;
+            --border-light: #f1f5f9;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+            --shadow-lg: 0 20px 48px rgba(0,0,0,0.13);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        /* =================== RESET =================== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-page);
+            color: var(--text-primary);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        body.loaded { opacity: 1; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #c4c4c4; border-radius: 3px; }
+
+        /* =================== NAVBAR =================== */
+        .renew-nav {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .renew-nav-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 60px;
+        }
+        .nav-logo img { height: 34px; display: block; }
+        .nav-divider { width: 1px; height: 24px; background: var(--border); }
+        .nav-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+        .nav-back {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 6px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 100px;
+            transition: all 0.2s;
+        }
+        .nav-back:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        /* =================== PAGE LAYOUT =================== */
+        .page-wrapper {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 32px 20px 80px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* =================== MAIN CARD =================== */
+        .main-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header-bar {
+            background: linear-gradient(135deg, #1865ca, #1456a8);
+            padding: 22px 28px;
+            color: #fff;
+        }
+        .card-header-bar h2 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 3px;
+        }
+        .card-header-bar p {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* =================== STEP INDICATOR =================== */
+        .step-track {
+            display: flex;
+            align-items: center;
+            padding: 20px 28px 0;
+            gap: 0;
+        }
+        .step-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            transition: all 0.3s;
+        }
+        .step-node.active .step-circle { border-color: var(--primary); background: var(--primary); color: #fff; }
+        .step-node.done .step-circle { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+        .step-label { font-size: 0.65rem; font-weight: 600; color: var(--text-tertiary); white-space: nowrap; }
+        .step-node.active .step-label { color: var(--primary); font-weight: 700; }
+        .step-line { flex: 1; height: 2px; background: var(--border); margin-bottom: 20px; transition: background 0.3s; }
+        .step-line.done { background: var(--primary); }
+
+        .card-body { padding: 24px 28px 28px; }
+
+        /* =================== FORM ELEMENTS =================== */
+        .field-group { margin-bottom: 18px; }
+        .field-label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 7px;
+        }
+        .field-label .optional {
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            color: var(--text-tertiary);
+            font-size: 0.72rem;
+        }
+        .input-wrap { position: relative; }
+        .input-wrap .icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+        .field-input {
+            width: 100%;
+            padding: 11px 14px 11px 38px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            background: #fff;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .field-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+        .field-input::placeholder { color: var(--text-tertiary); }
+        .field-input.key-input {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .field-hint { font-size: 0.72rem; color: var(--text-tertiary); margin-top: 5px; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+        /* =================== BUTTONS =================== */
+        .btn-primary {
+            width: 100%;
+            padding: 13px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.92rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 16px var(--primary-glow); }
+        .btn-primary:active { transform: scale(0.99); }
+        .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+        .btn-ghost {
+            width: 100%;
+            padding: 11px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn-ghost:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+        /* =================== LICENSE INFO BOX =================== */
+        .license-card {
+            background: var(--bg-page);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            margin-bottom: 22px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .license-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1f6cdf, #1456a8);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .license-card-info { flex: 1; min-width: 0; }
+        .license-app-name {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        .license-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .meta-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .chip-active { background: var(--success-light); color: var(--success); }
+        .chip-expired { background: var(--danger-light); color: var(--danger); }
+        .chip-warning { background: var(--warning-light); color: var(--warning); }
+        .chip-type { background: var(--primary-light); color: var(--primary); }
+        .license-expiry {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .license-expiry.expired { color: var(--danger); font-weight: 600; }
+
+        /* =================== DURATION OPTIONS =================== */
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .duration-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .duration-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
+            position: relative;
+        }
+        .duration-item:hover { border-color: #a8c4ef; background: #f8faff; }
+        .duration-item.selected { border-color: var(--primary); background: var(--primary-light); }
+        .dur-radio {
+            width: 20px; height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.2s;
+        }
+        .duration-item.selected .dur-radio { border-color: var(--primary); background: var(--primary); }
+        .duration-item.selected .dur-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px; height: 8px;
+            background: #fff;
+            border-radius: 50%;
+        }
+        .dur-info { flex: 1; }
+        .dur-name { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+        .dur-desc { font-size: 0.73rem; color: var(--text-secondary); }
+        .dur-price { font-size: 1rem; font-weight: 800; color: var(--text-primary); text-align: right; }
+        .dur-price small { display: block; font-size: 0.65rem; color: var(--text-tertiary); font-weight: 400; }
+        .dur-badge {
+            position: absolute;
+            top: -1px; right: 12px;
+            transform: translateY(-50%);
+            padding: 2px 9px;
+            border-radius: 100px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #dcfce7;
+            color: #166534;
         }
 
-        /* Glass Card */
-        .decorative-blob {
+        /* =================== PAYMENT METHODS =================== */
+        .payment-group {
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin-bottom: 8px;
+            transition: border-color 0.2s;
+        }
+        .payment-group.active { border-color: var(--primary); }
+        .payment-group-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 14px;
+            cursor: pointer;
+            background: #fff;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .payment-group-header:hover { background: var(--bg-page); }
+        .pg-icon {
+            width: 38px; height: 38px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .pg-icon.c-qris { background: #dbeafe; color: #1865ca; }
+        .pg-icon.c-va   { background: #e8f0fe; color: #1f6cdf; }
+        .pg-icon.c-ew   { background: #dbeafe; color: #1456a8; }
+        .pg-icon.c-cs   { background: #eff6ff; color: #2563eb; }
+        .pg-title { flex: 1; }
+        .pg-name { font-size: 0.87rem; font-weight: 700; color: var(--text-primary); }
+        .pg-desc { font-size: 0.7rem; color: var(--text-secondary); }
+        .pg-radio {
+            width: 18px; height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .payment-group.active .pg-radio { border-color: var(--primary); background: var(--primary); }
+        .payment-group.active .pg-radio::after {
+            content: '';
             position: absolute;
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-            filter: blur(80px);
-            opacity: 0.15;
-            z-index: -1;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 7px; height: 7px;
+            background: #fff;
+            border-radius: 50%;
+        }
+        .pg-chevron { color: var(--text-tertiary); transition: transform 0.3s; font-size: 0.75rem; }
+        .payment-group.open .pg-chevron { transform: rotate(180deg); }
+
+        .payment-group-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+            background: var(--bg-page);
+        }
+        .payment-group.open .payment-group-body {
+            max-height: 400px;
+            border-top: 1px solid var(--border-light);
+        }
+        .payment-options-list { padding: 6px; display: flex; flex-direction: column; gap: 3px; }
+        .payment-option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            background: #fff;
+            border: 1.5px solid transparent;
+            transition: all 0.2s;
+        }
+        .payment-option-item:hover { background: #f0f4ff; border-color: var(--border); }
+        .payment-option-item.selected { border-color: var(--primary); background: var(--primary-light); }
+        .payment-option-item img { height: 20px; width: 44px; object-fit: contain; flex-shrink: 0; }
+        .poi-name { flex: 1; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); }
+        .poi-radio {
+            width: 16px; height: 16px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .payment-option-item.selected .poi-radio { border-color: var(--primary); background: var(--primary); }
+        .payment-option-item.selected .poi-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px; height: 6px;
+            background: #fff;
             border-radius: 50%;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-            max-width: 480px;
-            width: 90%;
-            padding: 40px;
-            position: relative;
-            z-index: 10;
+        /* =================== SIDEBAR (RIGHT) =================== */
+        .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+        .sidebar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .sidebar-card-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-light);
         }
 
-        .icon-box-main {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            border-radius: 20px;
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+        .summary-row:last-child { margin-bottom: 0; }
+        .summary-label { color: var(--text-secondary); }
+        .summary-value { font-weight: 600; color: var(--text-primary); }
+        .summary-total {
+            border-top: 1px solid var(--border);
+            margin-top: 10px;
+            padding-top: 12px;
+        }
+        .summary-total .summary-label { font-weight: 700; font-size: 0.9rem; color: var(--text-primary); }
+        .summary-total .summary-value { font-size: 1.25rem; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
+
+        .info-list { display: flex; flex-direction: column; gap: 10px; }
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .info-item i { color: var(--primary); margin-top: 2px; font-size: 0.75rem; flex-shrink: 0; }
+
+        /* =================== PAYMENT STATUS (Step 3) =================== */
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 20px;
+        }
+        .order-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 100px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .timer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: var(--warning-light);
+            color: var(--warning);
+            border-radius: 100px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        .pulse-dot {
+            width: 7px; height: 7px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+        .waiting-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.8rem;
-            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+            gap: 8px;
+            padding: 10px;
+            background: var(--bg-page);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-top: 20px;
         }
 
-        .input-group-custom {
-            position: relative;
+        /* VA / QRIS / Store display */
+        .payment-display {
+            background: var(--bg-page);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .display-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .display-code {
+            font-family: 'Courier New', monospace;
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 20px;
+            background: #fff;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { background: var(--primary); color: #fff; }
+
+        /* =================== LOADING =================== */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner {
+            width: 18px; height: 18px;
+            border: 2.5px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+        .spinner.dark {
+            border-color: rgba(24,101,202,0.2);
+            border-top-color: var(--primary);
+        }
+
+        /* Step visibility */
+        .step-panel { display: none; }
+        .step-panel.active { display: block; }
+
+        /* =================== FINAL OVERLAY =================== */
+        #finalOverlay {
+            position: fixed; inset: 0;
+            background: #fff;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        #finalOverlay.visible { display: flex; opacity: 1; }
+        .success-icon {
+            width: 80px; height: 80px;
+            background: var(--success-light);
+            border-radius: 50%;
             display: flex;
             align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: var(--success);
+            margin: 0 auto 20px;
+            border: 3px solid #bbf7d0;
         }
 
-        .input-icon {
-            position: absolute;
-            left: 15px;
-            color: #94a3b8;
-            font-size: 1.1rem;
-            transition: 0.3s;
+        /* =================== RESPONSIVE =================== */
+        @media (max-width: 768px) {
+            .page-wrapper {
+                grid-template-columns: 1fr;
+                padding: 20px 16px 60px;
+                gap: 16px;
+            }
+            .sidebar { order: -1; }
+            .sidebar-card { padding: 16px; }
+            .card-body { padding: 18px 20px 20px; }
+            .card-header-bar { padding: 18px 20px; }
+            .step-track { padding: 16px 20px 0; }
+            .form-row { grid-template-columns: 1fr; gap: 12px; }
+            .renew-nav-inner { gap: 10px; }
+            .nav-title { display: none; }
         }
 
-        .form-control-custom {
-            width: 100%;
-            padding: 12px 15px 12px 45px;
-            border-radius: 14px;
-            border: 2px solid #f1f5f9;
-            background: #f8fafc;
-            color: #1e293b;
-            font-size: 0.95rem;
-            transition: 0.3s;
-            outline: none;
+        @media (max-width: 400px) {
+            .display-code { font-size: 1.3rem; }
         }
 
-        .form-control-custom:focus {
-            border-color: #4f46e5;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        /* Fade-in animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .form-control-custom:focus+.input-icon {
-            color: #4f46e5;
-        }
-
-        .btn-primary-premium {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            border: none;
-            color: white;
-            transition: 0.3s;
-        }
-
-        .btn-primary-premium:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
-            filter: brightness(1.1);
-        }
-
-        .fa-spin-slow {
-            animation: fa-spin 5s infinite linear;
-        }
-
-        .hover-link:hover {
-            color: #4f46e5 !important;
-            text-decoration: underline !important;
-        }
-
-        .license-info-box {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 18px;
-            padding: 24px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 25px;
-        }
+        .main-card, .sidebar-card { animation: fadeInUp 0.4s ease both; }
+        .sidebar-card:nth-child(2) { animation-delay: 0.08s; }
+        .sidebar-card:nth-child(3) { animation-delay: 0.14s; }
     </style>
 </head>
 
 <body>
 
-    <div class="decorative-blob" style="top: -50px; left: -50px;"></div>
-    <div class="decorative-blob"
-        style="bottom: -50px; right: -50px; background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);"></div>
+    <!-- NAVBAR -->
+    <nav class="renew-nav">
+        <div class="renew-nav-inner">
+            <a class="nav-logo" href="/">
+                <img src="https://i.imgur.com/BZ1xLO3.png" alt="PrimaDev Logo">
+            </a>
+            <div class="nav-divider"></div>
+            <span class="nav-title">Perpanjang Lisensi</span>
+            <a href="/app/store" class="nav-back">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Store
+            </a>
+        </div>
+    </nav>
 
+    <!-- PAGE WRAPPER -->
+    <div class="page-wrapper">
 
-    <div class="glass-card">
-        <div class="text-center mb-4">
-            <div class="icon-box-main mx-auto mb-3">
-                <i class="fa-solid fa-arrows-rotate fa-spin-slow"></i>
+        <!-- MAIN CARD -->
+        <div class="main-card">
+            <!-- Header -->
+            <div class="card-header-bar">
+                <h2><i class="fa-solid fa-arrows-rotate"></i> Perpanjang Lisensi</h2>
+                <p>Validasi kepemilikan lisensi dan pilih durasi perpanjangan</p>
             </div>
-            <h3 class="fw-bold text-dark mb-1">Perpanjang Lisensi</h3>
-            <p class="text-muted small">Validasi data kepemilikan lisensi Anda</p>
+
+            <!-- Step Progress -->
+            <div class="step-track">
+                <div class="step-node active" id="snode-1">
+                    <div class="step-circle" id="scircle-1">1</div>
+                    <div class="step-label">Validasi Key</div>
+                </div>
+                <div class="step-line" id="sline-1"></div>
+                <div class="step-node" id="snode-2">
+                    <div class="step-circle" id="scircle-2">2</div>
+                    <div class="step-label">Durasi & Bayar</div>
+                </div>
+                <div class="step-line" id="sline-2"></div>
+                <div class="step-node" id="snode-3">
+                    <div class="step-circle" id="scircle-3">3</div>
+                    <div class="step-label">Konfirmasi</div>
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <!-- ===== STEP 1: VALIDASI ===== -->
+                <div class="step-panel active" id="panel-1">
+                    <form onsubmit="checkLicense(event)">
+                        <div class="form-row">
+                            <div class="field-group">
+                                <label class="field-label">Nama Lengkap</label>
+                                <div class="input-wrap">
+                                    <i class="fa-regular fa-user icon"></i>
+                                    <input type="text" id="buyerName" class="field-input"
+                                        placeholder="Nama saat pembelian" required>
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Email Terdaftar</label>
+                                <div class="input-wrap">
+                                    <i class="fa-regular fa-envelope icon"></i>
+                                    <input type="email" id="buyerEmail" class="field-input"
+                                        placeholder="email@contoh.com" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label">License Key</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-key icon"></i>
+                                <input type="text" id="licenseKey" class="field-input key-input"
+                                    placeholder="PRIMA-XXXX-XXXX-XXXX" required>
+                            </div>
+                            <div class="field-hint">
+                                <i class="fa-solid fa-circle-info" style="color: var(--accent);"></i>
+                                License key dikirim ke email saat pertama kali membeli.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="btnValidate">
+                            <i class="fa-solid fa-shield-check"></i> Validasi & Lanjut
+                        </button>
+                    </form>
+                </div>
+
+                <!-- ===== STEP 2: DURASI & METODE ===== -->
+                <div class="step-panel" id="panel-2">
+                    <!-- License Info Card -->
+                    <div class="license-card">
+                        <div class="license-card-icon">
+                            <i class="fa-solid fa-box-open"></i>
+                        </div>
+                        <div class="license-card-info">
+                            <div class="license-app-name" id="infoAppName">—</div>
+                            <div class="license-meta">
+                                <span class="meta-chip chip-type" id="infoType">—</span>
+                                <span class="meta-chip" id="infoStatusChip">—</span>
+                            </div>
+                            <div class="license-expiry" id="infoExpiryRow">
+                                <i class="fa-regular fa-calendar"></i>
+                                Expired: <span id="infoExpiry">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Duration Selection -->
+                    <div class="section-label">Pilih Durasi Perpanjangan</div>
+                    <div class="duration-list">
+                        <div class="duration-item selected" onclick="selectDuration('monthly', this)" id="dur-monthly">
+                            <div class="dur-radio"></div>
+                            <div class="dur-info">
+                                <div class="dur-name">1 Bulan</div>
+                                <div class="dur-desc">+30 hari masa aktif</div>
+                            </div>
+                            <div class="dur-price">
+                                <span id="price-monthly">Rp —</span>
+                                <small>/bulan</small>
+                            </div>
+                        </div>
+                        <div class="duration-item" onclick="selectDuration('yearly', this)" id="dur-yearly">
+                            <div class="dur-radio"></div>
+                            <div class="dur-info">
+                                <div class="dur-name">1 Tahun</div>
+                                <div class="dur-desc">+365 hari masa aktif</div>
+                            </div>
+                            <div class="dur-price">
+                                <span id="price-yearly">Rp —</span>
+                                <small>/tahun</small>
+                            </div>
+                            <span class="dur-badge">Hemat</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedDuration" value="monthly">
+
+                    <!-- Payment Method -->
+                    <div class="section-label">Metode Pembayaran</div>
+
+                    <!-- QRIS -->
+                    <div class="payment-group active" id="pg-qris" onclick="selectPaymentGroup('qris')">
+                        <div class="payment-group-header">
+                            <div class="pg-icon c-qris"><i class="fa-solid fa-qrcode"></i></div>
+                            <div class="pg-title">
+                                <div class="pg-name">QRIS</div>
+                                <div class="pg-desc">Semua Bank & e-Wallet</div>
+                            </div>
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" height="24" style="opacity:.8; margin-right:6px;" alt="">
+                            <div class="pg-radio"></div>
+                        </div>
+                    </div>
+
+                    <!-- Virtual Account -->
+                    <div class="payment-group" id="pg-va">
+                        <div class="payment-group-header" onclick="togglePG('va')">
+                            <div class="pg-icon c-va"><i class="fa-solid fa-building-columns"></i></div>
+                            <div class="pg-title">
+                                <div class="pg-name">Transfer Virtual Account</div>
+                                <div class="pg-desc">BCA, Mandiri, BNI, BRI, Permata, CIMB</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-down pg-chevron"></i>
+                        </div>
+                        <div class="payment-group-body">
+                            <div class="payment-options-list">
+                                <div class="payment-option-item" onclick="setPayment('bca',this)">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" alt="BCA">
+                                    <span class="poi-name">BCA Virtual Account</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                                <div class="payment-option-item" onclick="setPayment('mandiri',this)">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg" alt="Mandiri">
+                                    <span class="poi-name">Mandiri Bill Payment</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                                <div class="payment-option-item" onclick="setPayment('bni',this)">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg" alt="BNI">
+                                    <span class="poi-name">BNI Virtual Account</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                                <div class="payment-option-item" onclick="setPayment('bri',this)">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg" alt="BRI">
+                                    <span class="poi-name">BRI Virtual Account</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                                <div class="payment-option-item" onclick="setPayment('permata',this)">
+                                    <img src="https://upload.wikimedia.org/wikipedia/en/4/48/PermataBank_logo.svg" alt="Permata">
+                                    <span class="poi-name">Permata Virtual Account</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                                <div class="payment-option-item" onclick="setPayment('cimb',this)">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/CIMB_Niaga_logo.svg" alt="CIMB">
+                                    <span class="poi-name">CIMB Niaga Virtual Account</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- E-Wallet -->
+                    <div class="payment-group" id="pg-ewallet">
+                        <div class="payment-group-header" onclick="togglePG('ewallet')">
+                            <div class="pg-icon c-ew"><i class="fa-solid fa-wallet"></i></div>
+                            <div class="pg-title">
+                                <div class="pg-name">E-Wallet</div>
+                                <div class="pg-desc">GoPay, ShopeePay, OVO, DANA</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-down pg-chevron"></i>
+                        </div>
+                        <div class="payment-group-body">
+                            <div class="payment-options-list">
+                                <div class="payment-option-item" onclick="setPayment('gopay',this)">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay">
+                                    <span class="poi-name">GoPay (Instan)</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                                <div class="payment-option-item" onclick="setPayment('shopeepay',this)">
+                                    <img src="https://shopeepay.co.id/src/pages/home/assets/images/new-homepage/new-spp-logo.svg" alt="ShopeePay">
+                                    <span class="poi-name">ShopeePay (Instan)</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                                <div class="payment-option-item" onclick="setPayment('dana',this)">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" alt="DANA">
+                                    <span class="poi-name">DANA</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gerai Retail -->
+                    <div class="payment-group" id="pg-cstore">
+                        <div class="payment-group-header" onclick="togglePG('cstore')">
+                            <div class="pg-icon c-cs"><i class="fa-solid fa-store"></i></div>
+                            <div class="pg-title">
+                                <div class="pg-name">Gerai Retail</div>
+                                <div class="pg-desc">Indomaret & Alfamart</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-down pg-chevron"></i>
+                        </div>
+                        <div class="payment-group-body">
+                            <div class="payment-options-list">
+                                <div class="payment-option-item" onclick="setPayment('indomaret',this)">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9d/Logo_Indomaret.png" alt="Indomaret">
+                                    <span class="poi-name">Indomaret</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                                <div class="payment-option-item" onclick="setPayment('alfamart',this)">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Alfamart_logo.svg" alt="Alfamart">
+                                    <span class="poi-name">Alfamart</span>
+                                    <div class="poi-radio"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="selectedPayment" value="qris">
+
+                    <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 0;">
+                        <button onclick="processRenewal()" class="btn-primary" id="btnPay">
+                            <i class="fa-solid fa-lock"></i> Bayar & Perpanjang
+                        </button>
+                        <button onclick="resetStep()" class="btn-ghost">
+                            <i class="fa-solid fa-xmark"></i> Batal / Cek Key Lain
+                        </button>
+                    </div>
+
+                    <div style="text-align:center; margin-top:12px; font-size:0.73rem; color:var(--text-tertiary); display:flex; align-items:center; justify-content:center; gap:5px;">
+                        <i class="fa-solid fa-shield-halved"></i> Transaksi diamankan enkripsi SSL 256-bit
+                    </div>
+                </div>
+
+                <!-- ===== STEP 3: PAYMENT STATUS ===== -->
+                <div class="step-panel" id="panel-3">
+                    <div class="status-header">
+                        <span class="order-badge" id="renewOrderId">
+                            <i class="fa-solid fa-receipt"></i> —
+                        </span>
+                        <span class="timer-badge">
+                            <i class="fa-regular fa-clock"></i>
+                            <span id="renewTimer">15:00</span>
+                        </span>
+                    </div>
+
+                    <h3 style="font-size:1rem; font-weight:700; margin-bottom:4px;">Selesaikan Pembayaran</h3>
+                    <p style="font-size:0.83rem; color:var(--text-secondary); margin-bottom:18px;">
+                        Ikuti instruksi di bawah ini untuk menyelesaikan perpanjangan lisensi Anda.
+                    </p>
+
+                    <!-- Payment instruction area (filled by JS) -->
+                    <div id="paymentInstructionArea"></div>
+
+                    <div class="waiting-row">
+                        <div class="pulse-dot"></div>
+                        Menunggu konfirmasi pembayaran...
+                    </div>
+
+                    <button onclick="location.reload()" style="width:100%; margin-top:16px; padding:10px; background:none; border:none; color:var(--text-secondary); font-size:0.83rem; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <i class="fa-solid fa-arrow-left"></i> Batalkan & Mulai Ulang
+                    </button>
+                </div>
+
+            </div>
         </div>
 
-        <div id="step1">
-            <form onsubmit="checkLicense(event)">
-                <div class="mb-3">
-                    <label class="form-label fw-bold small text-muted">NAMA LENGKAP</label>
-                    <div class="input-group-custom">
-                        <i class="fa-solid fa-user input-icon"></i>
-                        <input type="text" id="buyerName" class="form-control-custom" placeholder="Nama saat pembelian"
-                            required>
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+
+            <!-- Order Summary -->
+
+            <!-- Info -->
+            <div class="sidebar-card">
+                <div class="sidebar-card-title">Informasi</div>
+                <div class="info-list">
+                    <div class="info-item">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Lisensi diperpanjang <strong>otomatis</strong> setelah pembayaran dikonfirmasi.</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-clock"></i>
+                        <span>Konfirmasi pembayaran membutuhkan waktu <strong>hingga 5 menit</strong>.</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Notifikasi perpanjangan dikirim ke <strong>email terdaftar</strong>.</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-headset"></i>
+                        <span>Butuh bantuan? <a href="/app/support" target="_blank" style="color:var(--primary); font-weight:600; text-decoration:none;">Hubungi CS</a> kami.</span>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold small text-muted">EMAIL TERDAFTAR</label>
-                    <div class="input-group-custom">
-                        <i class="fa-solid fa-envelope input-icon"></i>
-                        <input type="email" id="buyerEmail" class="form-control-custom" placeholder="email@contoh.com"
-                            required>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold small text-muted">NOMOR WHATSAPP <span
-                            class="text-secondary fw-normal">(Opsional)</span></label>
-                    <div class="input-group-custom">
-                        <i class="fa-solid fa-phone input-icon"></i>
-                        <input type="tel" id="buyerPhone" class="form-control-custom"
-                            placeholder="081234567xxx (opsional)">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fw-bold small text-muted">LICENSE KEY</label>
-                    <div class="input-group-custom">
-                        <i class="fa-solid fa-key input-icon"></i>
-                        <input type="text" id="licenseKey" class="form-control-custom fw-bold"
-                            placeholder="PRIMA-XXXX-XXXX" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary-premium w-100 py-3 rounded-3 fw-bold shadow-lg">
-                    <i class="fa-solid fa-shield-check me-2"></i> Validasi Lisensi
-                </button>
-            </form>
-            <div class="text-center mt-4">
-                <a href="/" class="text-decoration-none small text-muted hover-link">
-                    <i class="fa-solid fa-arrow-left me-1"></i> Kembali ke Dashboard
-                </a>
             </div>
+
+            <!-- Trust -->
+            <div class="sidebar-card" style="background: var(--primary-light); border-color: #c7d9f5;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <div style="width:36px; height:36px; background:var(--primary); border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1rem; flex-shrink:0;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div style="font-size:0.85rem; font-weight:700; color:var(--primary);">Transaksi Aman</div>
+                </div>
+                <div style="font-size:0.78rem; color:var(--primary-dark); line-height:1.6;">
+                    Pembayaran Anda diproses melalui <strong>Midtrans Core API</strong> dengan enkripsi SSL 256-bit dan terproteksi 3D Secure.
+                </div>
+            </div>
+
         </div>
+    </div>
 
-        <div id="step2" style="display: none;">
-            <div class="license-info-box">
-                <h6 class="fw-bold mb-1" id="infoAppName">Aplikasi Struk SPBU</h6>
-                <div class="d-flex justify-content-between text-muted small mb-2">
-                    <span>Status: <span id="infoStatus" class="fw-bold text-success">ACTIVE</span></span>
-                    <span>Type: <span id="infoType">YEARLY</span></span>
-                </div>
-                <div class="small text-danger fw-bold">
-                    Exp: <span id="infoExpiry">2026-12-31</span>
-                </div>
+    <!-- FINAL SUCCESS OVERLAY -->
+    <div id="finalOverlay">
+        <div style="padding: 32px; text-align: center;">
+            <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+            <h2 style="font-weight:800; margin-bottom:8px;">Perpanjangan Berhasil!</h2>
+            <p style="color:var(--text-secondary); margin-bottom:20px;">Lisensi Anda telah diperpanjang dan notifikasi dikirim ke email.</p>
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px; color:var(--text-tertiary); font-size:0.85rem;">
+                <div class="spinner dark"></div>
+                Mengarahkan ke halaman utama...
             </div>
-
-            <h6 class="fw-bold mb-3">Pilih Durasi Perpanjangan:</h6>
-
-            <div class="list-group mb-4">
-                <label class="list-group-item d-flex gap-3 align-items-center p-3 border rounded-3 mb-2"
-                    style="cursor: pointer;">
-                    <input class="form-check-input flex-shrink-0" type="radio" name="duration" value="monthly" checked>
-                    <div class="d-flex justify-content-between w-100 align-items-center">
-                        <div>
-                            <strong class="d-block text-dark">1 Bulan</strong>
-                            <small class="text-muted">+30 Hari masa aktif</small>
-                        </div>
-                        <span class="fw-bold text-primary">Rp 80.000</span>
-                    </div>
-                </label>
-
-                <label class="list-group-item d-flex gap-3 align-items-center p-3 border rounded-3"
-                    style="cursor: pointer;">
-                    <input class="form-check-input flex-shrink-0" type="radio" name="duration" value="yearly">
-                    <div class="d-flex justify-content-between w-100 align-items-center">
-                        <div>
-                            <strong class="d-block text-dark">1 Tahun <span
-                                    class="badge bg-success ms-1">HEMAT</span></strong>
-                            <small class="text-muted">+365 Hari masa aktif</small>
-                        </div>
-                        <span class="fw-bold text-primary">Rp 860.000</span>
-                    </div>
-                </label>
-            </div>
-
-            <button onclick="processRenewal()" class="btn btn-success w-100 py-3 rounded-3 fw-bold shadow-sm mb-2">
-                <i class="fa-solid fa-shield-halved me-2"></i> Bayar & Perpanjang
-            </button>
-            <button onclick="resetStep()" class="btn btn-light w-100 py-2 text-muted small">Batal / Cek Key
-                Lain</button>
         </div>
     </div>
 
     <script>
-        let currentLicenseData = null;
+        // =================== PAGE LOAD ===================
+        document.addEventListener('DOMContentLoaded', () => {
+            requestAnimationFrame(() => document.body.classList.add('loaded'));
 
-        // Di Website Kamu
-        window.onload = function () {
+            // Pre-fill license key from URL param
             const urlParams = new URLSearchParams(window.location.search);
             const key = urlParams.get('key');
-            if (key) {
-                document.getElementById('licenseKey').value = key;
+            if (key) document.getElementById('licenseKey').value = key;
+        });
+
+        window.addEventListener('pageshow', (e) => {
+            if (e.persisted) document.body.classList.add('loaded');
+        });
+
+        // =================== STATE ===================
+        let currentLicenseData = null;
+        let selectedPaymentMethod = 'qris';
+        let selectedDurationValue = 'monthly';
+        let activePolling = null;
+        let countdownInterval = null;
+
+        // =================== STEP UI ===================
+        function goToStep(step) {
+            // Hide all panels
+            document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`panel-${step}`).classList.add('active');
+
+            // Update step nodes
+            for (let i = 1; i <= 3; i++) {
+                const node = document.getElementById(`snode-${i}`);
+                const circle = document.getElementById(`scircle-${i}`);
+                const line = document.getElementById(`sline-${i}`);
+                node.classList.remove('active', 'done');
+                if (i < step) {
+                    node.classList.add('done');
+                    circle.innerHTML = '<i class="fa-solid fa-check" style="font-size:0.65rem;"></i>';
+                } else if (i === step) {
+                    node.classList.add('active');
+                    circle.textContent = i;
+                } else {
+                    circle.textContent = i;
+                }
+                if (line) line.classList.toggle('done', i < step);
+            }
+
+            // Scroll to top on mobile
+            if (window.innerWidth <= 768) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
-        // 1. FUNGSI CEK LISENSI
+        // =================== STEP 1: VALIDASI ===================
         async function checkLicense(e) {
             e.preventDefault();
-            const key = document.getElementById('licenseKey').value.trim();
-            const name = document.getElementById('buyerName').value.trim();
+            const key   = document.getElementById('licenseKey').value.trim().toUpperCase();
+            const name  = document.getElementById('buyerName').value.trim();
             const email = document.getElementById('buyerEmail').value.trim();
-            const phone = document.getElementById('buyerPhone').value.trim();
-
             if (!key || !name || !email) return;
 
-            // Tampilkan Loading
-            Swal.fire({ title: 'Mengecek & Validasi...', didOpen: () => Swal.showLoading() });
+            const btn = document.getElementById('btnValidate');
+            btn.innerHTML = '<span class="spinner"></span> Memvalidasi...';
+            btn.disabled = true;
 
             try {
-                // Panggil Endpoint Backend untuk Cek Data
                 const res = await fetch(`/.netlify/functions/licenses?id=${key}`);
                 const data = await res.json();
 
                 if (res.ok && data) {
-                    // Validasi Kecocokan Nama dan Email (Case Insensitive)
-                    const dbName = (data.name || '').toLowerCase();
+                    const dbName  = (data.name  || '').toLowerCase();
                     const dbEmail = (data.email || '').toLowerCase();
 
                     if (dbName === name.toLowerCase() && dbEmail === email.toLowerCase()) {
-                        Swal.close();
-                        data.key = key; // PASTIKAN KEY ADA (untuk pengiriman balik nanti)
-                        // Simpan phone tambahan ke object data untuk proses transaksi nanti
-                        data.phone = phone;
+                        data.key = key;
                         currentLicenseData = data;
-                        showRenewalOptions(data);
+                        populateRenewalStep(data);
+                        goToStep(2);
                     } else {
-                        throw new Error('Data Nama atau Email tidak cocok dengan License Key ini.');
+                        throw new Error('Nama atau email tidak cocok dengan license key ini.');
                     }
                 } else {
-                    throw new Error('License Key tidak ditemukan atau tidak valid.');
+                    throw new Error('License key tidak ditemukan atau tidak valid.');
                 }
             } catch (err) {
-                Swal.fire('Validasi Gagal', err.message, 'error');
+                Swal.fire({
+                    title: 'Validasi Gagal',
+                    text: err.message,
+                    icon: 'error',
+                    confirmButtonColor: '#1865ca'
+                });
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Validasi & Lanjut';
+                btn.disabled = false;
             }
         }
 
-        // 2. TAMPILKAN PILIHAN DURASI
-        function showRenewalOptions(data) {
-            document.getElementById('step1').style.display = 'none';
-            document.getElementById('step2').style.display = 'block';
+        // =================== POPULATE STEP 2 ===================
+        function populateRenewalStep(data) {
+            // License card
+            document.getElementById('infoAppName').textContent = data.appName || 'Unknown App';
+            document.getElementById('infoType').textContent = (data.type || 'Standard').toUpperCase();
 
-            document.getElementById('infoAppName').innerText = data.appName || 'Unknown App';
-            document.getElementById('infoStatus').innerText = (data.status || 'inactive').toUpperCase();
-            document.getElementById('infoType').innerText = (data.type || 'Standard').toUpperCase();
-            document.getElementById('infoExpiry').innerText = new Date(data.expiryDate).toLocaleDateString('id-ID', {
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            const statusChip = document.getElementById('infoStatusChip');
+            const isActive = data.status === 'active';
+            statusChip.textContent = isActive ? 'AKTIF' : 'TIDAK AKTIF';
+            statusChip.className = `meta-chip ${isActive ? 'chip-active' : 'chip-expired'}`;
+
+            const expRow = document.getElementById('infoExpiryRow');
+            const expDate = new Date(data.expiryDate);
+            const isExpired = expDate < new Date();
+            document.getElementById('infoExpiry').textContent = expDate.toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric'
             });
+            if (isExpired) expRow.classList.add('expired');
 
-            // Warnai status
-            const statEl = document.getElementById('infoStatus');
-            statEl.className = data.status === 'active' ? 'fw-bold text-success' : 'fw-bold text-danger';
+            // Harga dari data catalog atau hardcode default
+            const prices = data.renewalPrice || { monthly: 80000, yearly: 860000 };
+            document.getElementById('price-monthly').textContent = 'Rp ' + (prices.monthly || 80000).toLocaleString('id-ID');
+            document.getElementById('price-yearly').textContent = 'Rp ' + (prices.yearly || 860000).toLocaleString('id-ID');
+
+            // Sidebar summary
+            document.getElementById('sumAppName').textContent = data.appName || '—';
+            updateSummary();
         }
 
-        // 3. PROSES PEMBAYARAN
+        function updateSummary() {
+            const prices = currentLicenseData?.renewalPrice || { monthly: 80000, yearly: 860000 };
+            const dur = selectedDurationValue;
+            const price = prices[dur] || (dur === 'monthly' ? 80000 : 860000);
+            const durLabel = dur === 'monthly' ? '1 Bulan' : '1 Tahun';
+            const methodLabel = selectedPaymentMethod.toUpperCase();
+
+            document.getElementById('sumDuration').textContent = durLabel;
+            document.getElementById('sumMethod').textContent = methodLabel;
+            document.getElementById('sumTotal').textContent = 'Rp ' + price.toLocaleString('id-ID');
+        }
+
+        // =================== DURATION SELECT ===================
+        function selectDuration(value, el) {
+            selectedDurationValue = value;
+            document.getElementById('selectedDuration').value = value;
+            document.querySelectorAll('.duration-item').forEach(d => d.classList.remove('selected'));
+            el.classList.add('selected');
+            updateSummary();
+        }
+
+        // =================== PAYMENT GROUP ===================
+        function togglePG(id) {
+            const group = document.getElementById(`pg-${id}`);
+            const isOpen = group.classList.contains('open');
+            ['va', 'ewallet', 'cstore'].forEach(g => document.getElementById(`pg-${g}`)?.classList.remove('open'));
+            if (!isOpen) {
+                group.classList.add('open');
+                selectPaymentGroup(id);
+            }
+        }
+
+        function selectPaymentGroup(group) {
+            document.querySelectorAll('.payment-group').forEach(g => g.classList.remove('active'));
+            document.getElementById(`pg-${group}`)?.classList.add('active');
+            if (group === 'qris') {
+                document.querySelectorAll('.payment-option-item').forEach(o => o.classList.remove('selected'));
+                setPayment('qris', null);
+            }
+        }
+
+        function setPayment(method, el) {
+            selectedPaymentMethod = method;
+            document.getElementById('selectedPayment').value = method;
+            document.querySelectorAll('.payment-option-item').forEach(o => o.classList.remove('selected'));
+            if (el) el.classList.add('selected');
+            updateSummary();
+        }
+
+        // =================== STEP 2: PROSES BAYAR (Core API) ===================
         async function processRenewal() {
-            const duration = document.querySelector('input[name="duration"]:checked').value;
+            if (!currentLicenseData) return;
 
-            // Hitung Harga (Bisa diambil dari config backend nanti biar aman)
-            const price = duration === 'monthly' ? 80000 : 860000;
+            const duration      = selectedDurationValue;
+            const paymentMethod = selectedPaymentMethod;
+            const prices        = currentLicenseData.renewalPrice || { monthly: 80000, yearly: 860000 };
+            const amount        = prices[duration] || (duration === 'monthly' ? 80000 : 860000);
 
-            Swal.fire({ title: 'Memproses Pembayaran...', didOpen: () => Swal.showLoading() });
+            const btn = document.getElementById('btnPay');
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span> Memproses...';
+            btn.disabled = true;
 
             try {
-                // Panggil Endpoint Create Transaction dengan mode RENEWAL
+                // Panggil path RENEWAL via Core API
                 const res = await fetch('/.netlify/functions/public_order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        licenseKey: currentLicenseData.key,
-                        duration: duration,
-                        amount: price,
-                        name: currentLicenseData.name,
-                        email: currentLicenseData.email,
-                        phone: currentLicenseData.phone || '', // Tambahkan Nomor Telepon
-                        orderType: 'RENEWAL'
+                        action: 'renew_transaction',
+                        licenseKey:  currentLicenseData.key,
+                        duration,
+                        amount,
+                        buyerName:   currentLicenseData.name,
+                        buyerEmail:  currentLicenseData.email,
+                        paymentMethod
                     })
                 });
 
-                const result = await res.json();
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Gagal membuat transaksi renewal');
 
-                if (res.ok && result.token) {
-                    Swal.close();
-                    // Buka Snap Midtrans
-                    window.snap.pay(result.token, {
-                        onSuccess: async function (paymentResult) {
-                            Swal.fire({
-                                title: 'Memverifikasi...',
-                                text: 'Sedang mengaktifkan perpanjangan...',
-                                allowOutsideClick: false,
-                                didOpen: () => { Swal.showLoading(); }
-                            });
+                // Midtrans Core API mengembalikan field 'order_id'
+                const orderId = data.order_id || data.orderId || '—';
 
-                            try {
-                                // Manual trigger verification (Fail-safe for local dev/webhook delay)
-                                await fetch('/.netlify/functions/public_order', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        action: 'verify_payment',
-                                        orderId: result.orderId
-                                    })
-                                });
+                goToStep(3);
+                document.getElementById('renewOrderId').innerHTML =
+                    `<i class="fa-solid fa-receipt"></i> ${orderId}`;
+                renderPaymentInstruction(data);
+                startPolling(orderId);
+                startCountdown(15 * 60);
 
-                                Swal.fire('Berhasil!', 'Lisensi Anda telah diperpanjang.', 'success').then(() => location.reload());
-                            } catch (e) {
-                                console.error("Verification Error:", e);
-                                Swal.fire('Selesai', 'Pembayaran diterima. Jika lisensi belum update, tunggu beberapa saat.', 'info').then(() => location.reload());
-                            }
-                        },
-                        onPending: function (paymentResult) {
-                            Swal.fire('Pending', 'Silakan selesaikan pembayaran Anda.', 'warning');
-                        },
-                        onError: function (paymentResult) {
-                            Swal.fire('Gagal', 'Pembayaran gagal.', 'error');
-                        }
-                    });
-                } else {
-                    throw new Error(result.error || 'Gagal membuat transaksi');
-                }
             } catch (err) {
-                Swal.fire('Error', err.message, 'error');
+                Swal.fire({ title: 'Gagal', text: err.message, icon: 'error', confirmButtonColor: '#1865ca' });
+            } finally {
+                btn.innerHTML = orig;
+                btn.disabled = false;
             }
         }
 
+        // =================== RENDER INSTRUCTION (Core API) ===================
+        function renderPaymentInstruction(data) {
+            const area = document.getElementById('paymentInstructionArea');
+            let html = '';
+
+            const getLogo = (type) => {
+                const logos = {
+                    bca:       'https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg',
+                    mandiri:   'https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg',
+                    bni:       'https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg',
+                    bri:       'https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg',
+                    permata:   'https://upload.wikimedia.org/wikipedia/en/4/48/PermataBank_logo.svg',
+                    cimb:      'https://upload.wikimedia.org/wikipedia/commons/3/38/CIMB_Niaga_logo.svg',
+                    gopay:     'https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg',
+                    shopeepay: 'https://shopeepay.co.id/src/pages/home/assets/images/new-homepage/new-spp-logo.svg',
+                    dana:      'https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg',
+                    qris:      'https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg',
+                    indomaret: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Logo_Indomaret.png',
+                    alfamart:  'https://upload.wikimedia.org/wikipedia/commons/8/86/Alfamart_logo.svg',
+                };
+                return logos[type] || '';
+            };
+
+            if (data.payment_type === 'qris') {
+                // QRIS — tampilkan QR code
+                const qrUrl = data.actions?.find(a => a.name === 'generate-qr-code')?.url || '';
+                html = `
+                    <div class="payment-display" style="text-align:center;">
+                        <div style="margin-bottom:10px;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" height="28" alt="QRIS">
+                        </div>
+                        <div style="background:#fff; display:inline-block; padding:10px; border-radius:14px; border:1px solid var(--border); margin-bottom:10px;">
+                            <img src="${qrUrl}" style="width:200px; height:200px; border-radius:8px; display:block;" alt="QR Code">
+                        </div>
+                        <div style="font-size:0.7rem; color:var(--text-tertiary); font-weight:700; letter-spacing:1px; margin-bottom:12px;">SCAN UNTUK BAYAR</div>
+                        <button class="copy-btn" onclick="downloadQR('${qrUrl}', '${data.order_id}')">
+                            <i class="fa-solid fa-download"></i> Unduh QR
+                        </button>
+                    </div>
+                    <div style="font-size:0.8rem; color:var(--text-secondary); background:var(--accent-light); padding:10px 14px; border-radius:8px; display:flex; align-items:flex-start; gap:8px;">
+                        <i class="fa-solid fa-circle-info" style="color:var(--accent); margin-top:2px; flex-shrink:0;"></i>
+                        Buka aplikasi e-wallet atau mobile banking, lalu scan kode QR di atas.
+                    </div>`;
+
+            } else if (data.payment_type === 'bank_transfer' || data.payment_type === 'echannel') {
+                // Virtual Account
+                let vaNumber = '', bankCode = '', bankName = '', bankLogo = '';
+                let extraInfo = '', copyValue = '';
+
+                if (data.va_numbers) {
+                    vaNumber  = data.va_numbers[0].va_number;
+                    bankCode  = data.va_numbers[0].bank;
+                    bankName  = bankCode.toUpperCase();
+                    bankLogo  = getLogo(bankCode);
+                    copyValue = vaNumber;
+                } else if (data.bill_key) {
+                    vaNumber  = data.bill_key;
+                    bankCode  = 'mandiri';
+                    bankName  = 'MANDIRI';
+                    bankLogo  = getLogo('mandiri');
+                    copyValue = data.bill_key;
+                    extraInfo = `<div class="display-label" style="margin-bottom:4px;">Kode Biller</div>
+                                 <div class="display-code" style="font-size:1.1rem; margin-bottom:12px;">${data.biller_code}</div>`;
+                } else if (data.permata_va_number) {
+                    vaNumber  = data.permata_va_number;
+                    bankCode  = 'permata';
+                    bankName  = 'PERMATA';
+                    bankLogo  = getLogo('permata');
+                    copyValue = vaNumber;
+                }
+
+                html = `
+                    <div style="text-align:center; margin-bottom:14px;">
+                        <div style="display:inline-block; background:#fff; border:1px solid var(--border); border-radius:10px; padding:10px 20px;">
+                            <img src="${bankLogo}" height="32" alt="${bankName}">
+                        </div>
+                    </div>
+                    <div class="payment-display">
+                        ${extraInfo}
+                        <div class="display-label">Nomor Virtual Account</div>
+                        <div class="display-code">${vaNumber}</div>
+                        <button class="copy-btn" onclick="copyText('${copyValue}')">
+                            <i class="fa-regular fa-copy"></i> Salin Nomor
+                        </button>
+                    </div>
+                    <div style="font-size:0.8rem; color:#856404; background:#fff3cd; padding:10px 14px; border-radius:8px; display:flex; align-items:flex-start; gap:8px;">
+                        <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px; flex-shrink:0;"></i>
+                        <span><strong>Penting:</strong> Transfer tepat ke nomor VA di atas. Verifikasi otomatis setelah pembayaran.</span>
+                    </div>`;
+
+            } else if (data.payment_type === 'gopay' || data.payment_type === 'shopeepay') {
+                // E-Wallet deeplink
+                const deepLink   = data.actions?.find(a => a.name === 'deeplink-redirect')?.url || '#';
+                const walletName = data.payment_type === 'gopay' ? 'GoPay' : 'ShopeePay';
+                const walletLogo = getLogo(data.payment_type);
+
+                html = `
+                    <div style="text-align:center; padding:16px 0;">
+                        <div style="width:80px; height:80px; border-radius:50%; background:#fff; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+                            <img src="${walletLogo}" height="36" alt="${walletName}">
+                        </div>
+                        <h4 style="font-weight:700; margin-bottom:8px; font-size:1rem;">Lanjut ke ${walletName}</h4>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:20px;">Klik tombol di bawah untuk membuka aplikasi ${walletName}.</p>
+                        <a href="${deepLink}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:11px 28px; background:#1865ca; color:#fff; border-radius:100px; font-weight:700; text-decoration:none; font-size:0.88rem;">
+                            <i class="fa-solid fa-mobile-screen-button"></i> Buka ${walletName}
+                        </a>
+                    </div>`;
+
+            } else if (data.payment_type === 'cstore') {
+                // Convenience store
+                const storeName = data.store?.charAt(0).toUpperCase() + data.store?.slice(1) || 'Retail';
+                const storeLogo = getLogo(data.store);
+                let merchantInfo = '';
+                if (data.store === 'indomaret' && data.merchant_id) {
+                    merchantInfo = `<div class="display-label">Merchant ID</div>
+                                    <div class="display-code" style="font-size:1.1rem; margin-bottom:12px;">${data.merchant_id}</div>`;
+                }
+
+                html = `
+                    <div style="text-align:center; margin-bottom:14px;">
+                        <div style="display:inline-block; background:#fff; border:1px solid var(--border); border-radius:10px; padding:10px 20px;">
+                            <img src="${storeLogo}" height="32" alt="${storeName}">
+                        </div>
+                    </div>
+                    <div class="payment-display">
+                        ${merchantInfo}
+                        <div class="display-label">Kode Pembayaran</div>
+                        <div class="display-code">${data.payment_code}</div>
+                        <button class="copy-btn" onclick="copyText('${data.payment_code}')">
+                            <i class="fa-regular fa-copy"></i> Salin Kode
+                        </button>
+                    </div>
+                    <div style="font-size:0.8rem; color:var(--text-secondary); background:var(--accent-light); padding:10px 14px; border-radius:8px; display:flex; align-items:flex-start; gap:8px;">
+                        <i class="fa-solid fa-circle-info" style="color:var(--accent); margin-top:2px; flex-shrink:0;"></i>
+                        Tunjukkan kode ini ke kasir <strong>${storeName}</strong> terdekat.
+                    </div>`;
+
+            } else if (data.payment_type === 'snap_redirect' && data.redirect_url) {
+                // Fallback redirect
+                html = `
+                    <div style="text-align:center; padding:16px 0;">
+                        <a href="${data.redirect_url}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:12px 28px; background:#1865ca; color:#fff; border-radius:100px; font-weight:700; text-decoration:none; font-size:0.88rem;">
+                            <i class="fa-solid fa-arrow-right"></i> Lanjut ke Halaman Pembayaran
+                        </a>
+                    </div>`;
+                setTimeout(() => window.open(data.redirect_url, '_blank'), 1500);
+            }
+
+            area.innerHTML = html;
+        }
+
+        // =================== POLLING ===================
+        function startPolling(orderId) {
+            if (activePolling) clearInterval(activePolling);
+
+            activePolling = setInterval(async () => {
+                try {
+                    const res = await fetch('/.netlify/functions/public_order', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: 'verify_payment',
+                            orderId,
+                            appId: currentLicenseData?.appId,
+                            buyerName:  currentLicenseData?.name,
+                            buyerEmail: currentLicenseData?.email,
+                            duration:   selectedDurationValue
+                        })
+                    });
+                    const result = await res.json();
+
+                    if (res.ok && (result.status === 'success' || result.key)) {
+                        clearInterval(activePolling);
+                        clearInterval(countdownInterval);
+
+                        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
+                        audio.play().catch(() => {});
+
+                        setTimeout(() => {
+                            const overlay = document.getElementById('finalOverlay');
+                            overlay.style.display = 'flex';
+                            setTimeout(() => overlay.classList.add('visible'), 10);
+                        }, 800);
+
+                        setTimeout(() => {
+                            window.location.href = result.redirect_url || '/';
+                        }, 5000);
+                    }
+                } catch (e) {
+                    console.log('Polling error', e);
+                }
+            }, 3000);
+        }
+
+        // =================== COUNTDOWN ===================
+        function startCountdown(duration) {
+            if (countdownInterval) clearInterval(countdownInterval);
+            let timer = duration;
+
+            countdownInterval = setInterval(() => {
+                const m = String(Math.floor(timer / 60)).padStart(2, '0');
+                const s = String(timer % 60).padStart(2, '0');
+                const el = document.getElementById('renewTimer');
+                if (el) el.textContent = `${m}:${s}`;
+                if (--timer < 0) {
+                    clearInterval(countdownInterval);
+                    if (el) el.textContent = 'HABIS';
+                }
+            }, 1000);
+        }
+
+        // =================== RESET ===================
         function resetStep() {
             currentLicenseData = null;
-            document.getElementById('step1').style.display = 'block';
-            document.getElementById('step2').style.display = 'none';
+            selectedPaymentMethod = 'qris';
+            selectedDurationValue = 'monthly';
+            if (activePolling) clearInterval(activePolling);
+            if (countdownInterval) clearInterval(countdownInterval);
+
             document.getElementById('licenseKey').value = '';
             document.getElementById('buyerName').value = '';
             document.getElementById('buyerEmail').value = '';
-            document.getElementById('buyerPhone').value = '';
+            document.getElementById('sumAppName').textContent = '—';
+            document.getElementById('sumDuration').textContent = '—';
+            document.getElementById('sumTotal').textContent = 'Rp —';
+            goToStep(1);
+        }
+
+        // =================== UTILITIES ===================
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Berhasil disalin!', showConfirmButton: false, timer: 1500 });
+            });
+        }
+
+        async function downloadQR(url, orderId) {
+            try {
+                const blob = await (await fetch(url)).blob();
+                const blobUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl; a.download = `QRIS-RENEW-${orderId}.png`;
+                document.body.appendChild(a); a.click();
+                document.body.removeChild(a); URL.revokeObjectURL(blobUrl);
+            } catch { window.open(url, '_blank'); }
         }
     </script>
 </body>

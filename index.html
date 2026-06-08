@@ -523,7 +523,7 @@
                 <p class="text-muted">Aplikasi unggulan yang telah membantu ratusan entitas bisnis di seluruh Indonesia.
                 </p>
             </div>
-            <div class="row g-4" id="productContainer">
+            <div class="row g-4 justify-content-center" id="productContainer">
                 <!-- Loading State -->
                 <div class="col-12 text-center py-5">
                     <div class="spinner-border text-primary" role="status"></div>
@@ -598,9 +598,8 @@
                     <p class="small">PT PrimaDev Digital Technology berkomitmen untuk menghadirkan teknologi yang
                         mempermudah kehidupan dan meningkatkan daya saing bisnis di pasar global.</p>
                     <div class="d-flex gap-3 mt-4">
-                        <a href="/app/support" class="footer-link"><i
-                                class="fa-solid fa-headset fs-5"></i></a>
-                        <a href="https://instagram.com/quoteaai" class="footer-link"><i
+                        <a href="/app/support" class="footer-link"><i class="fa-solid fa-headset fs-5"></i></a>
+                        <a href="https://instagram.com/therealwisnu" class="footer-link"><i
                                 class="fa-brands fa-instagram fs-5"></i></a>
                         <a href="https://github.com/iamwisnu99" class="footer-link"><i
                                 class="fa-brands fa-github fs-5"></i></a>
@@ -631,8 +630,8 @@
             <hr class="border-secondary mt-100">
             <div class="row pt-4">
                 <div class="col-md-6 text-center text-md-start">
-                    <p class="small mb-0">&copy; <span id="currentYear"></span> PT. PrimaDev Digital Technology. Built
-                        with AI & Human Mastery.</p>
+                    <p class="small mb-0">&copy; <span id="currentYear"></span> PT. PrimaDev Digital Technology | All
+                        Rights Reserved.</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <p class="small mb-0">Indonesia Headquarter, Jakarta.</p>
@@ -652,7 +651,7 @@
                 <div class="modal-body p-5">
                     <p class="lead fw-bold text-primary mb-4">"Bukan sekadar kode, tapi tentang memecahkan masalah
                         nyata."</p>
-                    <p>PrimaDev lahir dari semangat untuk menjembatani kesenjangan antara teknologi mutakhir dan
+                    <p>PrimaDev lahir dari semangat untuk menjembatani kesenjangan antara teknologi terdepan dan
                         operasional bisnis tradisional. Kami percaya bahwa setiap pengusaha berhak mendapatkan alat
                         digital yang handal untuk berkompetisi di skala yang lebih besar.</p>
                     <p>Dalam proses kreatif kami, AI berperan sebagai katalisator kecepatan, namun intusi manusia tetap
@@ -719,22 +718,48 @@
                     Object.keys(catalog).forEach((key, index) => {
                         const item = catalog[key];
                         // Use original card structure but dynamic data
+                        const isWA = item.name.toLowerCase().includes('wa') || item.name.toLowerCase().includes('whatsapp');
+                        const colorHex = isWA ? '#10b981' : '#1865ca'; // Brand Blue
+                        const colorDark = isWA ? '#059669' : '#1456a8'; // Dark Blue
+                        const colorRgb = isWA ? '16, 185, 129' : '24, 101, 202';
+
                         const html = `
-                            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="${index * 100}">
-                                <div class="card-modern">
-                                    <div class="icon-box" style="${item.name.toLowerCase().includes('wa') || item.name.toLowerCase().includes('whatsapp') ? 'background: rgba(16, 185, 129, 0.1); color: var(--emerald);' : ''}">
-                                        <i class="fa-solid ${item.icon || 'fa-rocket'}"></i>
+                            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="${index * 100}">
+                                <div class="software-card position-relative p-4 bg-white rounded-4 d-flex flex-column h-100" 
+                                     style="border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: all 0.3s ease; overflow: hidden; cursor: pointer;"
+                                     onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 15px 35px rgba(${colorRgb}, 0.12)'; this.style.borderColor='${colorHex}';"
+                                     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.04)'; this.style.borderColor='rgba(226, 232, 240, 0.8)';">
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mb-4 position-relative z-1">
+                                        <div class="d-flex align-items-center justify-content-center rounded-circle shadow-sm" 
+                                             style="width: 50px; height: 50px; background: rgba(${colorRgb}, 0.1); color: ${colorHex}; font-size: 1.3rem;">
+                                            <i class="fa-solid ${item.icon || 'fa-rocket'}"></i>
+                                        </div>
+                                        <span class="badge px-3 py-2 rounded-pill fw-bold" 
+                                              style="background: rgba(241, 245, 249, 1); color: #475569; border: 1px solid #e2e8f0; font-size: 0.7rem;">
+                                            ${item.brand || 'PrimaDev'}
+                                        </span>
                                     </div>
-                                    <h4 class="fw-bold mb-3">${item.name}</h4>
-                                    <p class="text-muted mb-4">${item.description || 'Solusi teknologi terdepan dari PrimaDev untuk mendukung efisiensi bisnis Anda.'}</p>
-                                    <div class="d-flex align-items-center gap-2 mb-4">
-                                        <span class="badge bg-light text-dark border">${item.brand || 'PrimaDev'}</span>
-                                        <span class="badge bg-light text-dark border">Secure</span>
-                                        <span class="badge bg-light text-dark border">Professional</span>
+
+                                    <h4 class="fw-bold text-dark mb-2 position-relative z-1" style="font-size: 1.25rem;">${item.name}</h4>
+                                    
+                                    <p class="text-secondary mb-4 position-relative z-1" style="font-size: 0.9rem; line-height: 1.5; flex-grow: 1;">
+                                        ${item.description || 'Solusi teknologi terdepan dari PrimaDev untuk mendukung efisiensi bisnis Anda secara maksimal.'}
+                                    </p>
+
+                                    <div class="d-flex flex-wrap gap-2 mb-4 position-relative z-1">
+                                        <span class="badge bg-light text-secondary fw-medium px-2 py-1 rounded border" style="font-size: 0.7rem;"><i class="fa-solid fa-check text-success me-1"></i> Secure</span>
+                                        <span class="badge bg-light text-secondary fw-medium px-2 py-1 rounded border" style="font-size: 0.7rem;"><i class="fa-solid fa-check text-success me-1"></i> Fast</span>
                                     </div>
-                                    <a href="/app/store" class="btn btn-outline-primary rounded-pill px-4" style="${item.name.toLowerCase().includes('wa') || item.name.toLowerCase().includes('whatsapp') ? 'border-color: var(--emerald); color: var(--emerald);' : ''}\">
-                                        Lihat Detail <i class="fa-solid fa-chevron-right ms-2 small"></i>
-                                    </a>
+
+                                    <div class="pt-3 mt-auto border-top position-relative z-1">
+                                        <a href="/app/store" class="btn w-100 py-2 rounded-3 fw-bold d-flex justify-content-center align-items-center gap-2" 
+                                           style="background: transparent; color: ${colorHex}; border: 1.5px solid ${colorHex}; font-size: 0.9rem; transition: all 0.2s;"
+                                           onmouseover="this.style.background='${colorHex}'; this.style.color='white';"
+                                           onmouseout="this.style.background='transparent'; this.style.color='${colorHex}';">
+                                            Lihat Produk <i class="fa-solid fa-arrow-right-long"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         `;

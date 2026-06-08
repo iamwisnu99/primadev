@@ -327,6 +327,101 @@ exports.handler = async (event, context) => {
             }
         }
 
+        // --- PATH RENEWAL: Core API ---
+        if (action === 'renew_transaction') {
+            const { licenseKey, duration, buyerName, buyerEmail, paymentMethod } = body;
+            if (!licenseKey || !duration || !buyerName || !buyerEmail || !paymentMethod) {
+                return { statusCode: 400, headers, body: JSON.stringify({ error: 'Data tidak lengkap untuk renewal' }) };
+            }
+
+            // Ambil data lisensi dari Firebase
+            let licenseData = null;
+            if (db) {
+                const licSnap = await db.ref(`licenses/${licenseKey}`).once('value');
+                if (licSnap.exists()) licenseData = licSnap.val();
+            }
+
+            // Ambil harga dari produk atau fallback
+            let amount = body.amount || 0;
+            if (amount <= 0) {
+                const appId = licenseData?.appId;
+                const product = PRICING_DB[appId];
+                if (product && product.price && product.price[duration]) {
+                    amount = Math.floor(product.price[duration]);
+                } else {
+                    amount = duration === 'yearly' ? 860000 : 80000; // fallback default
+                }
+            }
+
+            const orderId = `RENEW-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+            const appName = licenseData?.appName || 'Lisensi PrimaDev';
+
+            let parameter = {
+                transaction_details: { order_id: orderId, gross_amount: amount },
+                customer_details: { first_name: buyerName, email: buyerEmail },
+                item_details: [{ id: `RENEWAL-${licenseKey}`, price: amount, quantity: 1, name: `Perpanjang ${appName} (${duration})`.substring(0, 50) }],
+                custom_field1: licenseKey,
+                custom_field2: duration,
+                custom_field3: 'renewal'
+            };
+
+            if (paymentMethod === 'qris') {
+                parameter.payment_type = 'qris';
+                parameter.qris = { acquirer: 'gopay' };
+            } else if (['bca', 'bni', 'bri', 'permata', 'cimb'].includes(paymentMethod)) {
+                parameter.payment_type = 'bank_transfer';
+                parameter.bank_transfer = { bank: paymentMethod };
+            } else if (paymentMethod === 'mandiri') {
+                parameter.payment_type = 'echannel';
+                parameter.echannel = { bill_info1: 'Renewal:', bill_info2: 'Software License' };
+            } else if (paymentMethod === 'gopay' || paymentMethod === 'shopeepay') {
+                parameter.payment_type = paymentMethod;
+                parameter[paymentMethod] = { callback_url: 'https://apps-primadev.netlify.app/app/thankyou' };
+            } else if (paymentMethod === 'dana' || paymentMethod === 'ovo') {
+                parameter.payment_type = 'qris';
+                parameter.qris = { acquirer: 'gopay' };
+            } else if (paymentMethod === 'indomaret' || paymentMethod === 'alfamart') {
+                parameter.payment_type = 'cstore';
+                parameter.cstore = { store: paymentMethod, message: 'Perpanjangan Lisensi PrimaDev' };
+            } else {
+                parameter.payment_type = 'qris';
+                parameter.qris = { acquirer: 'gopay' };
+            }
+
+            console.log('[BACKEND] Renewal charge parameter:', JSON.stringify(parameter));
+
+            try {
+                const chargeResponse = await core.charge(parameter);
+                console.log('[BACKEND] Renewal Charge Success:', chargeResponse.transaction_id);
+
+                if (db) {
+                    await db.ref(`transactions/${orderId}`).set({
+                        orderId,
+                        status: 'pending',
+                        amount,
+                        customerName: buyerName,
+                        customerEmail: buyerEmail,
+                        appName,
+                        appId: licenseData?.appId || '',
+                        duration,
+                        orderType: 'RENEWAL',
+                        targetLicenseKey: licenseKey,
+                        paymentMethod,
+                        createdAt: Date.now()
+                    });
+                }
+
+                return { statusCode: 200, headers, body: JSON.stringify(chargeResponse) };
+            } catch (chargeError) {
+                console.error('[BACKEND] Renewal Charge Failed:', chargeError.message);
+                return {
+                    statusCode: chargeError.httpStatusCode || 400,
+                    headers,
+                    body: JSON.stringify({ error: chargeError.message, details: chargeError.ApiResponse })
+                };
+            }
+        }
+
         if (action === 'verify_payment') {
             const { orderId } = body;
             if (!orderId) return { statusCode: 400, headers, body: JSON.stringify({ error: "Missing orderId" }) };
