@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selesaikan Pembayaran - PrimaDev</title>
+    
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary: #1865ca;
+            --primary-dark: #1456a8;
+            --primary-light: #e8f0fe;
+            --bg-page: #f8f9fa;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #fff; color: var(--text-primary); }
+
+        .split-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* LEFT PANEL: INSTRUCTIONS */
+        .split-left {
+            flex: 1;
+            padding: 50px 10%;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .header-logo {
+            margin-bottom: 40px;
+        }
+        .header-logo img { height: 32px; }
+
+        .timer-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #fff3cd;
+            color: #856404;
+            padding: 12px 24px;
+            border-radius: 100px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            font-variant-numeric: tabular-nums;
+            align-self: flex-start;
+        }
+        .timer-container i { font-size: 1.3rem; }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        #instructionBody {
+            max-width: 600px;
+        }
+
+        .instruction-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        /* VA Styles */
+        .va-box {
+            background: var(--bg-page);
+            border: 2px dashed var(--primary);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .va-number {
+            font-family: monospace;
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        /* QRIS Styles */
+        .qris-box {
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 24px;
+            border: 2px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .qris-image { width: 300px; height: 300px; border-radius: 12px; display: block; }
+        .qris-label { font-size: 0.8rem; font-weight: 800; color: var(--text-secondary); margin-top: 16px; letter-spacing: 2px; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 14px 28px;
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: inherit;
+            transition: all 0.2s;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--primary); color: #fff;
+        }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(24,101,202,0.3); }
+        .btn-outline {
+            background: #fff; border: 2px solid var(--border); color: var(--text-primary);
+        }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+        .btn-cancel {
+            background: none; border: none; color: var(--text-secondary);
+            font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            margin-top: auto; text-decoration: underline; font-family: inherit; align-self: flex-start;
+        }
+
+        /* RIGHT PANEL: SUMMARY */
+        .split-right {
+            width: 450px;
+            background: var(--bg-page);
+            padding: 50px 40px;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .summary-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            border: 1px solid var(--border);
+            position: sticky;
+            top: 50px;
+        }
+
+        .summary-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 24px; color: var(--text-primary); }
+
+        .summary-line {
+            display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 0.95rem; color: var(--text-secondary);
+        }
+        
+        .total-amount {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -1px;
+            margin-top: 8px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .order-id-box {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .polling-indicator {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: #fff;
+            border: 2px solid var(--primary-light);
+            border-radius: 12px;
+            color: var(--primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .spinner {
+            width: 24px; height: 24px; border: 3px solid rgba(24, 101, 202, 0.2);
+            border-top: 3px solid var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .secure-badge {
+            display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-secondary);
+            margin-top: auto; padding-top: 40px; justify-content: center; font-weight: 500;
+        }
+
+        @media (max-width: 1000px) {
+            .split-container { flex-direction: column; }
+            .split-left { padding: 40px 20px; }
+            .split-right { width: 100%; padding: 40px 20px; border-left: none; border-top: 1px solid var(--border); }
+            .summary-card { position: relative; top: 0; }
+            .va-number { font-size: 2rem; }
+            .qris-image { width: 220px; height: 220px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="split-container" style="display:none;" id="mainContent">
+        <!-- LEFT: INSTRUCTIONS -->
+        <div class="split-left">
+            <div class="header-logo">
+                <img src="https://i.imgur.com/BZ1xLO3.png" alt="PrimaDev">
+            </div>
+
+            <div class="timer-container">
+                <i class="fa-regular fa-clock"></i> <span id="timer">15:00</span>
+            </div>
+
+            <h1 class="page-title">Selesaikan Pembayaran Anda</h1>
+            <p class="page-subtitle">Ikuti instruksi di bawah ini untuk menyelesaikan transaksi. Pesanan Anda akan diproses otomatis setelah pembayaran terverifikasi.</p>
+
+            <div id="instructionBody">
+                <!-- Dynamically populated -->
+            </div>
+
+            <button class="btn-cancel" onclick="cancelOrder()" style="margin-top: 60px;">Batalkan Transaksi</button>
+        </div>
+
+        <!-- RIGHT: SUMMARY -->
+        <div class="split-right">
+            <div class="summary-card">
+                <div class="summary-title">Ringkasan Pesanan</div>
+                
+                <div class="summary-line">
+                    <span>Total Tagihan</span>
+                </div>
+                <div class="total-amount" id="totalAmount">Rp 0</div>
+
+                <div class="summary-line">
+                    <span>Order ID</span>
+                </div>
+                <div class="order-id-box" id="orderId">-</div>
+
+                <div class="polling-indicator">
+                    <div class="spinner"></div> 
+                    <span>Menunggu konfirmasi sistem...</span>
+                </div>
+            </div>
+
+            <div class="secure-badge">
+                <i class="fa-solid fa-lock"></i> Secured by SSL 256-bit Encryption
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pollingInterval = null;
+        let countdownInterval = null;
+        let orderData = null;
+
+        function init() {
+            const rawData = localStorage.getItem('pending_order_data');
+            if (!rawData) {
+                window.location.href = '/app/store.html';
+                return;
+            }
+            orderData = JSON.parse(rawData);
+            const { apiData, orderInfo } = orderData;
+
+            document.getElementById('orderId').textContent = apiData.order_id;
+            
+            const grossAmount = apiData.gross_amount || 0;
+            if(grossAmount) {
+                document.getElementById('totalAmount').textContent = 'Rp ' + parseInt(grossAmount).toLocaleString('id-ID');
+            }
+
+            renderInstructions(apiData);
+            document.getElementById('mainContent').style.display = 'flex';
+
+            startPolling(apiData.order_id, orderInfo);
+            startCountdown(15 * 60);
+        }
+
+        function renderInstructions(data) {
+            const container = document.getElementById('instructionBody');
+            let content = '';
+
+            const getLogo = (type) => {
+                const logos = {
+                    'bca': 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg',
+                    'mandiri': 'https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg',
+                    'bni': 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg',
+                    'bri': 'https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg',
+                    'permata': 'https://upload.wikimedia.org/wikipedia/commons/3/38/PermataBank_logo.svg',
+                    'cimb': 'https://upload.wikimedia.org/wikipedia/id/thumb/e/e4/CIMB_Niaga_logo.svg/1200px-CIMB_Niaga_logo.svg.png',
+                    'gopay': 'https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg',
+                    'shopeepay': 'https://shopeepay.co.id/src/pages/home/assets/images/new-homepage/new-spp-logo.svg',
+                    'qris': 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg',
+                    'indomaret': 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Logo_Indomaret.png',
+                    'alfamart': 'https://upload.wikimedia.org/wikipedia/commons/8/86/Alfamart_logo.svg'
+                };
+                return logos[type] || '';
+            };
+
+            if (data.payment_type === 'qris') {
+                const qrUrl = data.actions.find(a => a.name === 'generate-qr-code').url;
+                content = `
+                    <div class="instruction-title">Scan QR Code</div>
+                    <div class="qris-box">
+                        <img src="${qrUrl}" class="qris-image" alt="QRIS">
+                        <div class="qris-label">QRIS STANDAR NASIONAL</div>
+                    </div>
+                    <br>
+                    <button class="btn btn-outline" onclick="downloadQRIS('${qrUrl}')"><i class="fa-solid fa-download"></i> Simpan QR Code</button>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 20px; line-height: 1.6;">Buka aplikasi m-banking atau e-wallet Anda, pilih menu QRIS, dan scan kode di atas untuk melakukan pembayaran.</p>
+                `;
+            } else if (data.payment_type === 'bank_transfer' || data.payment_type === 'echannel') {
+                let vaNumber = '', bankCode = '';
+                if (data.va_numbers) {
+                    vaNumber = data.va_numbers[0].va_number;
+                    bankCode = data.va_numbers[0].bank;
+                } else if (data.bill_key) {
+                    vaNumber = data.bill_key;
+                    bankCode = 'mandiri';
+                } else if (data.permata_va_number) {
+                    vaNumber = data.permata_va_number;
+                    bankCode = 'permata';
+                }
+
+                let bankLogo = getLogo(bankCode);
+                let copyValue = data.bill_key || vaNumber;
+
+                // Format VA number with spaces for readability (e.g. 8077 1234 5678)
+                const formattedVA = copyValue.replace(/(.{4})/g, '$1 ').trim();
+
+                content = `
+                    <img src="${bankLogo}" height="40" style="margin-bottom: 24px;" alt="Bank Logo">
+                    <div class="instruction-title">Nomor Virtual Account</div>
+                    <div class="va-box">
+                        <div class="va-number">${formattedVA}</div>
+                        <button class="btn btn-primary" onclick="copyText('${copyValue}')"><i class="fa-regular fa-copy"></i> Salin Nomor</button>
+                    </div>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">Silakan transfer tepat sesuai tagihan ke nomor Virtual Account di atas. Pastikan nama penerima adalah <strong>PrimaDev</strong>.</p>
+                `;
+            } else if (data.payment_type === 'gopay' || data.payment_type === 'shopeepay') {
+                const deepLinkAction = data.actions ? data.actions.find(a => a.name === 'deeplink-redirect') : null;
+                const qrAction = data.actions ? data.actions.find(a => a.name === 'generate-qr-code') : null;
+                
+                const deepLink = deepLinkAction ? deepLinkAction.url : '#';
+                const walletLogo = getLogo(data.payment_type);
+                
+                let qrHtml = '';
+                if (qrAction) {
+                    qrHtml = `
+                        <div style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 32px;">
+                            <div class="instruction-title">Atau Scan QR Code (Desktop)</div>
+                            <div class="qris-box" style="margin-bottom: 0;">
+                                <img src="${qrAction.url}" class="qris-image" style="width: 200px; height: 200px;" alt="QR Code">
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                content = `
+                    <img src="${walletLogo}" height="48" style="margin-bottom: 24px;" alt="Wallet Logo">
+                    <div class="instruction-title">Lanjutkan Pembayaran</div>
+                    <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 32px; line-height: 1.6;">Klik tombol di bawah ini untuk membuka aplikasi ${data.payment_type.toUpperCase()} di handphone Anda dan menyelesaikan pembayaran.</p>
+                    <a href="${deepLink}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-mobile-screen-button"></i> Buka Aplikasi</a>
+                    ${qrHtml}
+                `;
+            } else if (data.payment_type === 'cstore') {
+                const storeCode = data.store;
+                const storeLogo = getLogo(storeCode);
+                const paymentCode = data.payment_code;
+                
+                content = `
+                    <img src="${storeLogo}" height="48" style="margin-bottom: 24px;" alt="Store Logo">
+                    <div class="instruction-title">Kode Pembayaran ${storeCode.toUpperCase()}</div>
+                    <div class="va-box">
+                        <div class="va-number">${paymentCode}</div>
+                        <button class="btn btn-primary" onclick="copyText('${paymentCode}')"><i class="fa-regular fa-copy"></i> Salin Kode</button>
+                    </div>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">Tunjukkan kode pembayaran ini ke kasir ${storeCode.toUpperCase()} terdekat. Beritahu kasir bahwa Anda ingin membayar transaksi <strong>Midtrans</strong> atau <strong>PrimaDev</strong>.</p>
+                `;
+            } else {
+                content = `<div class="va-box"><p style="font-size: 1.1rem; color: var(--text-secondary);">Metode pembayaran tidak didukung antarmuka ini. Silakan periksa email Anda untuk instruksi pembayaran lengkap.</p></div>`;
+            }
+
+            container.innerHTML = content;
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Disalin!', showConfirmButton: false, timer: 1500 });
+            });
+        }
+
+        async function downloadQRIS(url) {
+            try {
+                const res = await fetch(url);
+                const blob = await res.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = `QRIS-${orderData.apiData.order_id}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } catch (e) {
+                window.open(url, '_blank');
+            }
+        }
+
+        function cancelOrder() {
+            Swal.fire({
+                title: 'Batalkan Pesanan?',
+                text: "Anda akan dikembalikan ke halaman store dan pesanan ini akan dibatalkan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Batalkan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('pending_order_data');
+                    window.location.href = '/app/store.html';
+                }
+            })
+        }
+
+        function startPolling(orderId, orderInfo) {
+            pollingInterval = setInterval(async () => {
+                try {
+                    const res = await fetch('/.netlify/functions/public_order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'verify_payment',
+                            orderId: orderId,
+                            appId: orderInfo.productId,
+                            buyerName: orderInfo.buyerName,
+                            buyerEmail: orderInfo.buyerEmail,
+                            duration: orderInfo.duration
+                        })
+                    });
+                    const result = await res.json();
+
+                    if (res.ok && (result.status === 'success' || result.key)) {
+                        clearInterval(pollingInterval);
+                        clearInterval(countdownInterval);
+                        localStorage.removeItem('pending_order_data');
+                        
+                        Swal.fire({
+                            title: 'Pembayaran Berhasil!',
+                            text: 'Terima kasih, pembayaran Anda telah kami terima.',
+                            icon: 'success',
+                            confirmButtonText: 'Lanjut',
+                            allowOutsideClick: false
+                        }).then(() => {
+                            window.location.href = result.redirect_url || "/app/thankyou.html";
+                        });
+                    }
+                } catch (e) {
+                    console.log("Polling error", e);
+                }
+            }, 3000);
+        }
+
+        function startCountdown(duration) {
+            let timer = duration;
+            countdownInterval = setInterval(() => {
+                let minutes = parseInt(timer / 60, 10);
+                let seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                document.getElementById('timer').textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('timer').textContent = "00:00";
+                    clearInterval(pollingInterval);
+                    Swal.fire('Waktu Habis', 'Sesi pembayaran telah kedaluwarsa. Silakan checkout ulang.', 'warning').then(() => {
+                        localStorage.removeItem('pending_order_data');
+                        window.location.href = '/app/store.html';
+                    });
+                }
+            }, 1000);
+        }
+
+        init();
+    </script>
+</body>
+</html>

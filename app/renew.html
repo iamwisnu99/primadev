@@ -1041,6 +1041,27 @@
         <div class="sidebar">
 
             <!-- Order Summary -->
+            <div class="sidebar-card" id="summaryCard">
+                <div class="sidebar-card-title">Ringkasan Pesanan</div>
+                <div class="info-list">
+                    <div class="info-item" style="justify-content: space-between;">
+                        <span style="color: var(--text-secondary);">Aplikasi</span>
+                        <strong id="sumAppName" style="text-align:right;">—</strong>
+                    </div>
+                    <div class="info-item" style="justify-content: space-between;">
+                        <span style="color: var(--text-secondary);">Durasi</span>
+                        <strong id="sumDuration">—</strong>
+                    </div>
+                    <div class="info-item" style="justify-content: space-between;">
+                        <span style="color: var(--text-secondary);">Pembayaran</span>
+                        <strong id="sumMethod">QRIS</strong>
+                    </div>
+                    <div class="info-item" style="justify-content: space-between; border-top: 1px solid var(--border-light); padding-top: 12px; margin-top: 4px;">
+                        <span style="color: var(--text-secondary);">Total</span>
+                        <strong id="sumTotal" style="font-size: 1.1rem; color: var(--primary);">Rp —</strong>
+                    </div>
+                </div>
+            </div>
 
             <!-- Info -->
             <div class="sidebar-card">
@@ -1215,7 +1236,8 @@
             document.getElementById('price-yearly').textContent = 'Rp ' + (prices.yearly || 860000).toLocaleString('id-ID');
 
             // Sidebar summary
-            document.getElementById('sumAppName').textContent = data.appName || '—';
+            const elSumApp = document.getElementById('sumAppName');
+            if (elSumApp) elSumApp.textContent = data.appName || '—';
             updateSummary();
         }
 
@@ -1226,9 +1248,12 @@
             const durLabel = dur === 'monthly' ? '1 Bulan' : '1 Tahun';
             const methodLabel = selectedPaymentMethod.toUpperCase();
 
-            document.getElementById('sumDuration').textContent = durLabel;
-            document.getElementById('sumMethod').textContent = methodLabel;
-            document.getElementById('sumTotal').textContent = 'Rp ' + price.toLocaleString('id-ID');
+            const elDuration = document.getElementById('sumDuration');
+            const elMethod = document.getElementById('sumMethod');
+            const elTotal = document.getElementById('sumTotal');
+            if (elDuration) elDuration.textContent = durLabel;
+            if (elMethod) elMethod.textContent = methodLabel;
+            if (elTotal) elTotal.textContent = 'Rp ' + price.toLocaleString('id-ID');
         }
 
         // =================== DURATION SELECT ===================
@@ -1540,9 +1565,12 @@
             document.getElementById('licenseKey').value = '';
             document.getElementById('buyerName').value = '';
             document.getElementById('buyerEmail').value = '';
-            document.getElementById('sumAppName').textContent = '—';
-            document.getElementById('sumDuration').textContent = '—';
-            document.getElementById('sumTotal').textContent = 'Rp —';
+            const elSumApp2 = document.getElementById('sumAppName');
+            const elSumDur = document.getElementById('sumDuration');
+            const elSumTot = document.getElementById('sumTotal');
+            if (elSumApp2) elSumApp2.textContent = '—';
+            if (elSumDur) elSumDur.textContent = '—';
+            if (elSumTot) elSumTot.textContent = 'Rp —';
             goToStep(1);
         }
 

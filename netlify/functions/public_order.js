@@ -187,7 +187,8 @@ exports.handler = async (event, context) => {
 
         // --- PATH 1: REQ DARI STORE (Core API) ---
         if (action === 'create_transaction') {
-            const { appId, duration, buyerName, buyerEmail, buyerPhone, paymentMethod, cardData } = body;
+            let { appId, duration, buyerName, buyerEmail, buyerPhone, paymentMethod, cardData } = body;
+            buyerPhone = buyerPhone || "";
             const product = PRICING_DB[appId];
             if (!product || !product.price[duration]) return { statusCode: 400, headers, body: JSON.stringify({ error: "Produk invalid" }) };
 

@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — PrimaDev Admin</title>
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link rel="manifest" href="/public/site.webmanifest" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: rgba(255,255,255,0.06);
+            --sidebar-active: rgba(37,99,235,0.2);
+            --sidebar-active-border: #2563eb;
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-2: #64748b;
+            --text-3: #94a3b8;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.04);
+            --sidebar-w: 256px;
+            --topbar-h: 64px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            width: var(--sidebar-w);
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            z-index: 200;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .sidebar-logo img { height: 30px; filter: brightness(0) invert(1); }
+        .sidebar-logo-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.2px;
+        }
+        .sidebar-logo-sub {
+            font-size: 0.7rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #475569;
+            padding: 8px 10px 6px;
+            margin-top: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 0.88rem;
+            font-weight: 500;
+            margin-bottom: 2px;
+            transition: all 0.15s;
+            border-left: 2px solid transparent;
+            text-decoration: none;
+        }
+        .nav-item i { width: 18px; text-align: center; font-size: 0.95rem; }
+        .nav-item:hover { background: var(--sidebar-hover); color: #cbd5e1; }
+        .nav-item.active {
+            background: var(--sidebar-active);
+            color: #93c5fd;
+            border-left-color: var(--sidebar-active-border);
+            font-weight: 600;
+        }
+        .nav-item .badge {
+            margin-left: auto;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 100px;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .admin-avatar {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.9rem; font-weight: 700;
+            flex-shrink: 0;
+        }
+        .admin-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .admin-email {
+            font-size: 0.7rem;
+            color: #475569;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .btn-logout {
+            width: 100%;
+            padding: 9px;
+            background: rgba(239,68,68,0.1);
+            color: #f87171;
+            border: 1px solid rgba(239,68,68,0.15);
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover { background: rgba(239,68,68,0.2); color: #fca5a5; }
+
+        /* ===== TOPBAR ===== */
+        .topbar {
+            position: fixed;
+            top: 0; left: var(--sidebar-w); right: 0;
+            height: var(--topbar-h);
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            gap: 16px;
+            z-index: 100;
+        }
+        .topbar-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            flex: 1;
+        }
+        .topbar-title span { color: var(--text-2); font-weight: 400; font-size: 0.9rem; }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .topbar-clock {
+            font-size: 0.82rem;
+            color: var(--text-2);
+            background: var(--bg);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-variant-numeric: tabular-nums;
+            font-weight: 500;
+            border: 1px solid var(--border);
+        }
+        .topbar-btn {
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .topbar-btn:hover { background: var(--primary-light); color: var(--primary); border-color: #bfdbfe; }
+
+        /* Hamburger for mobile */
+        .hamburger {
+            display: none;
+            width: 36px; height: 36px;
+            align-items: center; justify-content: center;
+            border-radius: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: var(--sidebar-w);
+            margin-top: var(--topbar-h);
+            padding: 32px 28px;
+            min-height: calc(100vh - var(--topbar-h));
+        }
+
+        .section { display: none; }
+        .section.active { display: block; animation: fadeInUp 0.35s ease; }
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+        /* ===== STAT CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            opacity: 0.07;
+        }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+        .stat-card-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            margin-bottom: 14px;
+        }
+        .stat-card-label {
+            font-size: 0.73rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-2);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .stat-card-value {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        .stat-card-sub {
+            font-size: 0.75rem;
+            color: var(--text-3);
+            margin-top: 6px;
+        }
+
+        .ic-blue { background: #eff6ff; color: #2563eb; }
+        .ic-green { background: #f0fdf4; color: #16a34a; }
+        .ic-red { background: #fef2f2; color: #dc2626; }
+        .ic-purple { background: #f5f3ff; color: #7c3aed; }
+
+        /* ===== CARD ===== */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title i { color: var(--primary); }
+        .card-body { padding: 22px; }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            padding: 16px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+            max-width: 340px;
+        }
+        .search-wrap i {
+            position: absolute;
+            left: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-3);
+            font-size: 0.85rem;
+        }
+        .search-input {
+            width: 100%;
+            padding: 9px 14px 9px 36px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            transition: all 0.2s;
+        }
+        .search-input:focus { border-color: var(--primary); background: #fff; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: #fff; border: 1px solid var(--border); color: var(--text); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+        /* ===== TABLE ===== */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            padding: 11px 16px;
+            background: #f8fafc;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-2);
+            font-weight: 700;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+        tbody td {
+            padding: 14px 16px;
+            font-size: 0.88rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: #fafbfc; }
+
+        .key-badge {
+            font-family: monospace;
+            font-size: 0.82rem;
+            font-weight: 700;
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 4px 10px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .badge-active { background: #dcfce7; color: #15803d; }
+        .badge-banned { background: #fee2e2; color: #991b1b; }
+        .badge-expired { background: #f3f4f6; color: #4b5563; }
+        .badge-monthly { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge-yearly { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .badge-lifetime { background: #fffbeb; color: #92400e; border: 1px solid #fcd34d; }
+
+        .action-btn {
+            width: 32px; height: 32px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            margin-left: 4px;
+        }
+        .action-btn:hover { transform: scale(1.1); }
+        .btn-invoice { background: #eff6ff; color: #2563eb; }
+        .btn-edit { background: #f0fdf4; color: #16a34a; }
+        .btn-delete { background: #fef2f2; color: #dc2626; }
+
+        /* ===== PAGINATION ===== */
+        .pagination-bar {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: #fafafa;
+        }
+        .pagination-info { font-size: 0.82rem; color: var(--text-2); }
+        .pagination-btns { display: flex; gap: 6px; }
+        .page-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: #fff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .page-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 16px;
+        }
+        .empty-state h4 { font-weight: 700; color: var(--text-2); margin-bottom: 6px; }
+        .empty-state p { font-size: 0.85rem; color: var(--text-3); }
+
+        /* ===== ACTIVITY FEED ===== */
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot {
+            width: 36px; height: 36px;
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .activity-title { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+        .activity-sub { font-size: 0.78rem; color: var(--text-3); margin-top: 2px; }
+
+        /* ===== CUSTOM DROPDOWN ===== */
+        .custom-dropdown { position: relative; }
+        .dropdown-trigger {
+            background: #fff; border: 1px solid var(--border);
+            border-radius: 9px; padding: 12px 14px; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.2s; min-height: 54px; user-select: none;
+        }
+        .dropdown-trigger:hover { border-color: var(--primary); }
+        .custom-dropdown.open .dropdown-trigger { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
+        .dropdown-options {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+            background: #fff; border: 1px solid var(--border); border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 1000;
+            display: none; padding: 6px; max-height: 220px; overflow-y: auto;
+        }
+        .custom-dropdown.open .dropdown-options { display: block; }
+        .opt-item {
+            padding: 9px 12px; border-radius: 7px; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: background 0.15s; margin-bottom: 2px; font-size: 0.87rem;
+        }
+        .opt-item:hover { background: #f8fafc; }
+        .opt-item.selected { background: #eff6ff; }
+        .opt-title { font-weight: 600; color: var(--text); display: block; }
+        .opt-desc { font-size: 0.73rem; color: var(--text-3); display: block; }
+        .opt-check { color: var(--primary); opacity: 0; }
+        .opt-item.selected .opt-check { opacity: 1; }
+        .trigger-label { font-weight: 600; font-size: 0.9rem; color: var(--text); }
+        .trigger-sub { font-size: 0.73rem; color: var(--text-3); }
+        .trigger-chevron { color: var(--text-3); transition: transform 0.2s; }
+        .custom-dropdown.open .trigger-chevron { transform: rotate(180deg); }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(15,23,42,0.4);
+            z-index: 500; display: none;
+            align-items: center; justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: #fff; border-radius: 16px;
+            width: 100%; max-width: 500px;
+            max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn { from { opacity:0; transform:scale(0.96) translateY(-10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+        .modal-header {
+            padding: 22px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .modal-title { font-size: 1.05rem; font-weight: 700; }
+        .modal-close {
+            width: 30px; height: 30px; border-radius: 7px;
+            border: none; background: #f1f5f9; color: var(--text-2);
+            cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+        }
+        .modal-close:hover { background: #fee2e2; color: #dc2626; }
+        .modal-body { padding: 24px; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-2); margin-bottom: 6px; }
+        .form-input {
+            width: 100%; padding: 11px 14px;
+            border: 1.5px solid var(--border); border-radius: 9px;
+            font-size: 0.9rem; font-family: 'Inter', sans-serif;
+            outline: none; transition: all 0.2s; background: #fff; color: var(--text);
+        }
+        .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
+        .form-input:disabled { background: #f8fafc; color: var(--text-3); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-switch-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px; background: #f8fafc; border-radius: 9px;
+            border: 1px solid var(--border); margin-bottom: 18px;
+        }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; inset: 0;
+            background: #cbd5e1; border-radius: 100px; transition: 0.3s;
+        }
+        .slider::before {
+            content: ''; position: absolute;
+            width: 18px; height: 18px; background: #fff;
+            border-radius: 50%; left: 3px; bottom: 3px; transition: 0.3s;
+        }
+        input:checked + .slider { background: var(--primary); }
+        input:checked + .slider::before { transform: translateX(20px); }
+        .key-display {
+            background: #f8fafc; border: 2px dashed var(--border);
+            border-radius: 9px; padding: 16px; text-align: center; margin-bottom: 18px;
+        }
+        .key-display code { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: 1px; }
+
+        /* ===== LOADING ===== */
+        #loadingScreen {
+            position: fixed; inset: 0;
+            background: #fff; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 16px;
+        }
+        .spin {
+            width: 40px; height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        #loadingScreen p { font-size: 0.9rem; font-weight: 600; color: var(--text-2); }
+
+        /* ===== SIDEBAR MOBILE OVERLAY ===== */
+        .sidebar-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 190;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.show { display: block; }
+            .topbar { left: 0; }
+            .main { margin-left: 0; padding: 24px 16px; }
+            .hamburger { display: flex; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-row { grid-template-columns: 1fr; }
+            thead { display: none; }
+            tbody tr { display: block; background: #fff; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; }
+            tbody td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding: 10px 14px; text-align: right; }
+            tbody td::before { content: attr(data-label); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; color: var(--text-2); text-align: left; }
+            tbody td:last-child { justify-content: center; border-bottom: none; }
+            .table-wrap { padding: 12px; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div id="loadingScreen">
+    <img src="https://i.imgur.com/BZ1xLO3.png" style="height:36px; margin-bottom:8px;">
+    <div class="spin"></div>
+    <p>Memuat Dashboard...</p>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <img src="https://i.imgur.com/BZ1xLO3.png" alt="PrimaDev">
+        <div>
+            <div class="sidebar-logo-label">PrimaDev</div>
+            <div class="sidebar-logo-sub">Admin Panel</div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Utama</div>
+        <a class="nav-item active" data-tab="overview" onclick="switchTab('overview')">
+            <i class="fa-solid fa-grid-2"></i> Overview
+        </a>
+        <a class="nav-item" data-tab="licenses" onclick="switchTab('licenses')">
+            <i class="fa-solid fa-key"></i> License Manager
+            <span class="badge" id="sidebarBadge">0</span>
+        </a>
+        <div class="nav-section-label">Produk</div>
+        <a class="nav-item" data-tab="apps" onclick="switchTab('apps')">
+            <i class="fa-solid fa-cubes"></i> App Manager
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="admin-info">
+            <div class="admin-avatar" id="adminAvatar">A</div>
+            <div style="overflow:hidden;">
+                <div class="admin-name" id="adminName">Admin</div>
+                <div class="admin-email" id="adminEmail">—</div>
+            </div>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+    </div>
+</aside>
+
+<!-- TOPBAR -->
+<header class="topbar">
+    <button class="hamburger" onclick="openSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="topbar-title" id="topbarTitle">Overview <span>/ Dashboard</span></div>
+    <div class="topbar-right">
+        <div class="topbar-clock" id="clock">00:00:00</div>
+        <button class="topbar-btn" onclick="refreshCurrentSection()" title="Refresh Data">
+            <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <!-- ===== OVERVIEW TAB ===== -->
+    <div class="section active" id="tab-overview">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-icon ic-blue"><i class="fa-solid fa-key"></i></div>
+                <div class="stat-card-label">Total Lisensi</div>
+                <div class="stat-card-value" id="statTotal">—</div>
+                <div class="stat-card-sub">Semua lisensi terdaftar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon ic-green"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="stat-card-label">Aktif</div>
+                <div class="stat-card-value" id="statActive">—</div>
+                <div class="stat-card-sub">Lisensi dalam masa berlaku</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon ic-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="stat-card-label">Expired / Banned</div>
+                <div class="stat-card-value" id="statIssues">—</div>
+                <div class="stat-card-sub">Perlu perhatian</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon ic-purple"><i class="fa-solid fa-box"></i></div>
+                <div class="stat-card-label">Total Produk</div>
+                <div class="stat-card-value" id="statApps">—</div>
+                <div class="stat-card-sub">Aplikasi terdaftar</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Lisensi Terbaru</div>
+                </div>
+                <div id="activityFeed" style="padding: 0 22px;">
+                    <div class="empty-state"><i class="fa-solid fa-inbox"></i><p>Memuat data...</p></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fa-solid fa-chart-bar"></i> Status Distribusi</div>
+                </div>
+                <div id="distributionChart" style="padding: 22px;">
+                    <div class="empty-state"><i class="fa-solid fa-chart-pie"></i><p>Memuat data...</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LICENSES TAB ===== -->
+    <div class="section" id="tab-licenses">
+        <div class="stats-grid" style="grid-template-columns: repeat(3,1fr);">
+            <div class="stat-card">
+                <div class="stat-card-icon ic-blue"><i class="fa-solid fa-key"></i></div>
+                <div class="stat-card-label">Total</div>
+                <div class="stat-card-value" id="statTotal2">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon ic-green"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="stat-card-label">Aktif</div>
+                <div class="stat-card-value" id="statActive2">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon ic-red"><i class="fa-solid fa-ban"></i></div>
+                <div class="stat-card-label">Issues</div>
+                <div class="stat-card-value" id="statIssues2">—</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="toolbar">
+                <div class="search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Cari nama, email, key...">
+                </div>
+                <!-- App Filter Dropdown -->
+                <div class="custom-dropdown" id="ddFilterApp" style="min-width:190px;">
+                    <input type="hidden" id="filterAppId" value="all">
+                    <div class="dropdown-trigger" onclick="toggleDD('ddFilterApp')">
+                        <div>
+                            <span class="trigger-label" id="filterAppLabel">Semua Aplikasi</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down trigger-chevron"></i>
+                    </div>
+                    <div class="dropdown-options" id="filterAppOptions"></div>
+                </div>
+                <button class="btn btn-primary" style="margin-left:auto;" onclick="openCreateModal()">
+                    <i class="fa-solid fa-plus"></i> Buat Lisensi
+                </button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>License Key</th>
+                            <th>Pengguna</th>
+                            <th>Aplikasi</th>
+                            <th>Tipe</th>
+                            <th>Status</th>
+                            <th>Expired</th>
+                            <th class="text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="licenseTableBody">
+                        <tr><td colspan="7" style="text-align:center; padding:48px; color:var(--text-3);">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="emptyLicense" class="empty-state" style="display:none;">
+                <i class="fa-solid fa-folder-open"></i>
+                <h4>Tidak Ada Data</h4>
+                <p id="emptyLicenseMsg">Belum ada lisensi yang dibuat.</p>
+            </div>
+            <div class="pagination-bar" id="paginationBar" style="display:none;">
+                <div class="pagination-info">
+                    Halaman <strong id="currentPage">1</strong> dari <strong id="totalPages">1</strong> &nbsp;·&nbsp;
+                    <select id="rowsPerPage" onchange="changeRows()" style="border:1px solid var(--border);border-radius:6px;padding:3px 6px;font-family:inherit;font-size:0.82rem;">
+                        <option value="10">10 / hal</option>
+                        <option value="25">25 / hal</option>
+                        <option value="50">50 / hal</option>
+                    </select>
+                </div>
+                <div class="pagination-btns">
+                    <button class="page-btn" id="btnPrev" onclick="changePage(-1)"><i class="fa-solid fa-chevron-left"></i> Prev</button>
+                    <button class="page-btn" id="btnNext" onclick="changePage(1)">Next <i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== APPS TAB ===== -->
+    <div class="section" id="tab-apps">
+        <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="stat-card">
+                <div class="stat-card-icon ic-blue"><i class="fa-solid fa-box"></i></div>
+                <div class="stat-card-label">Total Apps</div>
+                <div class="stat-card-value" id="statApps2">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon ic-green"><i class="fa-solid fa-sync"></i></div>
+                <div class="stat-card-label">Revenue Sync</div>
+                <div class="stat-card-value" style="font-size:1.2rem;">Active</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon ic-purple"><i class="fa-solid fa-tags"></i></div>
+                <div class="stat-card-label">Pricing Status</div>
+                <div class="stat-card-value" style="font-size:1.2rem;">Global</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="toolbar">
+                <div class="search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="search-input" id="appSearchInput" placeholder="Cari nama aplikasi...">
+                </div>
+                <button class="btn btn-primary" style="margin-left:auto;" onclick="openCreateAppModal()">
+                    <i class="fa-solid fa-plus"></i> Tambah Aplikasi
+                </button>
+            </div>
+            <div class="table-wrap">
+                <table id="appTable">
+                    <thead>
+                        <tr>
+                            <th>Aplikasi</th>
+                            <th>App ID</th>
+                            <th>Package</th>
+                            <th>Monthly</th>
+                            <th>Yearly</th>
+                            <th>Lifetime</th>
+                            <th class="text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appTableBody"></tbody>
+                </table>
+            </div>
+            <div id="appEmpty" class="empty-state" style="display:none;">
+                <i class="fa-solid fa-cubes"></i>
+                <h4>Belum Ada Aplikasi</h4>
+                <p>Tambahkan aplikasi pertama Anda.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ===== MODALS ===== -->
+
+<!-- CREATE LICENSE MODAL -->
+<div class="modal-overlay" id="createModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title"><i class="fa-solid fa-plus" style="color:var(--primary);margin-right:8px;"></i>Buat Lisensi Baru</div>
+            <button class="modal-close" onclick="closeModal('createModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="createForm" onsubmit="handleCreateSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Pilih Aplikasi</label>
+                    <div class="custom-dropdown" id="ddCreateApp">
+                        <input type="hidden" id="createAppId" value="">
+                        <div class="dropdown-trigger" onclick="toggleDD('ddCreateApp')">
+                            <div>
+                                <span class="trigger-label" id="createAppLabel">Pilih Aplikasi</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down trigger-chevron"></i>
+                        </div>
+                        <div class="dropdown-options" id="appDropdownOptions"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nama Pelanggan</label>
+                        <input type="text" class="form-input" id="createName" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="createEmail" required placeholder="john@email.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nominal Harga (Rp)</label>
+                    <input type="text" class="form-input" id="createPrice" readonly placeholder="Otomatis">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Metode Bayar</label>
+                        <div class="custom-dropdown" id="ddPayment">
+                            <input type="hidden" id="createPaymentCategory" value="">
+                            <div class="dropdown-trigger" onclick="toggleDD('ddPayment')">
+                                <div><span class="trigger-label" id="paymentLabel">Pilih Kategori</span></div>
+                                <i class="fa-solid fa-chevron-down trigger-chevron"></i>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="opt-item" onclick="selectOpt('ddPayment','Transfer Bank','Transfer Bank','paymentLabel'); togglePaymentProvider();"><div><span class="opt-title">Transfer Bank</span><span class="opt-desc">Manual Check</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                                <div class="opt-item" onclick="selectOpt('ddPayment','e-Wallet','e-Wallet','paymentLabel'); togglePaymentProvider();"><div><span class="opt-title">e-Wallet</span><span class="opt-desc">Gopay, OVO, Dana</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                                <div class="opt-item" onclick="selectOpt('ddPayment','QRIS','QRIS','paymentLabel'); togglePaymentProvider();"><div><span class="opt-title">QRIS</span><span class="opt-desc">Scan & Pay</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                                <div class="opt-item" onclick="selectOpt('ddPayment','CASH','CASH','paymentLabel'); togglePaymentProvider();"><div><span class="opt-title">CASH</span><span class="opt-desc">Tunai</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                                <div class="opt-item" onclick="selectOpt('ddPayment','Midtrans','Midtrans','paymentLabel'); togglePaymentProvider();"><div><span class="opt-title">Midtrans</span><span class="opt-desc">Otomatis</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" id="providerGroup" style="display:none;">
+                        <label class="form-label" id="providerLabel">Detail</label>
+                        <input type="text" class="form-input" id="createPaymentProvider" placeholder="Detail">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tipe Lisensi</label>
+                        <div class="custom-dropdown" id="ddType">
+                            <input type="hidden" id="createType" value="monthly">
+                            <div class="dropdown-trigger" onclick="toggleDD('ddType')">
+                                <div><span class="trigger-label" id="typeLabel">Monthly</span></div>
+                                <i class="fa-solid fa-chevron-down trigger-chevron"></i>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="opt-item selected" onclick="selectOpt('ddType','monthly','Monthly','typeLabel'); updatePriceAndExpiry();"><div><span class="opt-title">Monthly</span><span class="opt-desc">30 Hari</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                                <div class="opt-item" onclick="selectOpt('ddType','yearly','Yearly','typeLabel'); updatePriceAndExpiry();"><div><span class="opt-title">Yearly</span><span class="opt-desc">365 Hari</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                                <div class="opt-item" onclick="selectOpt('ddType','lifetime','Lifetime','typeLabel'); updatePriceAndExpiry();"><div><span class="opt-title">Lifetime</span><span class="opt-desc">Selamanya</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tanggal Kadaluarsa</label>
+                        <input type="text" class="form-input" id="createExpiry" placeholder="Pilih tanggal">
+                    </div>
+                </div>
+                <div class="form-switch-row">
+                    <div>
+                        <div style="font-weight:600;font-size:0.88rem;">Kirim Email Otomatis?</div>
+                        <div style="font-size:0.78rem;color:var(--text-3);">Lisensi dikirim ke email pelanggan</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="sendEmailCheck" checked><span class="slider"></span></label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" id="createSubmitBtn">
+                    <i class="fa-solid fa-plus"></i> Generate & Simpan
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT LICENSE MODAL -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title"><i class="fa-solid fa-pen" style="color:var(--primary);margin-right:8px;"></i>Edit Lisensi</div>
+            <button class="modal-close" onclick="closeModal('editModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="editForm" onsubmit="handleEditSubmit(event)">
+                <input type="hidden" id="editId">
+                <div class="key-display">
+                    <small style="color:var(--text-3);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">License Key</small><br>
+                    <code id="displayEditKey">—</code>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <div class="custom-dropdown" id="ddStatus">
+                            <input type="hidden" id="editStatus" value="active">
+                            <div class="dropdown-trigger" onclick="toggleDD('ddStatus')">
+                                <div><span class="trigger-label" id="statusLabel">Active</span></div>
+                                <i class="fa-solid fa-chevron-down trigger-chevron"></i>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="opt-item" onclick="selectOpt('ddStatus','active','Active','statusLabel')"><div><span class="opt-title">Active</span><span class="opt-desc">Lisensi valid</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                                <div class="opt-item" onclick="selectOpt('ddStatus','banned','Banned','statusLabel')"><div><span class="opt-title">Banned</span><span class="opt-desc">Akses dicabut</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                                <div class="opt-item" onclick="selectOpt('ddStatus','expired','Expired','statusLabel')"><div><span class="opt-title">Expired</span><span class="opt-desc">Masa berakhir</span></div><i class="fa-solid fa-check opt-check"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tanggal Kadaluarsa</label>
+                        <input type="text" class="form-input" id="editExpiry" placeholder="Pilih tanggal">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Device ID (Locked)</label>
+                    <div style="display:flex;gap:8px;">
+                        <input type="text" class="form-input" id="editDeviceId" readonly placeholder="Tidak ada device terkunci">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="resetDeviceLock()">
+                            <i class="fa-solid fa-unlock"></i> Reset
+                        </button>
+                    </div>
+                    <div style="font-size:0.75rem;color:var(--text-3);margin-top:5px;">Reset jika user ganti HP.</div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- APP MODAL -->
+<div class="modal-overlay" id="appModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title" id="appModalTitle"><i class="fa-solid fa-cubes" style="color:var(--primary);margin-right:8px;"></i>Tambah Aplikasi</div>
+            <button class="modal-close" onclick="closeModal('appModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="appForm" onsubmit="handleAppSubmit(event)">
+                <input type="hidden" id="appFormId">
+                <div class="form-group">
+                    <label class="form-label">App ID <span style="color:var(--text-3);font-weight:400;">(contoh: wa-blaster)</span></label>
+                    <input type="text" class="form-input" id="appId" required placeholder="wa-blaster">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nama Aplikasi</label>
+                    <input type="text" class="form-input" id="appName" required placeholder="WA Blaster Pro">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Package Name</label>
+                    <input type="text" class="form-input" id="appPackage" required placeholder="com.primadev.wablaster">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Deskripsi</label>
+                    <textarea class="form-input" id="appDescription" rows="2" placeholder="Deskripsi singkat aplikasi"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Harga (IDR)</label>
+                    <div class="form-row">
+                        <div>
+                            <input type="number" class="form-input" id="priceMonthly" required placeholder="Monthly">
+                            <div style="font-size:0.72rem;color:var(--text-3);margin-top:4px;">Monthly</div>
+                        </div>
+                        <div>
+                            <input type="number" class="form-input" id="priceYearly" required placeholder="Yearly">
+                            <div style="font-size:0.72rem;color:var(--text-3);margin-top:4px;">Yearly</div>
+                        </div>
+                        <div style="grid-column:1/-1;">
+                            <input type="number" class="form-input" id="priceLifetime" required placeholder="Lifetime">
+                            <div style="font-size:0.72rem;color:var(--text-3);margin-top:4px;">Lifetime</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" id="appSubmitBtn">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Aplikasi
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- PWA Toast -->
+<div id="pwaToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,0.1);display:none;align-items:center;gap:14px;z-index:9000;min-width:320px;max-width:90vw;">
+    <img src="https://i.imgur.com/kT6aLBx.png" style="width:44px;height:44px;border-radius:10px;">
+    <div style="flex:1;">
+        <div style="font-weight:700;font-size:0.88rem;margin-bottom:2px;">Install App?</div>
+        <div style="font-size:0.78rem;color:var(--text-2);" id="pwaText">Akses dashboard lebih cepat tanpa buka browser.</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+        <button id="btnPwaInstall" class="btn btn-primary btn-sm"><i class="fa-solid fa-download"></i> Install</button>
+        <button onclick="document.getElementById('pwaToast').style.display='none'" class="btn btn-outline btn-sm">Nanti</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getDatabase, ref, get, query, orderByChild, equalTo, onValue, set, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+    // ===== STATE =====
+    let auth, db;
+    let licensesData = [];
+    let productsData = {};
+    let currentEditId = null;
+    let currentPage = 1;
+    let itemsPerPage = 10;
+    let activeTab = 'overview';
+    let deferredPrompt;
+    const API_URL = '/api/licenses';
+
+    // ===== INIT =====
+    try {
+        const configRes = await fetch('/.netlify/functions/get-config');
+        if (!configRes.ok) throw new Error('Failed to load config');
+        const firebaseConfig = await configRes.json();
+        if (!firebaseConfig?.apiKey) throw new Error('Firebase API Key missing');
+
+        const app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getDatabase(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = '/app/admin.html';
+                return;
+            }
+            // Show dashboard
+            document.getElementById('loadingScreen').style.display = 'none';
+            // Set admin info
+            const email = user.email || '—';
+            const name = email.split('@')[0];
+            document.getElementById('adminEmail').textContent = email;
+            document.getElementById('adminName').textContent = name;
+            document.getElementById('adminAvatar').textContent = name[0].toUpperCase();
+
+            fetchData();
+            loadProducts();
+            startClock();
+        });
+    } catch (err) {
+        console.error(err);
+        Swal.fire('Error', 'Gagal memuat konfigurasi sistem. ' + err.message, 'error')
+            .then(() => window.location.href = '/app/admin.html');
+    }
+
+    // ===== API =====
+    const callApi = async (method, body = null, qs = '') => {
+        if (!auth.currentUser) throw new Error('Not authenticated');
+        const token = await auth.currentUser.getIdToken();
+        const res = await fetch(`${API_URL}${qs}`, {
+            method,
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            ...(body ? { body: JSON.stringify(body) } : {})
+        });
+        if (!res.ok) {
+            let msg = `HTTP ${res.status}`;
+            try { const j = await res.json(); if (j.error) msg = j.error; } catch(e) {}
+            throw new Error(msg);
+        }
+        return res.json();
+    };
+
+    // ===== FETCH DATA =====
+    const fetchData = () => {
+        onValue(ref(db, 'licenses'), (snap) => {
+            const raw = snap.val();
+            if (raw) {
+                licensesData = Object.keys(raw).map(k => ({ id: k, key: raw[k].key || k, ...raw[k] }));
+                licensesData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            } else {
+                licensesData = [];
+            }
+            renderTable();
+            updateStats();
+            renderOverview();
+        });
+    };
+
+    const loadProducts = () => {
+        onValue(ref(db, 'products'), (snap) => {
+            productsData = snap.val() || {};
+            populateFilterDropdown();
+            populateAppDropdown();
+            renderAppTable();
+            updateStats();
+        });
+    };
+
+    // ===== STATS =====
+    const updateStats = () => {
+        const total = licensesData.length;
+        const active = licensesData.filter(x => (x.status||'').toLowerCase() === 'active').length;
+        const issues = total - active;
+        const apps = Object.keys(productsData).length;
+
+        ['statTotal','statTotal2'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = total; });
+        ['statActive','statActive2'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = active; });
+        ['statIssues','statIssues2'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = issues; });
+        ['statApps','statApps2'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = apps; });
+
+        const badge = document.getElementById('sidebarBadge');
+        if (badge) badge.textContent = total;
+    };
+
+    // ===== OVERVIEW =====
+    const renderOverview = () => {
+        const feed = document.getElementById('activityFeed');
+        const chart = document.getElementById('distributionChart');
+        if (!feed || !chart) return;
+
+        // Activity feed (last 5)
+        const recent = licensesData.slice(0, 5);
+        if (recent.length === 0) {
+            feed.innerHTML = '<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>Belum ada data</p></div>';
+        } else {
+            feed.innerHTML = recent.map(item => {
+                const status = (item.status || 'active').toLowerCase();
+                const dotColor = status === 'active' ? 'ic-green' : status === 'banned' ? 'ic-red' : 'ic-purple';
+                const icon = status === 'active' ? 'fa-check' : status === 'banned' ? 'fa-ban' : 'fa-clock';
+                const date = item.expiryDate ? `Exp: ${item.expiryDate}` : 'Tanpa expiry';
+                return `
+                <div class="activity-item">
+                    <div class="activity-dot ${dotColor}"><i class="fa-solid ${icon}"></i></div>
+                    <div>
+                        <div class="activity-title">${item.name || 'Unnamed'} <small style="color:var(--text-3);font-weight:400;">· ${item.appName || 'N/A'}</small></div>
+                        <div class="activity-sub">${item.key} &nbsp;·&nbsp; ${date}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Distribution chart (text-based)
+        const total = licensesData.length || 1;
+        const active = licensesData.filter(x => (x.status||'').toLowerCase() === 'active').length;
+        const banned = licensesData.filter(x => (x.status||'').toLowerCase() === 'banned').length;
+        const expired = total - active - banned;
+
+        const bar = (count, max, color) => {
+            const pct = Math.round((count / max) * 100);
+            return `<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                <div style="width:80px;font-size:0.82rem;color:var(--text-2);font-weight:600;">${count} lisensi</div>
+                <div style="flex:1;height:8px;background:#f1f5f9;border-radius:100px;overflow:hidden;">
+                    <div style="width:${pct}%;height:100%;background:${color};border-radius:100px;transition:width 0.5s ease;"></div>
+                </div>
+                <div style="width:36px;font-size:0.78rem;color:var(--text-3);text-align:right;">${pct}%</div>
+            </div>`;
+        };
+
+        chart.innerHTML = `
+            <div style="margin-bottom:10px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
+                    <span style="display:flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:600;color:#15803d;"><span style="width:10px;height:10px;background:#16a34a;border-radius:50%;display:inline-block;"></span>Active</span>
+                    <span style="display:flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:600;color:#dc2626;"><span style="width:10px;height:10px;background:#dc2626;border-radius:50%;display:inline-block;"></span>Banned</span>
+                    <span style="display:flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:600;color:#6b7280;"><span style="width:10px;height:10px;background:#9ca3af;border-radius:50%;display:inline-block;"></span>Expired</span>
+                </div>
+                ${bar(active, licensesData.length || 1, '#16a34a')}
+                ${bar(banned, licensesData.length || 1, '#dc2626')}
+                ${bar(expired, licensesData.length || 1, '#9ca3af')}
+            </div>
+        `;
+    };
+
+    // ===== FILTER & SEARCH =====
+    const populateFilterDropdown = () => {
+        const opt = document.getElementById('filterAppOptions');
+        if (!opt) return;
+        const allClick = () => { document.getElementById('filterAppId').value = 'all'; document.getElementById('filterAppLabel').textContent = 'Semua Aplikasi'; applyFilter(); closeDD('ddFilterApp'); };
+        opt.innerHTML = `<div class="opt-item selected" onclick="(${allClick.toString()})()"><div><span class="opt-title">Semua Aplikasi</span></div><i class="fa-solid fa-check opt-check"></i></div>`;
+        Object.keys(productsData).forEach(key => {
+            const a = productsData[key];
+            const div = document.createElement('div');
+            div.className = 'opt-item';
+            div.innerHTML = `<div><span class="opt-title">${a.name}</span></div><i class="fa-solid fa-check opt-check"></i>`;
+            div.onclick = () => { document.getElementById('filterAppId').value = key; document.getElementById('filterAppLabel').textContent = a.name; applyFilter(); closeDD('ddFilterApp'); };
+            opt.appendChild(div);
+        });
+    };
+
+    const populateAppDropdown = () => {
+        const opt = document.getElementById('appDropdownOptions');
+        if (!opt) return;
+        opt.innerHTML = '';
+        Object.keys(productsData).forEach(key => {
+            const a = productsData[key];
+            const div = document.createElement('div');
+            div.className = 'opt-item';
+            div.innerHTML = `<div><span class="opt-title">${a.name}</span><span class="opt-desc">${key}</span></div><i class="fa-solid fa-check opt-check"></i>`;
+            div.onclick = () => {
+                document.getElementById('createAppId').value = key;
+                document.getElementById('createAppLabel').textContent = a.name;
+                updatePriceAndExpiry();
+                closeDD('ddCreateApp');
+            };
+            opt.appendChild(div);
+        });
+    };
+
+    const applyFilter = () => {
+        const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+        const appId = document.getElementById('filterAppId').value;
+        let filtered = licensesData;
+        if (appId !== 'all') filtered = filtered.filter(x => x.appId === appId);
+        if (keyword) filtered = filtered.filter(x =>
+            (x.name||'').toLowerCase().includes(keyword) ||
+            (x.email||'').toLowerCase().includes(keyword) ||
+            (x.key||'').toLowerCase().includes(keyword) ||
+            (x.appName||'').toLowerCase().includes(keyword)
+        );
+        currentPage = 1;
+        renderTable(filtered);
+    };
+
+    document.getElementById('searchInput')?.addEventListener('input', applyFilter);
+    document.getElementById('appSearchInput')?.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase();
+        document.querySelectorAll('#appTableBody tr').forEach(tr => {
+            tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+    });
+
+    // ===== RENDER TABLE =====
+    window.renderTable = (data = licensesData) => {
+        const tbody = document.getElementById('licenseTableBody');
+        const emptyEl = document.getElementById('emptyLicense');
+        const pBar = document.getElementById('paginationBar');
+        if (!tbody) return;
+
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '';
+            if (emptyEl) emptyEl.style.display = 'block';
+            if (pBar) pBar.style.display = 'none';
+            return;
+        }
+        if (emptyEl) emptyEl.style.display = 'none';
+
+        const totalPages = Math.ceil(data.length / itemsPerPage);
+        if (currentPage < 1) currentPage = 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = (currentPage - 1) * itemsPerPage;
+        const paged = data.slice(start, start + itemsPerPage);
+
+        tbody.innerHTML = paged.map(item => {
+            const type = (item.type || '').toLowerCase();
+            const typeBadge = type === 'lifetime' ? `<span class="badge badge-lifetime">Lifetime</span>` : type === 'yearly' ? `<span class="badge badge-yearly">Yearly</span>` : `<span class="badge badge-monthly">Monthly</span>`;
+            const status = (item.status || 'active').toLowerCase();
+            const statusBadge = `<span class="badge badge-${status}">${status}</span>`;
+            return `<tr>
+                <td data-label="License Key"><span class="key-badge">${item.key}</span></td>
+                <td data-label="Pengguna">
+                    <div style="font-weight:600;">${item.name || '—'}</div>
+                    <div style="font-size:0.78rem;color:var(--text-3);">${item.email || '—'}</div>
+                </td>
+                <td data-label="Aplikasi">
+                    <div style="font-weight:600;color:var(--primary);font-size:0.85rem;">${item.appName || '—'}</div>
+                    <div style="font-size:0.72rem;color:var(--text-3);">${item.appId || ''}</div>
+                </td>
+                <td data-label="Tipe">${typeBadge}</td>
+                <td data-label="Status">${statusBadge}</td>
+                <td data-label="Expired" style="font-size:0.82rem;">${item.expiryDate || '—'}</td>
+                <td data-label="Aksi" style="text-align:right;">
+                    <a href="/.netlify/functions/invoice?id=${item.id}" target="_blank" class="action-btn btn-invoice" title="Invoice"><i class="fa-solid fa-file-invoice"></i></a>
+                    <button class="action-btn btn-edit" onclick="openEditFunc('${item.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                    <button class="action-btn btn-delete" onclick="deleteFunc('${item.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                </td>
+            </tr>`;
+        }).join('');
+
+        if (pBar) {
+            pBar.style.display = 'flex';
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages;
+            document.getElementById('btnPrev').disabled = currentPage === 1;
+            document.getElementById('btnNext').disabled = currentPage === totalPages;
+        }
+    };
+
+    window.changePage = (dir) => { currentPage += dir; renderTable(); };
+    window.changeRows = () => { itemsPerPage = parseInt(document.getElementById('rowsPerPage').value); currentPage = 1; renderTable(); };
+
+    // ===== RENDER APPS =====
+    window.renderAppTable = () => {
+        const tbody = document.getElementById('appTableBody');
+        const empty = document.getElementById('appEmpty');
+        if (!tbody) return;
+
+        const keys = Object.keys(productsData);
+        if (keys.length === 0) {
+            tbody.innerHTML = '';
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+        if (empty) empty.style.display = 'none';
+
+        tbody.innerHTML = keys.map(key => {
+            const a = productsData[key];
+            const fmt = (p) => p ? 'Rp ' + p.toLocaleString('id-ID') : '—';
+            return `<tr>
+                <td data-label="Aplikasi">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:36px;height:36px;border-radius:8px;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:1rem;">
+                            <i class="fa-solid ${a.icon || 'fa-box'}"></i>
+                        </div>
+                        <span style="font-weight:600;">${a.name}</span>
+                    </div>
+                </td>
+                <td data-label="App ID"><span style="font-family:monospace;font-size:0.8rem;background:#f1f5f9;padding:3px 8px;border-radius:5px;">${key}</span></td>
+                <td data-label="Package"><span style="font-size:0.78rem;color:var(--text-3);">${a.package || '—'}</span></td>
+                <td data-label="Monthly" style="font-weight:600;">${fmt(a.price?.monthly)}</td>
+                <td data-label="Yearly">${fmt(a.price?.yearly)}</td>
+                <td data-label="Lifetime">${fmt(a.price?.lifetime)}</td>
+                <td data-label="Aksi" style="text-align:right;">
+                    <button class="action-btn btn-edit" onclick="openEditAppModal('${key}')"><i class="fa-solid fa-pen"></i></button>
+                    <button class="action-btn btn-delete" onclick="deleteAppFunc('${key}')"><i class="fa-solid fa-trash-can"></i></button>
+                </td>
+            </tr>`;
+        }).join('');
+    };
+
+    // ===== CRUD - LICENSE =====
+    window.openCreateModal = () => {
+        document.getElementById('createForm').reset();
+        document.getElementById('createAppLabel').textContent = 'Pilih Aplikasi';
+        document.getElementById('createAppId').value = '';
+        document.getElementById('typeLabel').textContent = 'Monthly';
+        document.getElementById('createType').value = 'monthly';
+        updatePriceAndExpiry();
+        showModal('createModal');
+    };
+
+    window.handleCreateSubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('createSubmitBtn');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+        btn.disabled = true;
+        try {
+            const payCategory = document.getElementById('createPaymentCategory').value;
+            const payProvider = document.getElementById('createPaymentProvider').value;
+            let finalPayment = payCategory;
+            if (payCategory === 'Transfer Bank' && payProvider) finalPayment = `Transfer Bank - ${payProvider}`;
+            else if (payCategory === 'e-Wallet' && payProvider) finalPayment = `e-Wallet (${payProvider})`;
+
+            const appId = document.getElementById('createAppId').value;
+            const type = document.getElementById('createType').value.toLowerCase();
+            let price = 0;
+            if (appId && productsData[appId]?.price) price = productsData[appId].price[type] || 0;
+
+            const payload = {
+                appId, type,
+                name: document.getElementById('createName').value,
+                email: document.getElementById('createEmail').value,
+                expiryDate: document.getElementById('createExpiry').value,
+                sendEmailCheck: document.getElementById('sendEmailCheck').checked,
+                price,
+                package: productsData[appId]?.package || '',
+                paymentMethod: finalPayment,
+                createdAt: new Date().toISOString()
+            };
+
+            const response = await callApi('POST', payload);
+            const key = response.data?.key || 'Unknown';
+            closeModal('createModal');
+            Swal.fire({ icon: 'success', title: 'Berhasil!', text: `Lisensi dibuat. Key: ${key}`, timer: 3000 });
+        } catch (err) {
+            Swal.fire('Gagal', err.message, 'error');
+        } finally {
+            btn.innerHTML = orig;
+            btn.disabled = false;
+        }
+    };
+
+    window.openEditFunc = (id) => {
+        const item = licensesData.find(x => x.id === id);
+        if (!item) return;
+        currentEditId = id;
+        document.getElementById('displayEditKey').textContent = item.key;
+        document.getElementById('editStatus').value = (item.status || 'active');
+        document.getElementById('statusLabel').textContent = (item.status || 'active').charAt(0).toUpperCase() + (item.status || 'active').slice(1);
+        document.getElementById('editExpiry').value = item.expiryDate || '';
+        document.getElementById('editDeviceId').value = item.deviceId || '';
+        showModal('editModal');
+        if (document.getElementById('editExpiry')._flatpickr) {
+            document.getElementById('editExpiry')._flatpickr.setDate(item.expiryDate || '');
+        }
+    };
+
+    window.handleEditSubmit = async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type=submit]');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+        btn.disabled = true;
+        try {
+            await callApi('PUT', {
+                id: currentEditId,
+                status: document.getElementById('editStatus').value.toLowerCase(),
+                expiryDate: document.getElementById('editExpiry').value,
+                deviceId: document.getElementById('editDeviceId').value
+            });
+            closeModal('editModal');
+            Swal.fire({ icon: 'success', title: 'Tersimpan!', timer: 1500, showConfirmButton: false });
+        } catch (err) {
+            Swal.fire('Gagal', err.message, 'error');
+        } finally {
+            btn.innerHTML = orig;
+            btn.disabled = false;
+        }
+    };
+
+    window.deleteFunc = (id) => {
+        Swal.fire({ title: 'Hapus Lisensi?', text: 'Tindakan ini tidak dapat dibatalkan!', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Ya, Hapus!' })
+        .then(async (r) => {
+            if (r.isConfirmed) {
+                try { await callApi('DELETE', null, `?id=${id}`); Swal.fire({ icon: 'success', title: 'Terhapus!', timer: 1500, showConfirmButton: false }); }
+                catch (e) { Swal.fire('Gagal', e.message, 'error'); }
+            }
+        });
+    };
+
+    window.resetDeviceLock = () => { document.getElementById('editDeviceId').value = ''; };
+
+    // ===== CRUD - APPS =====
+    window.openCreateAppModal = () => {
+        document.getElementById('appForm').reset();
+        document.getElementById('appFormId').value = '';
+        document.getElementById('appId').readOnly = false;
+        document.getElementById('appModalTitle').innerHTML = '<i class="fa-solid fa-plus" style="color:var(--primary);margin-right:8px;"></i>Tambah Aplikasi';
+        document.getElementById('appSubmitBtn').textContent = 'Simpan Aplikasi';
+        showModal('appModal');
+    };
+
+    window.openEditAppModal = (key) => {
+        const a = productsData[key];
+        if (!a) return;
+        document.getElementById('appFormId').value = key;
+        document.getElementById('appId').value = key;
+        document.getElementById('appId').readOnly = true;
+        document.getElementById('appName').value = a.name || '';
+        document.getElementById('appPackage').value = a.package || '';
+        document.getElementById('appDescription').value = a.description || '';
+        document.getElementById('priceMonthly').value = a.price?.monthly || 0;
+        document.getElementById('priceYearly').value = a.price?.yearly || 0;
+        document.getElementById('priceLifetime').value = a.price?.lifetime || 0;
+        document.getElementById('appModalTitle').innerHTML = '<i class="fa-solid fa-pen" style="color:var(--primary);margin-right:8px;"></i>Edit Aplikasi';
+        document.getElementById('appSubmitBtn').textContent = 'Update Aplikasi';
+        showModal('appModal');
+    };
+
+    window.handleAppSubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('appSubmitBtn');
+        const orig = btn.textContent;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+        try {
+            const id = document.getElementById('appId').value.trim();
+            if (!id) throw new Error('App ID wajib diisi');
+            await set(ref(db, 'products/' + id), {
+                name: document.getElementById('appName').value.trim(),
+                package: document.getElementById('appPackage').value.trim(),
+                description: document.getElementById('appDescription').value.trim() || 'Official Application',
+                icon: 'fa-box',
+                price: {
+                    monthly: parseInt(document.getElementById('priceMonthly').value) || 0,
+                    yearly: parseInt(document.getElementById('priceYearly').value) || 0,
+                    lifetime: parseInt(document.getElementById('priceLifetime').value) || 0,
+                },
+                updatedAt: Date.now()
+            });
+            closeModal('appModal');
+            Swal.fire({ icon: 'success', title: 'Tersimpan!', timer: 1500, showConfirmButton: false });
+        } catch (err) {
+            Swal.fire('Gagal', err.message, 'error');
+        } finally {
+            btn.textContent = orig;
+            btn.disabled = false;
+        }
+    };
+
+    window.deleteAppFunc = (id) => {
+        Swal.fire({ title: 'Hapus Aplikasi?', text: 'Data produk akan hilang permanen.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Hapus!' })
+        .then(async (r) => {
+            if (r.isConfirmed) {
+                try { await remove(ref(db, 'products/' + id)); Swal.fire({ icon: 'success', title: 'Terhapus!', timer: 1500, showConfirmButton: false }); }
+                catch (e) { Swal.fire('Gagal', e.message, 'error'); }
+            }
+        });
+    };
+
+    // ===== PRICE HELPER =====
+    window.updatePriceAndExpiry = () => {
+        const appId = document.getElementById('createAppId').value;
+        const type = document.getElementById('createType').value.toLowerCase();
+        const priceEl = document.getElementById('createPrice');
+        const expiryEl = document.getElementById('createExpiry');
+
+        let price = 0;
+        if (appId && productsData[appId]?.price) {
+            price = productsData[appId].price[type] || 0;
+        } else {
+            const defaults = { monthly: 80000, yearly: 860000, lifetime: 1599000 };
+            price = defaults[type] || 0;
+        }
+        priceEl.value = price.toLocaleString('id-ID');
+
+        const d = new Date();
+        if (type === 'monthly') d.setMonth(d.getMonth() + 1);
+        else if (type === 'yearly') d.setFullYear(d.getFullYear() + 1);
+        else d.setFullYear(d.getFullYear() + 100);
+
+        const dateStr = d.toISOString().split('T')[0];
+        expiryEl.value = dateStr;
+        if (expiryEl._flatpickr) expiryEl._flatpickr.setDate(dateStr);
+    };
+
+    window.togglePaymentProvider = () => {
+        const cat = document.getElementById('createPaymentCategory').value;
+        const grp = document.getElementById('providerGroup');
+        const lbl = document.getElementById('providerLabel');
+        const inp = document.getElementById('createPaymentProvider');
+        grp.style.display = (cat === 'Transfer Bank' || cat === 'e-Wallet') ? 'block' : 'none';
+        inp.value = '';
+        if (cat === 'Transfer Bank') lbl.textContent = 'Nama Bank';
+        else lbl.textContent = 'Nama Wallet';
+    };
+
+    // ===== LOGOUT =====
+    window.handleLogout = () => {
+        Swal.fire({ title: 'Logout?', text: 'Sesi Anda akan diakhiri.', icon: 'question', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Ya, Logout', cancelButtonText: 'Batal' })
+        .then(async (r) => {
+            if (r.isConfirmed) {
+                await signOut(auth);
+                window.location.href = '/app/admin.html';
+            }
+        });
+    };
+
+    // ===== CLOCK =====
+    const startClock = () => {
+        const el = document.getElementById('clock');
+        const tick = () => { if(el) el.textContent = new Date().toLocaleTimeString('id-ID'); };
+        tick();
+        setInterval(tick, 1000);
+    };
+
+    // ===== REFRESH =====
+    window.refreshCurrentSection = () => {
+        fetchData();
+        loadProducts();
+        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Data diperbarui', showConfirmButton: false, timer: 1500 });
+    };
+
+    // ===== FLATPICKR =====
+    flatpickr('#createExpiry', { dateFormat: 'Y-m-d H:i', enableTime: true, altInput: true, altFormat: 'j F Y, H:i', minDate: 'today', disableMobile: true });
+    flatpickr('#editExpiry', { dateFormat: 'Y-m-d H:i', enableTime: true, altInput: true, altFormat: 'j F Y, H:i', disableMobile: true });
+
+    // ===== PWA =====
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); deferredPrompt = e;
+        document.getElementById('pwaToast').style.display = 'flex';
+    });
+    document.getElementById('btnPwaInstall')?.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            document.getElementById('pwaToast').style.display = 'none';
+        }
+    });
+
+    // ===== GLOBAL HELPERS (non-module) exposed via window =====
+    window.fetchData = fetchData;
+</script>
+
+<script>
+    // ===== TAB SWITCHING =====
+    window.switchTab = (tab) => {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('tab-' + tab)?.classList.add('active');
+        document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+
+        const titles = { overview: 'Overview <span>/ Dashboard</span>', licenses: 'License Manager <span>/ Kelola Lisensi</span>', apps: 'App Manager <span>/ Kelola Produk</span>' };
+        document.getElementById('topbarTitle').innerHTML = titles[tab] || tab;
+
+        closeSidebar();
+    };
+
+    // ===== MODAL =====
+    window.showModal = (id) => { document.getElementById(id)?.classList.add('show'); };
+    window.closeModal = (id) => { document.getElementById(id)?.classList.remove('show'); };
+    document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('show'); }));
+
+    // ===== DROPDOWN =====
+    window.toggleDD = (id) => {
+        const el = document.getElementById(id);
+        document.querySelectorAll('.custom-dropdown').forEach(d => { if (d.id !== id) d.classList.remove('open'); });
+        el?.classList.toggle('open');
+    };
+    window.closeDD = (id) => { document.getElementById(id)?.classList.remove('open'); };
+    window.selectOpt = (ddId, value, labelText, labelElId) => {
+        const dd = document.getElementById(ddId);
+        dd?.querySelector('input[type=hidden]')?.setAttribute('value', value);
+        const hiddenInput = dd?.querySelector('input[type=hidden]');
+        if (hiddenInput) hiddenInput.value = value;
+        const labelEl = document.getElementById(labelElId);
+        if (labelEl) labelEl.textContent = labelText;
+        dd?.querySelectorAll('.opt-item').forEach(opt => opt.classList.remove('selected'));
+        event?.currentTarget?.classList.add('selected');
+        dd?.classList.remove('open');
+    };
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.custom-dropdown')) {
+            document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+        }
+    });
+
+    // ===== SIDEBAR MOBILE =====
+    window.openSidebar = () => {
+        document.getElementById('sidebar').classList.add('open');
+        document.getElementById('sidebarOverlay').classList.add('show');
+    };
+    window.closeSidebar = () => {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('show');
+    };
+</script>
+</body>
+</html>

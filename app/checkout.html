@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - PrimaDev Store</title>
+
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary: #1865ca;
+            --primary-dark: #1456a8;
+            --primary-light: #e8f0fe;
+            --bg-page: #f8f9fa;
+            --text-primary: #1e293b;
+            --text-secondary: #5f6368;
+            --border: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: var(--text-primary);
+        }
+
+        .checkout-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* LEFT: FORM */
+        .checkout-left {
+            flex: 1;
+            padding: 40px 10%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-logo {
+            margin-bottom: 40px;
+        }
+
+        .header-logo img {
+            height: 32px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .breadcrumb span.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .breadcrumb i {
+            font-size: 0.7rem;
+        }
+
+        .step-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Duration Options */
+        .duration-box {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .duration-box:hover {
+            border-color: #a8d5c4;
+        }
+
+        .duration-box.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            margin-right: 16px;
+            position: relative;
+        }
+
+        .duration-box.selected .radio-circle {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .duration-box.selected .radio-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        .dur-info {
+            flex: 1;
+        }
+
+        .dur-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .dur-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .dur-price {
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .dur-price small {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Payment Methods */
+        .payment-group {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .payment-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .payment-header:hover {
+            background: #fafafa;
+        }
+
+        .payment-icon {
+            width: 32px;
+            text-align: center;
+            font-size: 1.2rem;
+            margin-right: 12px;
+            color: var(--primary);
+        }
+
+        .payment-title {
+            flex: 1;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .payment-body {
+            display: none;
+            padding: 10px 16px 16px;
+            border-top: 1px solid var(--border);
+            background: #fafafa;
+        }
+
+        .payment-group.open .payment-body {
+            display: block;
+        }
+
+        .pm-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .pm-option.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .pm-option.selected .radio-circle {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .pm-option.selected .radio-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        .pm-option img {
+            height: 20px;
+            width: 50px;
+            object-fit: contain;
+            margin-right: 12px;
+        }
+
+        .pm-name {
+            flex: 1;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: #fff;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background: #f8f9fa;
+        }
+
+        .footer-links {
+            margin-top: auto;
+            padding-top: 40px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* RIGHT: SUMMARY */
+        .checkout-right {
+            width: 450px;
+            background: var(--bg-page);
+            padding: 40px;
+            border-left: 1px solid var(--border);
+        }
+
+        .summary-card {
+            position: sticky;
+            top: 40px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .product-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1f6cdf, #1456a8);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .product-info h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .product-info p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        .summary-line.total {
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            margin-top: 16px;
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        /* Loading Overlay */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .checkout-container {
+                flex-direction: column-reverse;
+            }
+
+            .checkout-left {
+                padding: 30px 20px;
+            }
+
+            .checkout-right {
+                width: 100%;
+                border-left: none;
+                border-bottom: 1px solid var(--border);
+                padding: 30px 20px;
+            }
+
+            .summary-card {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <div style="font-weight: 600; color: var(--text-secondary);">Memuat data pesanan...</div>
+    </div>
+
+    <div class="checkout-container" style="display: none;" id="mainContent">
+        <!-- LEFT PANEL -->
+        <div class="checkout-left">
+            <div class="header-logo">
+                <a href="/"><img src="https://i.imgur.com/BZ1xLO3.png" alt="PrimaDev"></a>
+            </div>
+
+            <div class="breadcrumb">
+                <a href="/" style="color:inherit; text-decoration:none;">Katalog</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span id="bc-step1" class="active">Info & Paket</span>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span id="bc-step2">Pembayaran</span>
+            </div>
+
+            <!-- STEP 1 -->
+            <div id="step1" class="step-section active">
+                <h2 class="section-title">Pilih Durasi Paket</h2>
+                <div id="durationList">
+                    <!-- Populated by JS -->
+                </div>
+
+                <h2 class="section-title" style="margin-top: 32px;">Informasi Penerima</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nama Lengkap</label>
+                        <input type="text" class="form-input" id="buyerName" placeholder="Masukkan nama Anda">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Aktif</label>
+                        <input type="email" class="form-input" id="buyerEmail"
+                            placeholder="Lisensi dikirim ke email ini">
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
+                    <a href="/app/store.html"
+                        style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i
+                            class="fa-solid fa-arrow-left"></i> Kembali</a>
+                    <button class="btn btn-primary" style="width: auto;" onclick="goToStep2()">Lanjut ke Pembayaran <i
+                            class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div id="step2" class="step-section">
+                <h2 class="section-title">Pilih Metode Pembayaran</h2>
+
+                <div class="payment-group open" id="pg-qris">
+                    <div class="payment-header" onclick="selectPayment('qris')">
+                        <div class="payment-icon"><i class="fa-solid fa-qrcode"></i></div>
+                        <div class="payment-title">QRIS (Semua Bank & E-Wallet)</div>
+                        <div class="radio-circle" id="radio-qris"></div>
+                    </div>
+                </div>
+
+                <div class="payment-group" id="pg-va">
+                    <div class="payment-header" onclick="toggleGroup('pg-va')">
+                        <div class="payment-icon"><i class="fa-solid fa-building-columns"></i></div>
+                        <div class="payment-title">Virtual Account Bank</div>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="payment-body">
+                        <div class="pm-option" onclick="selectPayment('bca', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg"
+                                alt="BCA">
+                            <div class="pm-name">BCA Virtual Account</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                        <div class="pm-option" onclick="selectPayment('mandiri', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg"
+                                alt="Mandiri">
+                            <div class="pm-name">Mandiri Virtual Account</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                        <div class="pm-option" onclick="selectPayment('bni', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg"
+                                alt="BNI">
+                            <div class="pm-name">BNI Virtual Account</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                        <div class="pm-option" onclick="selectPayment('bri', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg" alt="BRI">
+                            <div class="pm-name">BRI Virtual Account</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                        <div class="pm-option" onclick="selectPayment('permata', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/id/4/48/PermataBank_logo.svg"
+                                alt="Permata">
+                            <div class="pm-name">Permata Virtual Account</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                        <div class="pm-option" onclick="selectPayment('cimb', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/CIMB_Niaga_logo.svg"
+                                alt="CIMB">
+                            <div class="pm-name">CIMB Niaga Virtual Account</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-group" id="pg-ewallet">
+                    <div class="payment-header" onclick="toggleGroup('pg-ewallet')">
+                        <div class="payment-icon"><i class="fa-solid fa-wallet"></i></div>
+                        <div class="payment-title">E-Wallet</div>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="payment-body">
+                        <div class="pm-option" onclick="selectPayment('gopay', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay">
+                            <div class="pm-name">GoPay</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                        <div class="pm-option" onclick="selectPayment('shopeepay', this)">
+                            <img src="https://shopeepay.co.id/src/pages/home/assets/images/new-homepage/new-spp-logo.svg"
+                                alt="ShopeePay">
+                            <div class="pm-name">ShopeePay</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                        <div class="pm-option" onclick="selectPayment('dana', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg"
+                                alt="DANA">
+                            <div class="pm-name">DANA</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                        <div class="pm-option" onclick="selectPayment('ovo', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg"
+                                alt="OVO">
+                            <div class="pm-name">OVO</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-group" id="pg-cstore">
+                    <div class="payment-header" onclick="toggleGroup('pg-cstore')">
+                        <div class="payment-icon"><i class="fa-solid fa-store"></i></div>
+                        <div class="payment-title">Gerai Retail</div>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="payment-body">
+                        <div class="pm-option" onclick="selectPayment('indomaret', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9d/Logo_Indomaret.png"
+                                alt="Indomaret">
+                            <div class="pm-name">Indomaret</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                        <div class="pm-option" onclick="selectPayment('alfamart', this)">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Alfamart_logo.svg"
+                                alt="Alfamart">
+                            <div class="pm-name">Alfamart</div>
+                            <div class="radio-circle"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 32px; display: flex; justify-content: space-between; align-items: center;">
+                    <button class="btn btn-outline" style="width: auto;" onclick="goToStep1()"><i
+                            class="fa-solid fa-arrow-left"></i> Kembali</button>
+                    <button class="btn btn-primary" style="width: auto;" onclick="processPayment()" id="btnPay"><i
+                            class="fa-solid fa-lock"></i> Bayar Sekarang</button>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <a href="/app/legal">Kebijakan Privasi</a>
+                <a href="/app/legal">Syarat & Ketentuan</a>
+                <a href="mailto:support@primadev.com">Bantuan</a>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="checkout-right">
+            <div class="summary-card">
+                <h2 style="font-size: 1.1rem; margin-bottom: 24px;">Ringkasan Pesanan</h2>
+                <div class="product-item">
+                    <div class="product-icon" id="sumIcon"><i class="fa-solid fa-box"></i></div>
+                    <div class="product-info">
+                        <h3 id="sumName">Produk</h3>
+                        <p>PrimaDev Digital Technology</p>
+                    </div>
+                </div>
+
+                <div class="summary-line">
+                    <span style="color: var(--text-secondary)">Paket Dipilih</span>
+                    <strong id="sumPackage">-</strong>
+                </div>
+                <div class="summary-line total">
+                    <span>Total Tagihan</span>
+                    <span style="color: var(--primary);" id="sumTotal">Rp 0</span>
+                </div>
+
+                <div
+                    style="margin-top: 24px; padding: 16px; background: #e8f0fe; border-radius: 8px; font-size: 0.8rem; color: #1456a8; display: flex; gap: 10px;">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 1rem;"></i>
+                    <span>Transaksi dijamin aman dengan enkripsi SSL 256-bit dan proses verifikasi otomatis oleh
+                        sistem.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let CATALOG = {};
+        let productId = localStorage.getItem('checkout_product_id');
+        let selectedDuration = 'monthly';
+        let selectedPayment = 'qris';
+        let productData = null;
+
+        async function init() {
+            if (!productId) {
+                Swal.fire('Error', 'Produk belum dipilih.', 'error').then(() => window.location.href = '/app/store.html');
+                return;
+            }
+
+            try {
+                const res = await fetch('/.netlify/functions/public_order');
+                const data = await res.json();
+                CATALOG = data.catalog;
+                productData = CATALOG[productId];
+
+                if (!productData) throw new Error("Produk tidak ditemukan.");
+
+                renderProduct();
+                renderDurations();
+                updateSummary();
+
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'flex';
+                selectPayment('qris', null); // default
+            } catch (err) {
+                Swal.fire('Error', 'Gagal memuat data toko.', 'error').then(() => window.location.href = '/app/store.html');
+            }
+        }
+
+        function renderProduct() {
+            document.getElementById('sumName').textContent = productData.name;
+            document.getElementById('sumIcon').innerHTML = `<i class="fa-solid ${productData.icon || 'fa-box'}"></i>`;
+        }
+
+        function renderDurations() {
+            const container = document.getElementById('durationList');
+            const prices = productData.price || {};
+            let html = '';
+
+            if (prices.monthly) {
+                html += `
+                <div class="duration-box selected" id="dur-monthly" onclick="selectDuration('monthly')">
+                    <div class="radio-circle"></div>
+                    <div class="dur-info">
+                        <div class="dur-title">Bulanan</div>
+                        <div class="dur-desc">Akses 30 hari</div>
+                    </div>
+                    <div class="dur-price">Rp ${prices.monthly.toLocaleString('id-ID')}<small>/bulan</small></div>
+                </div>`;
+            }
+            if (prices.yearly) {
+                html += `
+                <div class="duration-box" id="dur-yearly" onclick="selectDuration('yearly')">
+                    <div class="radio-circle"></div>
+                    <div class="dur-info">
+                        <div class="dur-title">Tahunan</div>
+                        <div class="dur-desc">Akses 365 hari</div>
+                    </div>
+                    <div class="dur-price">Rp ${prices.yearly.toLocaleString('id-ID')}<small>/tahun</small></div>
+                </div>`;
+            }
+            if (prices.lifetime) {
+                html += `
+                <div class="duration-box" id="dur-lifetime" onclick="selectDuration('lifetime')">
+                    <div class="radio-circle"></div>
+                    <div class="dur-info">
+                        <div class="dur-title">Seumur Hidup</div>
+                        <div class="dur-desc">Sekali bayar</div>
+                    </div>
+                    <div class="dur-price">Rp ${prices.lifetime.toLocaleString('id-ID')}<small>lifetime</small></div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function selectDuration(dur) {
+            selectedDuration = dur;
+            document.querySelectorAll('.duration-box').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`dur-${dur}`).classList.add('selected');
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const labelMap = { monthly: 'Bulanan', yearly: 'Tahunan', lifetime: 'Lifetime' };
+            const price = productData.price[selectedDuration];
+
+            document.getElementById('sumPackage').textContent = labelMap[selectedDuration];
+            document.getElementById('sumTotal').textContent = 'Rp ' + price.toLocaleString('id-ID');
+        }
+
+        function goToStep2() {
+            const name = document.getElementById('buyerName').value.trim();
+            const email = document.getElementById('buyerEmail').value.trim();
+
+            if (!name || !email) {
+                Swal.fire('Data Belum Lengkap', 'Silakan isi Nama Lengkap dan Email.', 'warning');
+                return;
+            }
+            if (!email.includes('@')) {
+                Swal.fire('Email Tidak Valid', 'Silakan masukkan email yang benar.', 'warning');
+                return;
+            }
+
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+            document.getElementById('bc-step1').classList.remove('active');
+            document.getElementById('bc-step2').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function goToStep1() {
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('bc-step2').classList.remove('active');
+            document.getElementById('bc-step1').classList.add('active');
+        }
+
+        function toggleGroup(id) {
+            document.querySelectorAll('.payment-group').forEach(el => {
+                if (el.id !== id) el.classList.remove('open');
+            });
+            document.getElementById(id).classList.toggle('open');
+        }
+
+        function selectPayment(method, element) {
+            selectedPayment = method;
+            document.querySelectorAll('.pm-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('radio-qris').parentElement.parentElement.classList.remove('selected');
+            document.getElementById('radio-qris').style.borderColor = 'var(--border)';
+            document.getElementById('radio-qris').style.background = 'transparent';
+
+            if (method === 'qris') {
+                document.getElementById('radio-qris').style.borderColor = 'var(--primary)';
+                document.getElementById('radio-qris').style.background = 'var(--primary)';
+            } else if (element) {
+                element.classList.add('selected');
+            }
+        }
+
+        async function processPayment() {
+            const btn = document.getElementById('btnPay');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+            btn.disabled = true;
+
+            const buyerName = document.getElementById('buyerName').value.trim();
+            const buyerEmail = document.getElementById('buyerEmail').value.trim();
+
+            try {
+                const res = await fetch('/.netlify/functions/public_order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'create_transaction',
+                        appId: productId,
+                        duration: selectedDuration,
+                        buyerName,
+                        buyerEmail,
+                        paymentMethod: selectedPayment
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Terjadi kesalahan internal.');
+
+                // Save to localStorage and redirect
+                localStorage.setItem('pending_order_data', JSON.stringify({
+                    apiData: data,
+                    orderInfo: { buyerName, buyerEmail, duration: selectedDuration, productId }
+                }));
+
+                window.location.href = '/app/waiting-payment.html';
+
+            } catch (err) {
+                Swal.fire('Pembayaran Gagal', err.message, 'error');
+                btn.innerHTML = '<i class="fa-solid fa-lock"></i> Bayar Sekarang';
+                btn.disabled = false;
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
