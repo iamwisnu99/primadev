@@ -335,27 +335,31 @@ exports.handler = async (event, context) => {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: 'Data tidak lengkap untuk renewal' }) };
             }
 
-            // Ambil data lisensi dari Firebase
+            // Ambil data lisensi dari Firebase untuk memastikan lisensi sah & ada di sistem
             let licenseData = null;
             if (db) {
                 const licSnap = await db.ref(`licenses/${licenseKey}`).once('value');
-                if (licSnap.exists()) licenseData = licSnap.val();
+                if (licSnap.exists()) {
+                    licenseData = licSnap.val();
+                } else {
+                    return { statusCode: 404, headers, body: JSON.stringify({ error: 'License Key tidak ditemukan di sistem' }) };
+                }
+            } else {
+                return { statusCode: 500, headers, body: JSON.stringify({ error: 'Database tidak terhubung' }) };
             }
 
-            // Ambil harga dari produk atau fallback
-            let amount = body.amount || 0;
-            if (amount <= 0) {
-                const appId = licenseData?.appId;
-                const product = PRICING_DB[appId];
-                if (product && product.price && product.price[duration]) {
-                    amount = Math.floor(product.price[duration]);
-                } else {
-                    amount = duration === 'yearly' ? 860000 : 80000; // fallback default
-                }
+            // [SECURITY HARDENING] SELALU hitung harga dari server (PRICING_DB). TIDAK BOLEH percaya harga dari client request.
+            const appId = licenseData.appId;
+            const product = PRICING_DB[appId];
+            let amount = 0;
+            if (product && product.price && product.price[duration]) {
+                amount = Math.floor(product.price[duration]);
+            } else {
+                amount = duration === 'yearly' ? 860000 : 80000; // fallback default
             }
 
             const orderId = `RENEW-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-            const appName = licenseData?.appName || 'Lisensi PrimaDev';
+            const appName = licenseData.appName || product?.name || 'Lisensi PrimaDev';
 
             let parameter = {
                 transaction_details: { order_id: orderId, gross_amount: amount },
