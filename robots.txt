@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /app/admin
+Disallow: /app/admin-dashboard
+Disallow: /app/waiting-payment
+Disallow: /app/thankyou
+
+Sitemap: https://apps-primadev.netlify.app/sitemap.xml
