@@ -1082,6 +1082,27 @@
         styleEl.textContent = '.d-none { display: none !important; }';
         document.head.appendChild(styleEl);
 
+        // ===== SHOW HELP POPUP =====
+        function showHelp() {
+            Swal.fire({
+                title: 'Pusat Bantuan PrimaDev',
+                text: 'Tim dukungan kami siap membantu setiap pertanyaan dan kendala Anda.',
+                icon: 'question',
+                showConfirmButton: false,
+                showCloseButton: true,
+                html: `
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+                        <a href="/app/support" style="background: #2563eb; color: #ffffff; padding: 14px 20px; border-radius: 12px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(37,99,235,0.2);">
+                            <i class="fa-solid fa-comments"></i> Live Chat Support
+                        </a>
+                        <a href="mailto:wisnu.bussines99@gmail.com" style="background: #f8fafc; color: #1e293b; padding: 14px 20px; border-radius: 12px; font-weight: 600; text-decoration: none; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <i class="fa-solid fa-envelope"></i> Kirim Email Support
+                        </a>
+                    </div>
+                `
+            });
+        }
+
         initStore();
     </script>
 </body>
