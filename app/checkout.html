@@ -508,7 +508,7 @@
                 </div>
 
                 <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
-                    <a href="/app/store.html"
+                    <a href="/app/store"
                         style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i
                             class="fa-solid fa-arrow-left"></i> Kembali</a>
                     <button class="btn btn-primary" style="width: auto;" onclick="goToStep2()">Lanjut ke Pembayaran <i
@@ -683,7 +683,7 @@
 
         async function init() {
             if (!productId) {
-                Swal.fire('Error', 'Produk belum dipilih.', 'error').then(() => window.location.href = '/app/store.html');
+                Swal.fire('Error', 'Produk belum dipilih.', 'error').then(() => window.location.href = '/app/store');
                 return;
             }
 
@@ -703,7 +703,7 @@
                 document.getElementById('mainContent').style.display = 'flex';
                 selectPayment('qris', null); // default
             } catch (err) {
-                Swal.fire('Error', 'Gagal memuat data toko.', 'error').then(() => window.location.href = '/app/store.html');
+                Swal.fire('Error', 'Gagal memuat data toko.', 'error').then(() => window.location.href = '/app/store');
             }
         }
 
@@ -848,7 +848,7 @@
                     orderInfo: { buyerName, buyerEmail, duration: selectedDuration, productId }
                 }));
 
-                window.location.href = '/app/waiting-payment.html';
+                window.location.href = '/app/waiting-payment';
 
             } catch (err) {
                 Swal.fire('Pembayaran Gagal', err.message, 'error');

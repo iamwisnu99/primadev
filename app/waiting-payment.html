@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selesaikan Pembayaran - PrimaDev</title>
-    
+
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,8 +23,17 @@
             --border: #e2e8f0;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: #fff; color: var(--text-primary); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: var(--text-primary);
+        }
 
         .split-container {
             display: flex;
@@ -42,7 +52,10 @@
         .header-logo {
             margin-bottom: 40px;
         }
-        .header-logo img { height: 32px; }
+
+        .header-logo img {
+            height: 32px;
+        }
 
         .timer-container {
             display: inline-flex;
@@ -58,7 +71,10 @@
             font-variant-numeric: tabular-nums;
             align-self: flex-start;
         }
-        .timer-container i { font-size: 1.3rem; }
+
+        .timer-container i {
+            font-size: 1.3rem;
+        }
 
         .page-title {
             font-size: 1.8rem;
@@ -67,6 +83,7 @@
             color: var(--text-primary);
             letter-spacing: -0.5px;
         }
+
         .page-subtitle {
             font-size: 1rem;
             color: var(--text-secondary);
@@ -96,6 +113,7 @@
             margin-bottom: 24px;
             text-align: center;
         }
+
         .va-number {
             font-family: monospace;
             font-size: 2.8rem;
@@ -112,16 +130,32 @@
             padding: 20px;
             border-radius: 24px;
             border: 2px solid var(--border);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
             margin-bottom: 24px;
             text-align: center;
         }
-        .qris-image { width: 300px; height: 300px; border-radius: 12px; display: block; }
-        .qris-label { font-size: 0.8rem; font-weight: 800; color: var(--text-secondary); margin-top: 16px; letter-spacing: 2px; }
+
+        .qris-image {
+            width: 300px;
+            height: 300px;
+            border-radius: 12px;
+            display: block;
+        }
+
+        .qris-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            margin-top: 16px;
+            letter-spacing: 2px;
+        }
 
         /* Buttons */
         .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             padding: 14px 28px;
             border-radius: 100px;
             font-size: 1rem;
@@ -132,19 +166,40 @@
             transition: all 0.2s;
             border: none;
         }
+
         .btn-primary {
-            background: var(--primary); color: #fff;
+            background: var(--primary);
+            color: #fff;
         }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(24,101,202,0.3); }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(24, 101, 202, 0.3);
+        }
+
         .btn-outline {
-            background: #fff; border: 2px solid var(--border); color: var(--text-primary);
+            background: #fff;
+            border: 2px solid var(--border);
+            color: var(--text-primary);
         }
-        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
 
         .btn-cancel {
-            background: none; border: none; color: var(--text-secondary);
-            font-size: 0.9rem; font-weight: 600; cursor: pointer;
-            margin-top: auto; text-decoration: underline; font-family: inherit; align-self: flex-start;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: auto;
+            text-decoration: underline;
+            font-family: inherit;
+            align-self: flex-start;
         }
 
         /* RIGHT PANEL: SUMMARY */
@@ -161,18 +216,27 @@
             background: #fff;
             border-radius: 20px;
             padding: 32px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
             border: 1px solid var(--border);
             position: sticky;
             top: 50px;
         }
 
-        .summary-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 24px; color: var(--text-primary); }
+        .summary-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
 
         .summary-line {
-            display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 0.95rem; color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
         }
-        
+
         .total-amount {
             font-size: 2.2rem;
             font-weight: 800;
@@ -208,28 +272,67 @@
             font-size: 0.95rem;
             font-weight: 600;
         }
+
         .spinner {
-            width: 24px; height: 24px; border: 3px solid rgba(24, 101, 202, 0.2);
-            border-top: 3px solid var(--primary); border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(24, 101, 202, 0.2);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
         .secure-badge {
-            display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-secondary);
-            margin-top: auto; padding-top: 40px; justify-content: center; font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: auto;
+            padding-top: 40px;
+            justify-content: center;
+            font-weight: 500;
         }
 
         @media (max-width: 1000px) {
-            .split-container { flex-direction: column; }
-            .split-left { padding: 40px 20px; }
-            .split-right { width: 100%; padding: 40px 20px; border-left: none; border-top: 1px solid var(--border); }
-            .summary-card { position: relative; top: 0; }
-            .va-number { font-size: 2rem; }
-            .qris-image { width: 220px; height: 220px; }
+            .split-container {
+                flex-direction: column;
+            }
+
+            .split-left {
+                padding: 40px 20px;
+            }
+
+            .split-right {
+                width: 100%;
+                padding: 40px 20px;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+
+            .summary-card {
+                position: relative;
+                top: 0;
+            }
+
+            .va-number {
+                font-size: 2rem;
+            }
+
+            .qris-image {
+                width: 220px;
+                height: 220px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="split-container" style="display:none;" id="mainContent">
@@ -244,7 +347,8 @@
             </div>
 
             <h1 class="page-title">Selesaikan Pembayaran Anda</h1>
-            <p class="page-subtitle">Ikuti instruksi di bawah ini untuk menyelesaikan transaksi. Pesanan Anda akan diproses otomatis setelah pembayaran terverifikasi.</p>
+            <p class="page-subtitle">Ikuti instruksi di bawah ini untuk menyelesaikan transaksi. Pesanan Anda akan
+                diproses otomatis setelah pembayaran terverifikasi.</p>
 
             <div id="instructionBody">
                 <!-- Dynamically populated -->
@@ -257,7 +361,7 @@
         <div class="split-right">
             <div class="summary-card">
                 <div class="summary-title">Ringkasan Pesanan</div>
-                
+
                 <div class="summary-line">
                     <span>Total Tagihan</span>
                 </div>
@@ -269,7 +373,7 @@
                 <div class="order-id-box" id="orderId">-</div>
 
                 <div class="polling-indicator">
-                    <div class="spinner"></div> 
+                    <div class="spinner"></div>
                     <span>Menunggu konfirmasi sistem...</span>
                 </div>
             </div>
@@ -288,16 +392,16 @@
         function init() {
             const rawData = localStorage.getItem('pending_order_data');
             if (!rawData) {
-                window.location.href = '/app/store.html';
+                window.location.href = '/app/store';
                 return;
             }
             orderData = JSON.parse(rawData);
             const { apiData, orderInfo } = orderData;
 
             document.getElementById('orderId').textContent = apiData.order_id;
-            
+
             const grossAmount = apiData.gross_amount || 0;
-            if(grossAmount) {
+            if (grossAmount) {
                 document.getElementById('totalAmount').textContent = 'Rp ' + parseInt(grossAmount).toLocaleString('id-ID');
             }
 
@@ -372,10 +476,10 @@
             } else if (data.payment_type === 'gopay' || data.payment_type === 'shopeepay') {
                 const deepLinkAction = data.actions ? data.actions.find(a => a.name === 'deeplink-redirect') : null;
                 const qrAction = data.actions ? data.actions.find(a => a.name === 'generate-qr-code') : null;
-                
+
                 const deepLink = deepLinkAction ? deepLinkAction.url : '#';
                 const walletLogo = getLogo(data.payment_type);
-                
+
                 let qrHtml = '';
                 if (qrAction) {
                     qrHtml = `
@@ -387,7 +491,7 @@
                         </div>
                     `;
                 }
-                
+
                 content = `
                     <img src="${walletLogo}" height="48" style="margin-bottom: 24px;" alt="Wallet Logo">
                     <div class="instruction-title">Lanjutkan Pembayaran</div>
@@ -399,7 +503,7 @@
                 const storeCode = data.store;
                 const storeLogo = getLogo(storeCode);
                 const paymentCode = data.payment_code;
-                
+
                 content = `
                     <img src="${storeLogo}" height="48" style="margin-bottom: 24px;" alt="Store Logo">
                     <div class="instruction-title">Kode Pembayaran ${storeCode.toUpperCase()}</div>
@@ -450,7 +554,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     localStorage.removeItem('pending_order_data');
-                    window.location.href = '/app/store.html';
+                    window.location.href = '/app/store';
                 }
             })
         }
@@ -476,7 +580,7 @@
                         clearInterval(pollingInterval);
                         clearInterval(countdownInterval);
                         localStorage.removeItem('pending_order_data');
-                        
+
                         Swal.fire({
                             title: 'Pembayaran Berhasil!',
                             text: 'Terima kasih, pembayaran Anda telah kami terima.',
@@ -484,7 +588,7 @@
                             confirmButtonText: 'Lanjut',
                             allowOutsideClick: false
                         }).then(() => {
-                            window.location.href = result.redirect_url || "/app/thankyou.html";
+                            window.location.href = result.redirect_url || "/app/thankyou";
                         });
                     }
                 } catch (e) {
@@ -509,7 +613,7 @@
                     clearInterval(pollingInterval);
                     Swal.fire('Waktu Habis', 'Sesi pembayaran telah kedaluwarsa. Silakan checkout ulang.', 'warning').then(() => {
                         localStorage.removeItem('pending_order_data');
-                        window.location.href = '/app/store.html';
+                        window.location.href = '/app/store';
                     });
                 }
             }, 1000);
@@ -518,4 +622,5 @@
         init();
     </script>
 </body>
+
 </html>

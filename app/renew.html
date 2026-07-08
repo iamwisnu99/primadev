@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perpanjang Lisensi | PrimaDev Store</title>
-    <meta name="description" content="Perpanjang lisensi software PrimaDev Anda dengan mudah. Validasi key, pilih durasi, dan bayar dengan berbagai metode pembayaran.">
+    <meta name="description"
+        content="Perpanjang lisensi software PrimaDev Anda dengan mudah. Validasi key, pilih durasi, dan bayar dengan berbagai metode pembayaran.">
 
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
@@ -14,7 +15,8 @@
     <meta name="apple-mobile-web-app-title" content="PrimaDev" />
     <link rel="manifest" href="/public/site.webmanifest" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Midtrans Core API JS (bukan Snap) -->
@@ -44,9 +46,9 @@
             --warning-light: #fef3c7;
             --danger: #dc2626;
             --danger-light: #fee2e2;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-            --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
-            --shadow-lg: 0 20px 48px rgba(0,0,0,0.13);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.10);
+            --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.13);
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
@@ -54,7 +56,13 @@
         }
 
         /* =================== RESET =================== */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -65,10 +73,19 @@
             opacity: 0;
             transition: opacity 0.4s ease;
         }
-        body.loaded { opacity: 1; }
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #c4c4c4; border-radius: 3px; }
+        body.loaded {
+            opacity: 1;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c4c4c4;
+            border-radius: 3px;
+        }
 
         /* =================== NAVBAR =================== */
         .renew-nav {
@@ -79,6 +96,7 @@
             top: 0;
             z-index: 100;
         }
+
         .renew-nav-inner {
             max-width: 960px;
             margin: 0 auto;
@@ -87,13 +105,24 @@
             gap: 16px;
             height: 60px;
         }
-        .nav-logo img { height: 34px; display: block; }
-        .nav-divider { width: 1px; height: 24px; background: var(--border); }
+
+        .nav-logo img {
+            height: 34px;
+            display: block;
+        }
+
+        .nav-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border);
+        }
+
         .nav-title {
             font-size: 0.9rem;
             font-weight: 700;
             color: var(--text-secondary);
         }
+
         .nav-back {
             margin-left: auto;
             display: flex;
@@ -108,6 +137,7 @@
             border-radius: 100px;
             transition: all 0.2s;
         }
+
         .nav-back:hover {
             color: var(--primary);
             border-color: var(--primary);
@@ -139,6 +169,7 @@
             padding: 22px 28px;
             color: #fff;
         }
+
         .card-header-bar h2 {
             font-size: 1.1rem;
             font-weight: 800;
@@ -147,9 +178,10 @@
             gap: 10px;
             margin-bottom: 3px;
         }
+
         .card-header-bar p {
             font-size: 0.82rem;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
         }
 
         /* =================== STEP INDICATOR =================== */
@@ -159,6 +191,7 @@
             padding: 20px 28px 0;
             gap: 0;
         }
+
         .step-node {
             display: flex;
             flex-direction: column;
@@ -166,6 +199,7 @@
             gap: 6px;
             flex-shrink: 0;
         }
+
         .step-circle {
             width: 30px;
             height: 30px;
@@ -180,17 +214,52 @@
             color: var(--text-tertiary);
             transition: all 0.3s;
         }
-        .step-node.active .step-circle { border-color: var(--primary); background: var(--primary); color: #fff; }
-        .step-node.done .step-circle { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
-        .step-label { font-size: 0.65rem; font-weight: 600; color: var(--text-tertiary); white-space: nowrap; }
-        .step-node.active .step-label { color: var(--primary); font-weight: 700; }
-        .step-line { flex: 1; height: 2px; background: var(--border); margin-bottom: 20px; transition: background 0.3s; }
-        .step-line.done { background: var(--primary); }
 
-        .card-body { padding: 24px 28px 28px; }
+        .step-node.active .step-circle {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .step-node.done .step-circle {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .step-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        .step-node.active .step-label {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .step-line.done {
+            background: var(--primary);
+        }
+
+        .card-body {
+            padding: 24px 28px 28px;
+        }
 
         /* =================== FORM ELEMENTS =================== */
-        .field-group { margin-bottom: 18px; }
+        .field-group {
+            margin-bottom: 18px;
+        }
+
         .field-label {
             display: block;
             font-size: 0.72rem;
@@ -200,6 +269,7 @@
             letter-spacing: 0.5px;
             margin-bottom: 7px;
         }
+
         .field-label .optional {
             font-weight: 400;
             text-transform: none;
@@ -207,7 +277,11 @@
             color: var(--text-tertiary);
             font-size: 0.72rem;
         }
-        .input-wrap { position: relative; }
+
+        .input-wrap {
+            position: relative;
+        }
+
         .input-wrap .icon {
             position: absolute;
             left: 13px;
@@ -217,6 +291,7 @@
             font-size: 0.85rem;
             pointer-events: none;
         }
+
         .field-input {
             width: 100%;
             padding: 11px 14px 11px 38px;
@@ -229,11 +304,16 @@
             outline: none;
             transition: all 0.2s;
         }
+
         .field-input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-glow);
         }
-        .field-input::placeholder { color: var(--text-tertiary); }
+
+        .field-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
         .field-input.key-input {
             font-family: 'Courier New', monospace;
             font-weight: 700;
@@ -241,9 +321,18 @@
             text-transform: uppercase;
             font-size: 0.9rem;
         }
-        .field-hint { font-size: 0.72rem; color: var(--text-tertiary); margin-top: 5px; }
 
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .field-hint {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            margin-top: 5px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
 
         /* =================== BUTTONS =================== */
         .btn-primary {
@@ -263,9 +352,20 @@
             gap: 8px;
             transition: all 0.2s;
         }
-        .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 16px var(--primary-glow); }
-        .btn-primary:active { transform: scale(0.99); }
-        .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 16px var(--primary-glow);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.99);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
 
         .btn-ghost {
             width: 100%;
@@ -285,7 +385,11 @@
             transition: all 0.2s;
             margin-top: 10px;
         }
-        .btn-ghost:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+        .btn-ghost:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
 
         /* =================== LICENSE INFO BOX =================== */
         .license-card {
@@ -298,6 +402,7 @@
             gap: 14px;
             align-items: flex-start;
         }
+
         .license-card-icon {
             width: 48px;
             height: 48px;
@@ -310,18 +415,25 @@
             font-size: 1.2rem;
             flex-shrink: 0;
         }
-        .license-card-info { flex: 1; min-width: 0; }
+
+        .license-card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
         .license-app-name {
             font-size: 0.95rem;
             font-weight: 800;
             color: var(--text-primary);
             margin-bottom: 6px;
         }
+
         .license-meta {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
+
         .meta-chip {
             display: inline-flex;
             align-items: center;
@@ -331,10 +443,27 @@
             font-size: 0.7rem;
             font-weight: 700;
         }
-        .chip-active { background: var(--success-light); color: var(--success); }
-        .chip-expired { background: var(--danger-light); color: var(--danger); }
-        .chip-warning { background: var(--warning-light); color: var(--warning); }
-        .chip-type { background: var(--primary-light); color: var(--primary); }
+
+        .chip-active {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .chip-expired {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .chip-warning {
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+
+        .chip-type {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
         .license-expiry {
             margin-top: 8px;
             font-size: 0.75rem;
@@ -343,7 +472,11 @@
             align-items: center;
             gap: 5px;
         }
-        .license-expiry.expired { color: var(--danger); font-weight: 600; }
+
+        .license-expiry.expired {
+            color: var(--danger);
+            font-weight: 600;
+        }
 
         /* =================== DURATION OPTIONS =================== */
         .section-label {
@@ -354,7 +487,14 @@
             letter-spacing: 0.5px;
             margin-bottom: 10px;
         }
-        .duration-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+
+        .duration-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
         .duration-item {
             display: flex;
             align-items: center;
@@ -367,34 +507,77 @@
             background: #fff;
             position: relative;
         }
-        .duration-item:hover { border-color: #a8c4ef; background: #f8faff; }
-        .duration-item.selected { border-color: var(--primary); background: var(--primary-light); }
+
+        .duration-item:hover {
+            border-color: #a8c4ef;
+            background: #f8faff;
+        }
+
+        .duration-item.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
         .dur-radio {
-            width: 20px; height: 20px;
+            width: 20px;
+            height: 20px;
             border: 2px solid var(--border);
             border-radius: 50%;
             flex-shrink: 0;
             position: relative;
             transition: all 0.2s;
         }
-        .duration-item.selected .dur-radio { border-color: var(--primary); background: var(--primary); }
+
+        .duration-item.selected .dur-radio {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
         .duration-item.selected .dur-radio::after {
             content: '';
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 8px; height: 8px;
+            width: 8px;
+            height: 8px;
             background: #fff;
             border-radius: 50%;
         }
-        .dur-info { flex: 1; }
-        .dur-name { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
-        .dur-desc { font-size: 0.73rem; color: var(--text-secondary); }
-        .dur-price { font-size: 1rem; font-weight: 800; color: var(--text-primary); text-align: right; }
-        .dur-price small { display: block; font-size: 0.65rem; color: var(--text-tertiary); font-weight: 400; }
+
+        .dur-info {
+            flex: 1;
+        }
+
+        .dur-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .dur-desc {
+            font-size: 0.73rem;
+            color: var(--text-secondary);
+        }
+
+        .dur-price {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-align: right;
+        }
+
+        .dur-price small {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--text-tertiary);
+            font-weight: 400;
+        }
+
         .dur-badge {
             position: absolute;
-            top: -1px; right: 12px;
+            top: -1px;
+            right: 12px;
             transform: translateY(-50%);
             padding: 2px 9px;
             border-radius: 100px;
@@ -414,7 +597,11 @@
             margin-bottom: 8px;
             transition: border-color 0.2s;
         }
-        .payment-group.active { border-color: var(--primary); }
+
+        .payment-group.active {
+            border-color: var(--primary);
+        }
+
         .payment-group-header {
             display: flex;
             align-items: center;
@@ -425,9 +612,14 @@
             user-select: none;
             transition: background 0.2s;
         }
-        .payment-group-header:hover { background: var(--bg-page); }
+
+        .payment-group-header:hover {
+            background: var(--bg-page);
+        }
+
         .pg-icon {
-            width: 38px; height: 38px;
+            width: 38px;
+            height: 38px;
             border-radius: 9px;
             display: flex;
             align-items: center;
@@ -435,33 +627,78 @@
             font-size: 1rem;
             flex-shrink: 0;
         }
-        .pg-icon.c-qris { background: #dbeafe; color: #1865ca; }
-        .pg-icon.c-va   { background: #e8f0fe; color: #1f6cdf; }
-        .pg-icon.c-ew   { background: #dbeafe; color: #1456a8; }
-        .pg-icon.c-cs   { background: #eff6ff; color: #2563eb; }
-        .pg-title { flex: 1; }
-        .pg-name { font-size: 0.87rem; font-weight: 700; color: var(--text-primary); }
-        .pg-desc { font-size: 0.7rem; color: var(--text-secondary); }
+
+        .pg-icon.c-qris {
+            background: #dbeafe;
+            color: #1865ca;
+        }
+
+        .pg-icon.c-va {
+            background: #e8f0fe;
+            color: #1f6cdf;
+        }
+
+        .pg-icon.c-ew {
+            background: #dbeafe;
+            color: #1456a8;
+        }
+
+        .pg-icon.c-cs {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .pg-title {
+            flex: 1;
+        }
+
+        .pg-name {
+            font-size: 0.87rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .pg-desc {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
         .pg-radio {
-            width: 18px; height: 18px;
+            width: 18px;
+            height: 18px;
             border: 2px solid var(--border);
             border-radius: 50%;
             position: relative;
             flex-shrink: 0;
             transition: all 0.2s;
         }
-        .payment-group.active .pg-radio { border-color: var(--primary); background: var(--primary); }
+
+        .payment-group.active .pg-radio {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
         .payment-group.active .pg-radio::after {
             content: '';
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 7px; height: 7px;
+            width: 7px;
+            height: 7px;
             background: #fff;
             border-radius: 50%;
         }
-        .pg-chevron { color: var(--text-tertiary); transition: transform 0.3s; font-size: 0.75rem; }
-        .payment-group.open .pg-chevron { transform: rotate(180deg); }
+
+        .pg-chevron {
+            color: var(--text-tertiary);
+            transition: transform 0.3s;
+            font-size: 0.75rem;
+        }
+
+        .payment-group.open .pg-chevron {
+            transform: rotate(180deg);
+        }
 
         .payment-group-body {
             max-height: 0;
@@ -469,11 +706,19 @@
             transition: max-height 0.35s ease;
             background: var(--bg-page);
         }
+
         .payment-group.open .payment-group-body {
             max-height: 400px;
             border-top: 1px solid var(--border-light);
         }
-        .payment-options-list { padding: 6px; display: flex; flex-direction: column; gap: 3px; }
+
+        .payment-options-list {
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
         .payment-option-item {
             display: flex;
             align-items: center;
@@ -485,31 +730,64 @@
             border: 1.5px solid transparent;
             transition: all 0.2s;
         }
-        .payment-option-item:hover { background: #f0f4ff; border-color: var(--border); }
-        .payment-option-item.selected { border-color: var(--primary); background: var(--primary-light); }
-        .payment-option-item img { height: 20px; width: 44px; object-fit: contain; flex-shrink: 0; }
-        .poi-name { flex: 1; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); }
+
+        .payment-option-item:hover {
+            background: #f0f4ff;
+            border-color: var(--border);
+        }
+
+        .payment-option-item.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .payment-option-item img {
+            height: 20px;
+            width: 44px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .poi-name {
+            flex: 1;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
         .poi-radio {
-            width: 16px; height: 16px;
+            width: 16px;
+            height: 16px;
             border: 2px solid var(--border);
             border-radius: 50%;
             position: relative;
             flex-shrink: 0;
             transition: all 0.2s;
         }
-        .payment-option-item.selected .poi-radio { border-color: var(--primary); background: var(--primary); }
+
+        .payment-option-item.selected .poi-radio {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
         .payment-option-item.selected .poi-radio::after {
             content: '';
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 6px; height: 6px;
+            width: 6px;
+            height: 6px;
             background: #fff;
             border-radius: 50%;
         }
 
         /* =================== SIDEBAR (RIGHT) =================== */
-        .sidebar { display: flex; flex-direction: column; gap: 16px; }
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
         .sidebar-card {
             background: var(--bg-card);
@@ -518,6 +796,7 @@
             padding: 20px;
             box-shadow: var(--shadow-sm);
         }
+
         .sidebar-card-title {
             font-size: 0.78rem;
             font-weight: 700;
@@ -536,18 +815,45 @@
             margin-bottom: 10px;
             font-size: 0.85rem;
         }
-        .summary-row:last-child { margin-bottom: 0; }
-        .summary-label { color: var(--text-secondary); }
-        .summary-value { font-weight: 600; color: var(--text-primary); }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
         .summary-total {
             border-top: 1px solid var(--border);
             margin-top: 10px;
             padding-top: 12px;
         }
-        .summary-total .summary-label { font-weight: 700; font-size: 0.9rem; color: var(--text-primary); }
-        .summary-total .summary-value { font-size: 1.25rem; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
 
-        .info-list { display: flex; flex-direction: column; gap: 10px; }
+        .summary-total .summary-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .summary-total .summary-value {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         .info-item {
             display: flex;
             align-items: flex-start;
@@ -555,7 +861,13 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-        .info-item i { color: var(--primary); margin-top: 2px; font-size: 0.75rem; flex-shrink: 0; }
+
+        .info-item i {
+            color: var(--primary);
+            margin-top: 2px;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
 
         /* =================== PAYMENT STATUS (Step 3) =================== */
         .status-header {
@@ -566,6 +878,7 @@
             border-bottom: 1px solid var(--border-light);
             margin-bottom: 20px;
         }
+
         .order-badge {
             display: inline-flex;
             align-items: center;
@@ -577,6 +890,7 @@
             font-size: 0.72rem;
             font-weight: 700;
         }
+
         .timer-badge {
             display: inline-flex;
             align-items: center;
@@ -589,16 +903,29 @@
             font-weight: 700;
             font-variant-numeric: tabular-nums;
         }
+
         .pulse-dot {
-            width: 7px; height: 7px;
+            width: 7px;
+            height: 7px;
             background: var(--primary);
             border-radius: 50%;
             animation: pulse 1.5s ease-in-out infinite;
         }
+
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.7); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.7);
+            }
         }
+
         .waiting-row {
             display: flex;
             align-items: center;
@@ -622,6 +949,7 @@
             text-align: center;
             margin-bottom: 16px;
         }
+
         .display-label {
             font-size: 0.68rem;
             font-weight: 700;
@@ -630,6 +958,7 @@
             letter-spacing: 0.5px;
             margin-bottom: 8px;
         }
+
         .display-code {
             font-family: 'Courier New', monospace;
             font-size: 1.7rem;
@@ -638,6 +967,7 @@
             letter-spacing: 2px;
             margin-bottom: 12px;
         }
+
         .copy-btn {
             display: inline-flex;
             align-items: center;
@@ -653,30 +983,47 @@
             font-family: 'Inter', sans-serif;
             transition: all 0.2s;
         }
-        .copy-btn:hover { background: var(--primary); color: #fff; }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
 
         /* =================== LOADING =================== */
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         .spinner {
-            width: 18px; height: 18px;
-            border: 2.5px solid rgba(255,255,255,0.4);
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255, 255, 255, 0.4);
             border-top-color: #fff;
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
             display: inline-block;
         }
+
         .spinner.dark {
-            border-color: rgba(24,101,202,0.2);
+            border-color: rgba(24, 101, 202, 0.2);
             border-top-color: var(--primary);
         }
 
         /* Step visibility */
-        .step-panel { display: none; }
-        .step-panel.active { display: block; }
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
 
         /* =================== FINAL OVERLAY =================== */
         #finalOverlay {
-            position: fixed; inset: 0;
+            position: fixed;
+            inset: 0;
             background: #fff;
             z-index: 9999;
             display: none;
@@ -686,9 +1033,15 @@
             opacity: 0;
             transition: opacity 0.5s;
         }
-        #finalOverlay.visible { display: flex; opacity: 1; }
+
+        #finalOverlay.visible {
+            display: flex;
+            opacity: 1;
+        }
+
         .success-icon {
-            width: 80px; height: 80px;
+            width: 80px;
+            height: 80px;
             background: var(--success-light);
             border-radius: 50%;
             display: flex;
@@ -707,28 +1060,72 @@
                 padding: 20px 16px 60px;
                 gap: 16px;
             }
-            .sidebar { order: -1; }
-            .sidebar-card { padding: 16px; }
-            .card-body { padding: 18px 20px 20px; }
-            .card-header-bar { padding: 18px 20px; }
-            .step-track { padding: 16px 20px 0; }
-            .form-row { grid-template-columns: 1fr; gap: 12px; }
-            .renew-nav-inner { gap: 10px; }
-            .nav-title { display: none; }
+
+            .sidebar {
+                order: -1;
+            }
+
+            .sidebar-card {
+                padding: 16px;
+            }
+
+            .card-body {
+                padding: 18px 20px 20px;
+            }
+
+            .card-header-bar {
+                padding: 18px 20px;
+            }
+
+            .step-track {
+                padding: 16px 20px 0;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .renew-nav-inner {
+                gap: 10px;
+            }
+
+            .nav-title {
+                display: none;
+            }
         }
 
         @media (max-width: 400px) {
-            .display-code { font-size: 1.3rem; }
+            .display-code {
+                font-size: 1.3rem;
+            }
         }
 
         /* Fade-in animation */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .main-card, .sidebar-card { animation: fadeInUp 0.4s ease both; }
-        .sidebar-card:nth-child(2) { animation-delay: 0.08s; }
-        .sidebar-card:nth-child(3) { animation-delay: 0.14s; }
+
+        .main-card,
+        .sidebar-card {
+            animation: fadeInUp 0.4s ease both;
+        }
+
+        .sidebar-card:nth-child(2) {
+            animation-delay: 0.08s;
+        }
+
+        .sidebar-card:nth-child(3) {
+            animation-delay: 0.14s;
+        }
     </style>
 </head>
 
@@ -880,7 +1277,8 @@
                                 <div class="pg-name">QRIS</div>
                                 <div class="pg-desc">Semua Bank & e-Wallet</div>
                             </div>
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" height="24" style="opacity:.8; margin-right:6px;" alt="">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" height="24"
+                                style="opacity:.8; margin-right:6px;" alt="">
                             <div class="pg-radio"></div>
                         </div>
                     </div>
@@ -898,32 +1296,38 @@
                         <div class="payment-group-body">
                             <div class="payment-options-list">
                                 <div class="payment-option-item" onclick="setPayment('bca',this)">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" alt="BCA">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg"
+                                        alt="BCA">
                                     <span class="poi-name">BCA Virtual Account</span>
                                     <div class="poi-radio"></div>
                                 </div>
                                 <div class="payment-option-item" onclick="setPayment('mandiri',this)">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg" alt="Mandiri">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg"
+                                        alt="Mandiri">
                                     <span class="poi-name">Mandiri Bill Payment</span>
                                     <div class="poi-radio"></div>
                                 </div>
                                 <div class="payment-option-item" onclick="setPayment('bni',this)">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg" alt="BNI">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg"
+                                        alt="BNI">
                                     <span class="poi-name">BNI Virtual Account</span>
                                     <div class="poi-radio"></div>
                                 </div>
                                 <div class="payment-option-item" onclick="setPayment('bri',this)">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg" alt="BRI">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg"
+                                        alt="BRI">
                                     <span class="poi-name">BRI Virtual Account</span>
                                     <div class="poi-radio"></div>
                                 </div>
                                 <div class="payment-option-item" onclick="setPayment('permata',this)">
-                                    <img src="https://upload.wikimedia.org/wikipedia/en/4/48/PermataBank_logo.svg" alt="Permata">
+                                    <img src="https://upload.wikimedia.org/wikipedia/id/4/48/PermataBank_logo.svg"
+                                        alt="Permata">
                                     <span class="poi-name">Permata Virtual Account</span>
                                     <div class="poi-radio"></div>
                                 </div>
                                 <div class="payment-option-item" onclick="setPayment('cimb',this)">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/CIMB_Niaga_logo.svg" alt="CIMB">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/CIMB_Niaga_logo.svg"
+                                        alt="CIMB">
                                     <span class="poi-name">CIMB Niaga Virtual Account</span>
                                     <div class="poi-radio"></div>
                                 </div>
@@ -944,17 +1348,20 @@
                         <div class="payment-group-body">
                             <div class="payment-options-list">
                                 <div class="payment-option-item" onclick="setPayment('gopay',this)">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg"
+                                        alt="GoPay">
                                     <span class="poi-name">GoPay (Instan)</span>
                                     <div class="poi-radio"></div>
                                 </div>
                                 <div class="payment-option-item" onclick="setPayment('shopeepay',this)">
-                                    <img src="https://shopeepay.co.id/src/pages/home/assets/images/new-homepage/new-spp-logo.svg" alt="ShopeePay">
+                                    <img src="https://shopeepay.co.id/src/pages/home/assets/images/new-homepage/new-spp-logo.svg"
+                                        alt="ShopeePay">
                                     <span class="poi-name">ShopeePay (Instan)</span>
                                     <div class="poi-radio"></div>
                                 </div>
                                 <div class="payment-option-item" onclick="setPayment('dana',this)">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" alt="DANA">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg"
+                                        alt="DANA">
                                     <span class="poi-name">DANA</span>
                                     <div class="poi-radio"></div>
                                 </div>
@@ -975,12 +1382,14 @@
                         <div class="payment-group-body">
                             <div class="payment-options-list">
                                 <div class="payment-option-item" onclick="setPayment('indomaret',this)">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9d/Logo_Indomaret.png" alt="Indomaret">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9d/Logo_Indomaret.png"
+                                        alt="Indomaret">
                                     <span class="poi-name">Indomaret</span>
                                     <div class="poi-radio"></div>
                                 </div>
                                 <div class="payment-option-item" onclick="setPayment('alfamart',this)">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Alfamart_logo.svg" alt="Alfamart">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Alfamart_logo.svg"
+                                        alt="Alfamart">
                                     <span class="poi-name">Alfamart</span>
                                     <div class="poi-radio"></div>
                                 </div>
@@ -999,7 +1408,8 @@
                         </button>
                     </div>
 
-                    <div style="text-align:center; margin-top:12px; font-size:0.73rem; color:var(--text-tertiary); display:flex; align-items:center; justify-content:center; gap:5px;">
+                    <div
+                        style="text-align:center; margin-top:12px; font-size:0.73rem; color:var(--text-tertiary); display:flex; align-items:center; justify-content:center; gap:5px;">
                         <i class="fa-solid fa-shield-halved"></i> Transaksi diamankan enkripsi SSL 256-bit
                     </div>
                 </div>
@@ -1029,7 +1439,8 @@
                         Menunggu konfirmasi pembayaran...
                     </div>
 
-                    <button onclick="location.reload()" style="width:100%; margin-top:16px; padding:10px; background:none; border:none; color:var(--text-secondary); font-size:0.83rem; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <button onclick="location.reload()"
+                        style="width:100%; margin-top:16px; padding:10px; background:none; border:none; color:var(--text-secondary); font-size:0.83rem; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;">
                         <i class="fa-solid fa-arrow-left"></i> Batalkan & Mulai Ulang
                     </button>
                 </div>
@@ -1056,7 +1467,8 @@
                         <span style="color: var(--text-secondary);">Pembayaran</span>
                         <strong id="sumMethod">QRIS</strong>
                     </div>
-                    <div class="info-item" style="justify-content: space-between; border-top: 1px solid var(--border-light); padding-top: 12px; margin-top: 4px;">
+                    <div class="info-item"
+                        style="justify-content: space-between; border-top: 1px solid var(--border-light); padding-top: 12px; margin-top: 4px;">
                         <span style="color: var(--text-secondary);">Total</span>
                         <strong id="sumTotal" style="font-size: 1.1rem; color: var(--primary);">Rp —</strong>
                     </div>
@@ -1081,7 +1493,9 @@
                     </div>
                     <div class="info-item">
                         <i class="fa-solid fa-headset"></i>
-                        <span>Butuh bantuan? <a href="/app/support" target="_blank" style="color:var(--primary); font-weight:600; text-decoration:none;">Hubungi CS</a> kami.</span>
+                        <span>Butuh bantuan? <a href="/app/support" target="_blank"
+                                style="color:var(--primary); font-weight:600; text-decoration:none;">Hubungi CS</a>
+                            kami.</span>
                     </div>
                 </div>
             </div>
@@ -1089,13 +1503,15 @@
             <!-- Trust -->
             <div class="sidebar-card" style="background: var(--primary-light); border-color: #c7d9f5;">
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                    <div style="width:36px; height:36px; background:var(--primary); border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1rem; flex-shrink:0;">
+                    <div
+                        style="width:36px; height:36px; background:var(--primary); border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1rem; flex-shrink:0;">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
                     <div style="font-size:0.85rem; font-weight:700; color:var(--primary);">Transaksi Aman</div>
                 </div>
                 <div style="font-size:0.78rem; color:var(--primary-dark); line-height:1.6;">
-                    Pembayaran Anda diproses melalui <strong>Midtrans Core API</strong> dengan enkripsi SSL 256-bit dan terproteksi 3D Secure.
+                    Pembayaran Anda diproses melalui <strong>Midtrans Core API</strong> dengan enkripsi SSL 256-bit dan
+                    terproteksi 3D Secure.
                 </div>
             </div>
 
@@ -1107,8 +1523,10 @@
         <div style="padding: 32px; text-align: center;">
             <div class="success-icon"><i class="fa-solid fa-check"></i></div>
             <h2 style="font-weight:800; margin-bottom:8px;">Perpanjangan Berhasil!</h2>
-            <p style="color:var(--text-secondary); margin-bottom:20px;">Lisensi Anda telah diperpanjang dan notifikasi dikirim ke email.</p>
-            <div style="display:flex; align-items:center; justify-content:center; gap:8px; color:var(--text-tertiary); font-size:0.85rem;">
+            <p style="color:var(--text-secondary); margin-bottom:20px;">Lisensi Anda telah diperpanjang dan notifikasi
+                dikirim ke email.</p>
+            <div
+                style="display:flex; align-items:center; justify-content:center; gap:8px; color:var(--text-tertiary); font-size:0.85rem;">
                 <div class="spinner dark"></div>
                 Mengarahkan ke halaman utama...
             </div>
@@ -1170,8 +1588,8 @@
         // =================== STEP 1: VALIDASI ===================
         async function checkLicense(e) {
             e.preventDefault();
-            const key   = document.getElementById('licenseKey').value.trim().toUpperCase();
-            const name  = document.getElementById('buyerName').value.trim();
+            const key = document.getElementById('licenseKey').value.trim().toUpperCase();
+            const name = document.getElementById('buyerName').value.trim();
             const email = document.getElementById('buyerEmail').value.trim();
             if (!key || !name || !email) return;
 
@@ -1184,7 +1602,7 @@
                 const data = await res.json();
 
                 if (res.ok && data) {
-                    const dbName  = (data.name  || '').toLowerCase();
+                    const dbName = (data.name || '').toLowerCase();
                     const dbEmail = (data.email || '').toLowerCase();
 
                     if (dbName === name.toLowerCase() && dbEmail === email.toLowerCase()) {
@@ -1297,10 +1715,10 @@
         async function processRenewal() {
             if (!currentLicenseData) return;
 
-            const duration      = selectedDurationValue;
+            const duration = selectedDurationValue;
             const paymentMethod = selectedPaymentMethod;
-            const prices        = currentLicenseData.renewalPrice || { monthly: 80000, yearly: 860000 };
-            const amount        = prices[duration] || (duration === 'monthly' ? 80000 : 860000);
+            const prices = currentLicenseData.renewalPrice || { monthly: 80000, yearly: 860000 };
+            const amount = prices[duration] || (duration === 'monthly' ? 80000 : 860000);
 
             const btn = document.getElementById('btnPay');
             const orig = btn.innerHTML;
@@ -1314,11 +1732,11 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'renew_transaction',
-                        licenseKey:  currentLicenseData.key,
+                        licenseKey: currentLicenseData.key,
                         duration,
                         amount,
-                        buyerName:   currentLicenseData.name,
-                        buyerEmail:  currentLicenseData.email,
+                        buyerName: currentLicenseData.name,
+                        buyerEmail: currentLicenseData.email,
                         paymentMethod
                     })
                 });
@@ -1351,18 +1769,18 @@
 
             const getLogo = (type) => {
                 const logos = {
-                    bca:       'https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg',
-                    mandiri:   'https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg',
-                    bni:       'https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg',
-                    bri:       'https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg',
-                    permata:   'https://upload.wikimedia.org/wikipedia/en/4/48/PermataBank_logo.svg',
-                    cimb:      'https://upload.wikimedia.org/wikipedia/commons/3/38/CIMB_Niaga_logo.svg',
-                    gopay:     'https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg',
+                    bca: 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg',
+                    mandiri: 'https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg',
+                    bni: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Bank_Negara_Indonesia_logo_%282004%29.svg',
+                    bri: 'https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg',
+                    permata: 'https://upload.wikimedia.org/wikipedia/en/4/48/PermataBank_logo.svg',
+                    cimb: 'https://upload.wikimedia.org/wikipedia/commons/3/38/CIMB_Niaga_logo.svg',
+                    gopay: 'https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg',
                     shopeepay: 'https://shopeepay.co.id/src/pages/home/assets/images/new-homepage/new-spp-logo.svg',
-                    dana:      'https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg',
-                    qris:      'https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg',
+                    dana: 'https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg',
+                    qris: 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg',
                     indomaret: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Logo_Indomaret.png',
-                    alfamart:  'https://upload.wikimedia.org/wikipedia/commons/8/86/Alfamart_logo.svg',
+                    alfamart: 'https://upload.wikimedia.org/wikipedia/commons/8/86/Alfamart_logo.svg',
                 };
                 return logos[type] || '';
             };
@@ -1394,24 +1812,24 @@
                 let extraInfo = '', copyValue = '';
 
                 if (data.va_numbers) {
-                    vaNumber  = data.va_numbers[0].va_number;
-                    bankCode  = data.va_numbers[0].bank;
-                    bankName  = bankCode.toUpperCase();
-                    bankLogo  = getLogo(bankCode);
+                    vaNumber = data.va_numbers[0].va_number;
+                    bankCode = data.va_numbers[0].bank;
+                    bankName = bankCode.toUpperCase();
+                    bankLogo = getLogo(bankCode);
                     copyValue = vaNumber;
                 } else if (data.bill_key) {
-                    vaNumber  = data.bill_key;
-                    bankCode  = 'mandiri';
-                    bankName  = 'MANDIRI';
-                    bankLogo  = getLogo('mandiri');
+                    vaNumber = data.bill_key;
+                    bankCode = 'mandiri';
+                    bankName = 'MANDIRI';
+                    bankLogo = getLogo('mandiri');
                     copyValue = data.bill_key;
                     extraInfo = `<div class="display-label" style="margin-bottom:4px;">Kode Biller</div>
                                  <div class="display-code" style="font-size:1.1rem; margin-bottom:12px;">${data.biller_code}</div>`;
                 } else if (data.permata_va_number) {
-                    vaNumber  = data.permata_va_number;
-                    bankCode  = 'permata';
-                    bankName  = 'PERMATA';
-                    bankLogo  = getLogo('permata');
+                    vaNumber = data.permata_va_number;
+                    bankCode = 'permata';
+                    bankName = 'PERMATA';
+                    bankLogo = getLogo('permata');
                     copyValue = vaNumber;
                 }
 
@@ -1436,7 +1854,7 @@
 
             } else if (data.payment_type === 'gopay' || data.payment_type === 'shopeepay') {
                 // E-Wallet deeplink
-                const deepLink   = data.actions?.find(a => a.name === 'deeplink-redirect')?.url || '#';
+                const deepLink = data.actions?.find(a => a.name === 'deeplink-redirect')?.url || '#';
                 const walletName = data.payment_type === 'gopay' ? 'GoPay' : 'ShopeePay';
                 const walletLogo = getLogo(data.payment_type);
 
@@ -1507,9 +1925,9 @@
                             action: 'verify_payment',
                             orderId,
                             appId: currentLicenseData?.appId,
-                            buyerName:  currentLicenseData?.name,
+                            buyerName: currentLicenseData?.name,
                             buyerEmail: currentLicenseData?.email,
-                            duration:   selectedDurationValue
+                            duration: selectedDurationValue
                         })
                     });
                     const result = await res.json();
@@ -1519,7 +1937,7 @@
                         clearInterval(countdownInterval);
 
                         const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
-                        audio.play().catch(() => {});
+                        audio.play().catch(() => { });
 
                         setTimeout(() => {
                             const overlay = document.getElementById('finalOverlay');

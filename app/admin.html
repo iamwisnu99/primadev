@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login — PrimaDev</title>
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
     <link rel="manifest" href="/public/site.webmanifest" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
@@ -33,17 +42,22 @@
         .panel-left::before {
             content: '';
             position: absolute;
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%);
-            top: -150px; right: -150px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+            top: -150px;
+            right: -150px;
             pointer-events: none;
         }
+
         .panel-left::after {
             content: '';
             position: absolute;
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
-            bottom: -100px; left: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            bottom: -100px;
+            left: -100px;
             pointer-events: none;
         }
 
@@ -55,7 +69,12 @@
             position: relative;
             z-index: 1;
         }
-        .left-logo img { height: 36px; filter: brightness(0) invert(1); }
+
+        .left-logo img {
+            height: 36px;
+            filter: brightness(0) invert(1);
+        }
+
         .left-logo-text {
             font-size: 1.1rem;
             font-weight: 700;
@@ -76,8 +95,8 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             color: #93c5fd;
             padding: 6px 14px;
             border-radius: 100px;
@@ -86,15 +105,27 @@
             margin-bottom: 28px;
             width: fit-content;
         }
+
         .left-badge .dot {
-            width: 7px; height: 7px;
+            width: 7px;
+            height: 7px;
             background: #4ade80;
             border-radius: 50%;
             animation: pulse-dot 2s ease-in-out infinite;
         }
+
         @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.7); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.7);
+            }
         }
 
         .left-heading {
@@ -105,7 +136,10 @@
             letter-spacing: -1.5px;
             margin-bottom: 20px;
         }
-        .left-heading span { color: #60a5fa; }
+
+        .left-heading span {
+            color: #60a5fa;
+        }
 
         .left-desc {
             font-size: 1.05rem;
@@ -122,18 +156,20 @@
         }
 
         .stat-chip {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.09);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.09);
             border-radius: 14px;
             padding: 18px 16px;
             backdrop-filter: blur(4px);
         }
+
         .stat-chip-value {
             font-size: 1.5rem;
             font-weight: 800;
             color: #fff;
             letter-spacing: -0.5px;
         }
+
         .stat-chip-label {
             font-size: 0.75rem;
             color: #64748b;
@@ -168,12 +204,14 @@
         .form-header {
             margin-bottom: 40px;
         }
+
         .form-header h1 {
             font-size: 1.9rem;
             font-weight: 800;
             letter-spacing: -0.8px;
             margin-bottom: 8px;
         }
+
         .form-header p {
             font-size: 0.95rem;
             color: #64748b;
@@ -182,6 +220,7 @@
         .form-group {
             margin-bottom: 20px;
         }
+
         .form-label {
             display: block;
             font-size: 0.82rem;
@@ -189,9 +228,11 @@
             color: #374151;
             margin-bottom: 8px;
         }
+
         .form-input-wrap {
             position: relative;
         }
+
         .form-input-wrap i {
             position: absolute;
             left: 16px;
@@ -200,6 +241,7 @@
             color: #94a3b8;
             font-size: 0.9rem;
         }
+
         .form-input {
             width: 100%;
             padding: 14px 16px 14px 44px;
@@ -212,12 +254,17 @@
             outline: none;
             transition: all 0.2s;
         }
+
         .form-input:focus {
             border-color: #3b82f6;
             background: #fff;
-            box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
         }
-        .form-input.error { border-color: #ef4444; background: #fff; }
+
+        .form-input.error {
+            border-color: #ef4444;
+            background: #fff;
+        }
 
         .password-toggle {
             position: absolute;
@@ -231,13 +278,17 @@
             padding: 4px;
             font-size: 0.9rem;
         }
-        .password-toggle:hover { color: #475569; }
+
+        .password-toggle:hover {
+            color: #475569;
+        }
 
         .form-options {
             display: flex;
             justify-content: flex-end;
             margin-bottom: 28px;
         }
+
         .forgot-link {
             font-size: 0.83rem;
             color: #3b82f6;
@@ -245,7 +296,10 @@
             text-decoration: none;
             cursor: pointer;
         }
-        .forgot-link:hover { text-decoration: underline; }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
 
         .btn-login {
             width: 100%;
@@ -265,9 +319,22 @@
             transition: all 0.2s;
             letter-spacing: 0.2px;
         }
-        .btn-login:hover { background: linear-gradient(135deg, #1e40af, #1d4ed8); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(29,78,216,0.3); }
-        .btn-login:active { transform: translateY(0); }
-        .btn-login:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .error-msg {
             font-size: 0.78rem;
@@ -275,7 +342,10 @@
             margin-top: 6px;
             display: none;
         }
-        .error-msg.show { display: block; }
+
+        .error-msg.show {
+            display: block;
+        }
 
         .form-footer {
             margin-top: 32px;
@@ -283,6 +353,7 @@
             font-size: 0.82rem;
             color: #94a3b8;
         }
+
         .form-footer a {
             color: #3b82f6;
             font-weight: 600;
@@ -304,20 +375,50 @@
         }
 
         @media (max-width: 900px) {
-            body { flex-direction: column; }
-            .panel-left { width: 100%; padding: 40px 32px; min-height: auto; }
-            .left-heading { font-size: 2rem; }
-            .left-stats { grid-template-columns: repeat(3, 1fr); }
-            .left-footer { margin-top: 30px; }
-            .panel-right { padding: 48px 32px; }
+            body {
+                flex-direction: column;
+            }
+
+            .panel-left {
+                width: 100%;
+                padding: 40px 32px;
+                min-height: auto;
+            }
+
+            .left-heading {
+                font-size: 2rem;
+            }
+
+            .left-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .left-footer {
+                margin-top: 30px;
+            }
+
+            .panel-right {
+                padding: 48px 32px;
+            }
         }
+
         @media (max-width: 480px) {
-            .panel-left { padding: 32px 20px; }
-            .left-stats { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-            .panel-right { padding: 40px 20px; }
+            .panel-left {
+                padding: 32px 20px;
+            }
+
+            .left-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+
+            .panel-right {
+                padding: 40px 20px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- LEFT PANEL -->
@@ -370,7 +471,8 @@
                     <label class="form-label">Email Address</label>
                     <div class="form-input-wrap">
                         <i class="fa-regular fa-envelope"></i>
-                        <input type="email" class="form-input" id="loginEmail" placeholder="admin@primadev.com" autocomplete="email" required>
+                        <input type="email" class="form-input" id="loginEmail" placeholder="admin@primadev.com"
+                            autocomplete="email" required>
                     </div>
                     <div class="error-msg" id="emailError">Email tidak dikenali sistem.</div>
                 </div>
@@ -379,7 +481,8 @@
                     <label class="form-label">Password</label>
                     <div class="form-input-wrap">
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••"
+                            autocomplete="current-password" required>
                         <button type="button" class="password-toggle" onclick="togglePassword()">
                             <i class="fa-solid fa-eye" id="toggleIcon"></i>
                         </button>
@@ -440,7 +543,7 @@
             });
         };
 
-        window.handleLogin = () => {};
+        window.handleLogin = () => { };
 
         let auth;
         try {
@@ -454,7 +557,7 @@
 
             onAuthStateChanged(auth, (user) => {
                 if (user) {
-                    window.location.href = '/app/admin-dashboard.html';
+                    window.location.href = '/app/admin-dashboard';
                 }
             });
 
@@ -478,7 +581,7 @@
                 try {
                     await signInWithEmailAndPassword(auth, emailEl.value, passEl.value);
                     btn.innerHTML = '<i class="fa-solid fa-check"></i> Access Granted!';
-                    setTimeout(() => { window.location.href = '/app/admin-dashboard.html'; }, 800);
+                    setTimeout(() => { window.location.href = '/app/admin-dashboard'; }, 800);
                 } catch (error) {
                     if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
                         emailEl.classList.add('error');
@@ -502,4 +605,5 @@
         }
     </script>
 </body>
+
 </html>
