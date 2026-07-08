@@ -632,6 +632,18 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
         #loadingScreen p { font-size: 0.9rem; font-weight: 600; color: var(--text-2); }
 
+        /* ===== OVERVIEW BOTTOM GRID ===== */
+        .overview-bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* ===== STATS GRID 3-COL ===== */
+        .stats-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
         /* ===== SIDEBAR MOBILE OVERLAY ===== */
         .sidebar-overlay {
             display: none;
@@ -641,27 +653,108 @@
         }
 
         /* ===== RESPONSIVE ===== */
+
+        /* Tablet */
         @media (max-width: 1024px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid-3 { grid-template-columns: repeat(3, 1fr); }
         }
+
+        /* Mobile */
         @media (max-width: 768px) {
+            /* Sidebar */
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay.show { display: block; }
-            .topbar { left: 0; }
-            .main { margin-left: 0; padding: 24px 16px; }
+
+            /* Layout */
+            .topbar { left: 0; padding: 0 16px; }
+            .topbar-title span { display: none; } /* hide breadcrumb on mobile */
+            .topbar-title { font-size: 0.95rem; }
+            .topbar-clock { font-size: 0.75rem; padding: 5px 10px; }
+            .main { margin-left: 0; padding: 20px 14px; }
             .hamburger { display: flex; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+            /* Stats grids → 2 col on mobile */
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .stats-grid-3 { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .stat-card { padding: 14px 14px; }
+            .stat-card-value { font-size: 1.5rem; }
+            .stat-card-icon { width: 34px; height: 34px; font-size: 0.85rem; margin-bottom: 10px; }
+            .stat-card-sub { display: none; } /* hide subtitle on mobile to save space */
+
+            /* Overview bottom grid → stack */
+            .overview-bottom-grid { grid-template-columns: 1fr; gap: 14px; }
+
+            /* Toolbar */
+            .toolbar { gap: 8px; padding: 12px 14px; }
+            .search-wrap { max-width: 100%; min-width: 0; flex: 1 1 100%; order: 1; }
+            .toolbar .custom-dropdown { flex: 1 1 auto; min-width: 0; order: 2; }
+            .toolbar .btn { order: 3; white-space: nowrap; }
+
+            /* Table → card mode */
             .form-row { grid-template-columns: 1fr; }
             thead { display: none; }
-            tbody tr { display: block; background: #fff; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; }
-            tbody td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding: 10px 14px; text-align: right; }
-            tbody td::before { content: attr(data-label); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; color: var(--text-2); text-align: left; }
-            tbody td:last-child { justify-content: center; border-bottom: none; }
             .table-wrap { padding: 12px; }
+            tbody tr {
+                display: block;
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                margin-bottom: 12px;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            }
+            tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #f1f5f9;
+                padding: 10px 14px;
+                text-align: right;
+                font-size: 0.85rem;
+            }
+            tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--text-2);
+                text-align: left;
+                flex-shrink: 0;
+                margin-right: 8px;
+            }
+            tbody td:last-child {
+                justify-content: center;
+                border-bottom: none;
+                padding: 12px 14px;
+                background: #fafafa;
+                border-radius: 0 0 10px 10px;
+            }
+
+            /* Key badge in card mode */
+            .key-badge {
+                font-size: 0.72rem;
+                letter-spacing: 0.3px;
+                word-break: break-all;
+            }
+
+            /* Pagination */
+            .pagination-bar { padding: 12px 14px; gap: 8px; }
+            .pagination-info { font-size: 0.78rem; }
+
+            /* Card headers */
+            .card-header { padding: 14px 16px; flex-wrap: wrap; gap: 8px; }
         }
+
+        /* Small mobile */
         @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            /* Keep 3-col for license stats but reduce text size */
+            .stats-grid-3 { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .stats-grid-3 .stat-card-value { font-size: 1.3rem; }
+            .stats-grid-3 .stat-card-label { font-size: 0.62rem; }
+            .stats-grid-3 .stat-card { padding: 12px 10px; }
         }
     </style>
 </head>
@@ -759,7 +852,7 @@
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="overview-bottom-grid">
             <div class="card">
                 <div class="card-header">
                     <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Lisensi Terbaru</div>
@@ -781,7 +874,7 @@
 
     <!-- ===== LICENSES TAB ===== -->
     <div class="section" id="tab-licenses">
-        <div class="stats-grid" style="grid-template-columns: repeat(3,1fr);">
+        <div class="stats-grid stats-grid-3">
             <div class="stat-card">
                 <div class="stat-card-icon ic-blue"><i class="fa-solid fa-key"></i></div>
                 <div class="stat-card-label">Total</div>

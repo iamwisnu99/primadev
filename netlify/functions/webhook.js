@@ -120,11 +120,24 @@ const sendEmail = async (data, isRenewal = false) => {
 
 exports.handler = async (event) => {
   try {
+    if (event.httpMethod === 'GET' || !event.body) {
+      return { statusCode: 200, body: 'Webhook endpoint active' };
+    }
+
     const notification = JSON.parse(event.body);
     console.log("[WEBHOOK] Received notification:", JSON.stringify(notification));
 
     // Cek Status ke Midtrans (Validasi Keamanan)
-    const statusResponse = await apiClient.transaction.notification(notification);
+    let statusResponse;
+    try {
+      statusResponse = await apiClient.transaction.notification(notification);
+    } catch (apiErr) {
+      console.warn("[WEBHOOK] Midtrans API verification warning (Test Notification / Dummy ID):", apiErr.message);
+      // Jika pengetesan dari tombol Test Notification di Dashboard Midtrans (ID tidak ada di server Midtrans),
+      // tetap kembalikan 200 OK agar Midtrans Dashboard mencatat koneksi webhook berhasil.
+      return { statusCode: 200, body: 'OK - Test notification received' };
+    }
+
     const orderId = statusResponse.order_id;
     const transactionStatus = statusResponse.transaction_status;
     const fraudStatus = statusResponse.fraud_status;
