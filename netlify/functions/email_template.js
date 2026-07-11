@@ -31,9 +31,9 @@ const getPremiumTemplate = (data) => {
     <body>
         <div class="container">
             <div class="header">
-                <img src="${LOGO_URL}" alt="PrimaDev" width="160" style="display: block; margin: 0 auto;">
+                <img src="${LOGO_URL}" alt="Primadev" width="160" style="display: block; margin: 0 auto;">
                 <h2 style="color: #ffffff; margin: 20px 0 0 0; font-weight: 600;">Pembayaran Diterima!</h2>
-                <p style="color: #e0e7ff; margin: 5px 0 0 0; font-size: 14px;">Terima kasih telah bergabung dengan PrimaDev.</p>
+                <p style="color: #e0e7ff; margin: 5px 0 0 0; font-size: 14px;">Terima kasih telah bergabung dengan Primadev.</p>
             </div>
 
             <div class="content">
@@ -80,7 +80,7 @@ const getPremiumTemplate = (data) => {
                 <p>SPBU Pertamina 34.115.06<br>Jl. Kedoya Raya No. 23, Kedoya Selatan<br>Kebon Jeruk, Jakarta Barat, DKI Jakarta 11520</p>
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
-                    &copy; ${new Date().getFullYear()} PrimaDev Digital Technology. All rights reserved.<br>
+                    &copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.<br>
                     <a href="${HOME_URL}" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
                     <a href="${LEGAL_URL}" style="color: #6366f1; text-decoration: none;">Privacy Policy</a>
                 </p>
@@ -116,7 +116,7 @@ const getRenewalTemplate = (data) => {
     <body>
         <div class="container">
             <div class="header">
-                <img src="${LOGO_URL}" alt="PrimaDev" width="140" style="display: block; margin: 0 auto;">
+                <img src="${LOGO_URL}" alt="Primadev" width="140" style="display: block; margin: 0 auto;">
                 <h2 style="color: #ffffff; margin: 20px 0 0 0;">Perpanjangan Berhasil!</h2>
             </div>
             <div class="content">
@@ -140,7 +140,7 @@ const getRenewalTemplate = (data) => {
                 </div>
             </div>
             <div class="footer">
-                <p>&copy; ${new Date().getFullYear()} PrimaDev Digital Technology. All rights reserved.</p>
+                <p>&copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.</p>
             </div>
         </div>
     </body>

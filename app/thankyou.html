@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembayaran Berhasil! - PrimaDev</title>
+    <title>Pembayaran Berhasil! - Primadev Digital Technology</title>
 
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
     <link rel="shortcut icon" href="/public/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="PrimaDev" />
+    <meta name="apple-mobile-web-app-title" content="Primadev" />
     <link rel="manifest" href="/public/site.webmanifest" />
 
     <!-- Bootstrap 5 CSS -->
@@ -22,7 +22,7 @@
     <!-- Google Fonts: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    
+
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -223,7 +223,8 @@
                 </div>
                 <div class="detail-row">
                     <span class="text-label">Status</span>
-                    <span class="text-value text-end"><span class="badge bg-success bg-opacity-10 text-success">Berhasil</span></span>
+                    <span class="text-value text-end"><span
+                            class="badge bg-success bg-opacity-10 text-success">Berhasil</span></span>
                 </div>
                 <div class="detail-row mt-2">
                     <span>Informasi</span>
@@ -259,7 +260,7 @@
         const year = now.getFullYear();
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
-        
+
         document.getElementById('order-date').textContent = `${day} ${month} ${year} | ${hours}.${minutes}`;
 
         function showHelpPopup() {

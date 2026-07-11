@@ -223,7 +223,7 @@ exports.handler = async (event, context) => {
                 parameter.payment_type = 'cstore';
                 parameter.cstore = {
                     store: paymentMethod,
-                    message: "Pembayaran Lisensi PrimaDev"
+                    message: "Pembayaran Lisensi Primadev"
                 };
             } else if (paymentMethod === 'akulaku' || paymentMethod === 'kredivo') {
                 parameter.payment_type = paymentMethod;
@@ -359,7 +359,7 @@ exports.handler = async (event, context) => {
             }
 
             const orderId = `RENEW-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-            const appName = licenseData.appName || product?.name || 'Lisensi PrimaDev';
+            const appName = licenseData.appName || product?.name || 'Lisensi Primadev';
 
             let parameter = {
                 transaction_details: { order_id: orderId, gross_amount: amount },
@@ -387,7 +387,7 @@ exports.handler = async (event, context) => {
                 parameter.qris = { acquirer: 'gopay' };
             } else if (paymentMethod === 'indomaret' || paymentMethod === 'alfamart') {
                 parameter.payment_type = 'cstore';
-                parameter.cstore = { store: paymentMethod, message: 'Perpanjangan Lisensi PrimaDev' };
+                parameter.cstore = { store: paymentMethod, message: 'Perpanjangan Lisensi Primadev' };
             } else {
                 parameter.payment_type = 'qris';
                 parameter.qris = { acquirer: 'gopay' };

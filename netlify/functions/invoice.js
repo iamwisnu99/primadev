@@ -157,7 +157,7 @@ exports.handler = async (event, context) => {
 
       // Isi Tabel
       const itemY = tableTop + 45;
-      const appName = data.appName || 'Aplikasi PrimaDev';
+      const appName = data.appName || 'Aplikasi Primadev';
 
       // Row Background (Zebra)
       doc.rect(50, itemY - 10, 500, 50).fill('#f8fafc');

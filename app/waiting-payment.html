@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selesaikan Pembayaran - PrimaDev</title>
+    <title>Selesaikan Pembayaran - Primadev Digital Technology</title>
 
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -339,7 +339,7 @@
         <!-- LEFT: INSTRUCTIONS -->
         <div class="split-left">
             <div class="header-logo">
-                <img src="https://i.imgur.com/BZ1xLO3.png" alt="PrimaDev">
+                <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev">
             </div>
 
             <div class="timer-container">
@@ -471,7 +471,7 @@
                         <div class="va-number">${formattedVA}</div>
                         <button class="btn btn-primary" onclick="copyText('${copyValue}')"><i class="fa-regular fa-copy"></i> Salin Nomor</button>
                     </div>
-                    <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">Silakan transfer tepat sesuai tagihan ke nomor Virtual Account di atas. Pastikan nama penerima adalah <strong>PrimaDev</strong>.</p>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">Silakan transfer tepat sesuai tagihan ke nomor Virtual Account di atas. Pastikan nama penerima adalah <strong>Primadev</strong>.</p>
                 `;
             } else if (data.payment_type === 'gopay' || data.payment_type === 'shopeepay') {
                 const deepLinkAction = data.actions ? data.actions.find(a => a.name === 'deeplink-redirect') : null;
@@ -511,7 +511,7 @@
                         <div class="va-number">${paymentCode}</div>
                         <button class="btn btn-primary" onclick="copyText('${paymentCode}')"><i class="fa-regular fa-copy"></i> Salin Kode</button>
                     </div>
-                    <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">Tunjukkan kode pembayaran ini ke kasir ${storeCode.toUpperCase()} terdekat. Beritahu kasir bahwa Anda ingin membayar transaksi <strong>Midtrans</strong> atau <strong>PrimaDev</strong>.</p>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">Tunjukkan kode pembayaran ini ke kasir ${storeCode.toUpperCase()} terdekat. Beritahu kasir bahwa Anda ingin membayar transaksi <strong>Midtrans</strong> atau <strong>Primadev</strong>.</p>
                 `;
             } else {
                 content = `<div class="va-box"><p style="font-size: 1.1rem; color: var(--text-secondary);">Metode pembayaran tidak didukung antarmuka ini. Silakan periksa email Anda untuk instruksi pembayaran lengkap.</p></div>`;

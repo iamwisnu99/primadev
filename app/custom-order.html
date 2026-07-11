@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajukan Project Custom — Primadev Digital Technology</title>
+    <meta name="description"
+        content="Konsultasikan dan ajukan pembuatan website atau aplikasi custom profesional untuk kebutuhan bisnis Anda bersama Primadev Digital Technology.">
+
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+    <link rel="shortcut icon" href="/public/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Primadev" />
+    <link rel="manifest" href="/public/site.webmanifest" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .order-card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            animation: slideUp 0.5s ease-out forwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            background-color: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-wa {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .btn-wa:hover {
+            background-color: #128c7e;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .btn-email {
+            background-color: #ffffff;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-email:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+            color: #1e293b;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .back-link:hover {
+            color: #2563eb;
+        }
+
+        @media (max-width: 576px) {
+            .order-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="order-card">
+        <div class="header">
+            <div
+                style="width: 64px; height: 64px; background: #e0e7ff; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fa-solid fa-code text-primary" style="font-size: 28px; color: #2563eb !important;"></i>
+            </div>
+            <h1>Ajukan Project Custom</h1>
+            <p>Konsultasikan kebutuhan aplikasi atau website Anda bersama tim developer profesional kami.</p>
+        </div>
+
+        <form id="orderForm">
+            <div class="mb-3">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" class="form-control" id="name" placeholder="Cth: Prima Wisnu" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nomor Telepon / WA</label>
+                <input type="tel" class="form-control" id="phone" placeholder="Cth: 08123456789" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Alamat Email</label>
+                <input type="email" class="form-control" id="email" placeholder="Cth: email@domain.com" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Deskripsi Project / Kebutuhan</label>
+                <textarea class="form-control" id="description" rows="4"
+                    placeholder="Ceritakan ide atau kebutuhan sistem yang ingin Anda bangun secara singkat..."
+                    required></textarea>
+            </div>
+
+            <button type="button" class="btn-wa" onclick="submitForm('wa')">
+                <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Kirim via WhatsApp
+            </button>
+            <button type="button" class="btn-email" onclick="submitForm('email')">
+                <i class="fa-solid fa-envelope"></i> Kirim via Email
+            </button>
+        </form>
+
+        <a href="/" class="back-link"><i class="fa-solid fa-arrow-left me-2"></i> Kembali ke Beranda</a>
+    </div>
+
+    <script>
+        function submitForm(method) {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const desc = document.getElementById('description').value.trim();
+
+            if (!name || !phone || !email || !desc) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Form Belum Lengkap',
+                    text: 'Mohon isi semua data yang diperlukan agar kami dapat merespons pengajuan Anda dengan baik.',
+                    confirmButtonColor: '#2563eb',
+                    customClass: {
+                        popup: 'rounded-4'
+                    }
+                });
+                return;
+            }
+
+            // Membangun format pesan rapi
+            const message = `Halo PT. Primadev Digital Technology,\nSaya tertarik untuk mengajukan pembuatan Custom Website/Aplikasi.\n\n*Detail Kontak:*\n- Nama: ${name}\n- Email: ${email}\n- No. Telp: ${phone}\n\n*Deskripsi Kebutuhan:*\n${desc}`;
+
+            if (method === 'wa') {
+                // Menghapus angka 0 di depan jika ada, karena format WA menggunakan kode negara 62
+                let waNumber = "6283863867266";
+                const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+                window.open(waUrl, '_blank');
+            } else if (method === 'email') {
+                const emailAddress = "wisnu.bussines99@gmail.com";
+                const subject = `Pengajuan Custom Project - ${name}`;
+                const emailUrl = `mailto:${emailAddress}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+                window.location.href = emailUrl;
+            }
+        }
+    </script>
+</body>
+
+</html>
