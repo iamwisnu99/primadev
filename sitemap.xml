@@ -25,7 +25,19 @@
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://apps-primadev.netlify.app/app/legal</loc>
+        <loc>https://apps-primadev.netlify.app/app/legal/syarat-ketentuan</loc>
+        <lastmod>2026-07-08</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://apps-primadev.netlify.app/app/legal/kebijakan-privasi</loc>
+        <lastmod>2026-07-08</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://apps-primadev.netlify.app/app/legal/penafian</loc>
         <lastmod>2026-07-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>

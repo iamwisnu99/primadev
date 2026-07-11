@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="view-transition" content="same-origin">
+    <title>Penafian (Disclaimer) — PT PrimaDev Digital Technology</title>
+    <meta name="description" content="Penafian (Disclaimer) PT PrimaDev Digital Technology mengenai penggunaan layanan dan produk software.">
+    <meta name="keywords" content="penafian, disclaimer, primadev, aturan layanan, tanggung jawab software">
+    <meta name="author" content="PT PrimaDev Digital Technology">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Penafian (Disclaimer) — PrimaDev" />
+    <meta property="og:description" content="Penafian (Disclaimer) PT PrimaDev Digital Technology." />
+    <meta property="og:image" content="https://i.imgur.com/BZ1xLO3.png" />
+    
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+    <link rel="shortcut icon" href="/public/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="PrimaDev" />
+    <link rel="manifest" href="/public/site.webmanifest" />
+
+    <style>
+        :root {
+            --bg-color: #f4f5f7;
+            --paper-bg: #ffffff;
+            --text-color: #333333;
+            --heading-color: #1a1a1a;
+            --border-color: #e5e7eb;
+            --link-color: #2563eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(8px); }
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            position: relative;
+        }
+
+        .paper {
+            background-color: var(--paper-bg);
+            padding: 60px 80px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05), 0 4px 10px rgba(0, 0, 0, 0.03);
+            border-radius: 4px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .paper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 40px;
+            width: 1px;
+            background-color: #ffcccc;
+            z-index: 1;
+        }
+        
+        .paper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 44px;
+            width: 1px;
+            background-color: #ffcccc;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .lang-switch {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            gap: 5px;
+            z-index: 10;
+        }
+
+        .lang-switch button {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 5px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .lang-switch button.active {
+            background-color: var(--link-color);
+            color: white;
+            border-color: var(--link-color);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--heading-color);
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: var(--heading-color);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tabs a {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-tabs a:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .nav-tabs a.active {
+            background-color: var(--link-color);
+            color: white;
+            border-color: var(--link-color);
+        }
+
+        h2 {
+            font-size: 22px;
+            color: var(--heading-color);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            font-size: 18px;
+            color: var(--heading-color);
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+        
+        .last-updated {
+            font-style: italic;
+            color: #777;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .paper {
+                padding: 50px 30px 40px 50px;
+            }
+            .paper::before { left: 20px; }
+            .paper::after { left: 24px; }
+            .lang-switch {
+                top: 15px;
+                right: 15px;
+            }
+            .nav-tabs {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <a href="syarat-ketentuan.html">
+                <span class="lang-id">Syarat & Ketentuan</span>
+                <span class="lang-en" style="display:none;">Terms & Conditions</span>
+            </a>
+            <a href="kebijakan-privasi.html">
+                <span class="lang-id">Kebijakan Privasi</span>
+                <span class="lang-en" style="display:none;">Privacy Policy</span>
+            </a>
+            <a href="penafian.html" class="active">
+                <span class="lang-id">Penafian (Disclaimer)</span>
+                <span class="lang-en" style="display:none;">Disclaimer</span>
+            </a>
+        </div>
+
+        <div class="paper">
+            <div class="lang-switch">
+                <button onclick="setLanguage('id')" id="btn-id" class="active">ID</button>
+                <button onclick="setLanguage('en')" id="btn-en">EN</button>
+            </div>
+
+            <div class="content">
+                <header>
+                    <h1>PT Primadev Digital Technology</h1>
+                    <p class="lang-id">Dokumen Legal Resmi Perusahaan</p>
+                    <p class="lang-en" style="display:none;">Official Corporate Legal Documents</p>
+                </header>
+
+                <!-- INDONESIAN CONTENT -->
+                <div class="lang-id">
+                    <h2>Penafian (Disclaimer)</h2>
+                    <p class="last-updated">Terakhir diperbarui: 11 Juli 2026</p>
+
+                    <p>Segala informasi dan layanan yang disediakan oleh PT Primadev Digital Technology diberikan dengan prinsip "sebagaimana adanya" <em>(as is)</em>. Harap membaca poin-poin berikut dengan saksama:</p>
+
+                    <h3>1. Hasil Bisnis dan Keuntungan</h3>
+                    <p>Meskipun Kami berkomitmen penuh untuk membangun website dan aplikasi dengan standar kualitas yang tinggi dan performa terbaik, Kami <strong>tidak menjamin</strong> bahwa keberadaan website atau aplikasi tersebut akan secara otomatis dan instan meningkatkan penjualan, trafik, atau keuntungan bisnis UMKM Anda. Kesuksesan finansial bergantung pada strategi pemasaran, kualitas produk, dan operasional bisnis Anda sendiri.</p>
+
+                    <h3>2. Ketersediaan Layanan (Uptime)</h3>
+                    <p>Kami tidak bertanggung jawab atas gangguan <em>(downtime)</em> yang disebabkan oleh <em>Internet Service Provider (ISP)</em>, masalah pada penyedia layanan Hosting/Cloud pihak ketiga, pemadaman listrik massal, atau kondisi <em>Force Majeure</em> (bencana alam, perang, pandemi) di luar kendali Kami.</p>
+
+                    <h3>3. Keamanan Siber (Cyber Security)</h3>
+                    <p>Kami berusaha keras menerapkan standar keamanan yang baik saat mendevelop aplikasi atau website. Namun, di dunia digital tidak ada sistem yang 100% aman. Kami terbebas dari tuntutan kerugian akibat peretasan <em>(hacking)</em>, serangan DDoS, atau infeksi <em>malware</em> yang terjadi akibat kelalaian pemeliharaan sistem di masa mendatang oleh klien atau akibat kerentanan teknologi yang baru ditemukan <em>(zero-day exploits)</em>.</p>
+
+                    <h3>4. Tautan ke Pihak Ketiga</h3>
+                    <p>Jika website atau layanan Kami menyertakan tautan ke situs web pihak ketiga, Kami tidak memiliki kontrol atas isi dan kebijakan privasi situs-situs tersebut, serta tidak bertanggung jawab atas kerugian yang timbul dari interaksi Anda dengan situs pihak ketiga.</p>
+                </div>
+
+                <!-- ENGLISH CONTENT -->
+                <div class="lang-en" style="display:none;">
+                    <h2>Disclaimer</h2>
+                    <p class="last-updated">Last updated: July 11, 2026</p>
+
+                    <p>All information and services provided by PT Primadev Digital Technology are provided on an "as is" basis. Please read the following points carefully:</p>
+
+                    <h3>1. Business Results and Profits</h3>
+                    <p>While We are fully committed to building websites and applications with high-quality standards and the best performance, We <strong>do not guarantee</strong> that the presence of the website or application will automatically and instantly increase your MSME's sales, traffic, or business profits. Financial success depends on your own marketing strategies, product quality, and business operations.</p>
+
+                    <h3>2. Service Availability (Uptime)</h3>
+                    <p>We are not responsible for downtime caused by Internet Service Providers (ISPs), issues with third-party Hosting/Cloud service providers, massive power outages, or Force Majeure conditions (natural disasters, war, pandemics) beyond our control.</p>
+
+                    <h3>3. Cyber Security</h3>
+                    <p>We strive hard to implement good security standards when developing applications or websites. However, in the digital world, no system is 100% secure. We are free from claims for losses due to hacking, DDoS attacks, or malware infections that occur due to negligence in future system maintenance by the client or due to newly discovered technological vulnerabilities (zero-day exploits).</p>
+
+                    <h3>4. Third-Party Links</h3>
+                    <p>If our website or services include links to third-party websites, We have no control over the content and privacy policies of those sites, and are not responsible for any losses arising from your interaction with third-party sites.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setLanguage(lang) {
+            document.querySelectorAll('.lang-id').forEach(el => el.style.display = (lang === 'id') ? '' : 'none');
+            document.querySelectorAll('.lang-en').forEach(el => el.style.display = (lang === 'en') ? '' : 'none');
+            
+            document.querySelectorAll('.lang-switch button').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`btn-${lang}`);
+            if(activeBtn) activeBtn.classList.add('active');
+            
+            localStorage.setItem('preferredLang', lang);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('preferredLang') || 'id';
+            setLanguage(savedLang);
+
+            // Smooth page transition
+            document.querySelectorAll('.nav-tabs a').forEach(link => {
+                link.addEventListener('click', e => {
+                    if (!e.currentTarget.classList.contains('active')) {
+                        e.preventDefault();
+                        const target = e.currentTarget.href;
+                        document.body.style.animation = 'fadeOut 0.3s ease-in forwards';
+                        setTimeout(() => {
+                            window.location.href = target;
+                        }, 250);
+                    }
+                });
+            });
+        });
+
+        // Fix BFCache (Blank white screen when pressing browser Back button)
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                document.body.style.animation = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
