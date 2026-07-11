@@ -15,190 +15,481 @@
     <meta name="apple-mobile-web-app-title" content="Primadev" />
     <link rel="manifest" href="/public/site.webmanifest" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --dark-bg: #0f172a;
+            --slate-text: #334155;
+            --light-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
         body {
+            margin: 0;
+            padding: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
             min-height: 100vh;
+            background-color: var(--light-bg);
+            color: var(--slate-text);
+        }
+
+        .fullscreen-wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* --- Left Pane: Brand & Value Proposition --- */
+        .brand-pane {
+            flex: 1;
+            background-color: #0d6efd;
+            color: #ffffff;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-pane::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand-pane::after {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.4rem;
+            z-index: 2;
+        }
+
+        .brand-logo img {
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
+
+        .brand-content {
+            max-width: 500px;
+            z-index: 2;
+            margin: auto 0;
+            padding: 40px 0;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #ffffff;
+        }
+
+        .brand-title {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            color: #ffffff;
+            font-size: 1.1rem;
+            flex-shrink: 0;
         }
 
-        .order-card {
-            background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-            max-width: 600px;
-            width: 100%;
-            padding: 40px;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            animation: slideUp 0.5s ease-out forwards;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-weight: 700;
-            color: #1e293b;
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            color: #64748b;
+        .feature-text h4 {
             font-size: 1rem;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            color: #ffffff;
         }
 
-        .form-label {
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.95rem;
+        .feature-text p {
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            line-height: 1.4;
         }
 
-        .form-control {
-            padding: 12px 16px;
-            border-radius: 12px;
-            border: 1px solid #cbd5e1;
-            background-color: #f8fafc;
-            transition: all 0.3s;
+        .brand-footer {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 2;
         }
 
-        .form-control:focus {
+        /* --- Right Pane: Form Area --- */
+        .form-pane {
+            flex: 1.15;
             background-color: #ffffff;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 50px clamp(30px, 6vw, 80px);
+            position: relative;
+            overflow-y: auto;
         }
 
-        .btn-wa {
-            background-color: #25d366;
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 12px;
+        .top-nav {
+            position: absolute;
+            top: 30px;
+            right: clamp(30px, 6vw, 80px);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 50px;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            text-decoration: none;
+            font-size: 0.88rem;
             font-weight: 600;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        .btn-back:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+            border-color: #cbd5e1;
+        }
+
+        .form-container {
+            max-width: 520px;
             width: 100%;
+            margin: 40px auto 0;
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+        }
+
+        .form-header h2 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .form-header p {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .form-group-custom {
+            margin-bottom: 20px;
+        }
+
+        .form-label-custom {
+            display: block;
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            color: #94a3b8;
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 13px 16px 13px 46px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            background-color: #f8fafc;
+            font-size: 0.95rem;
+            color: #0f172a;
+            transition: all 0.25s;
+            font-family: inherit;
+        }
+
+        .form-control-custom:focus {
+            background-color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .textarea-custom {
+            padding-left: 16px;
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .actions-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn-wa-action {
+            background-color: #25d366;
+            color: #ffffff;
+            border: none;
+            padding: 15px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.98rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: all 0.3s;
-            margin-bottom: 15px;
+            transition: all 0.25s;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.25);
         }
 
-        .btn-wa:hover {
+        .btn-wa-action:hover {
             background-color: #128c7e;
             transform: translateY(-2px);
-            color: white;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
         }
 
-        .btn-email {
+        .btn-email-action {
             background-color: #ffffff;
             color: #334155;
-            border: 1px solid #cbd5e1;
+            border: 1.5px solid #cbd5e1;
             padding: 14px 24px;
             border-radius: 12px;
             font-weight: 600;
-            width: 100%;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: all 0.3s;
+            transition: all 0.25s;
+            cursor: pointer;
         }
 
-        .btn-email:hover {
-            background-color: #f1f5f9;
+        .btn-email-action:hover {
+            background-color: #f8fafc;
             border-color: #94a3b8;
-            color: #1e293b;
+            color: #0f172a;
         }
 
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 25px;
-            color: #64748b;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
-            font-size: 0.95rem;
-        }
+        /* --- Responsive Design --- */
+        @media (max-width: 991px) {
+            .fullscreen-wrapper {
+                flex-direction: column;
+            }
 
-        .back-link:hover {
-            color: #2563eb;
-        }
+            .brand-pane {
+                padding: 40px 24px;
+                flex: none;
+            }
 
-        @media (max-width: 576px) {
-            .order-card {
-                padding: 30px 20px;
+            .brand-content {
+                padding: 20px 0;
+            }
+
+            .brand-footer {
+                display: none;
+            }
+
+            .form-pane {
+                padding: 40px 24px 60px;
+                flex: none;
+            }
+
+            .top-nav {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 24px;
+            }
+
+            .form-container {
+                margin-top: 0;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="order-card">
-        <div class="header">
-            <div
-                style="width: 64px; height: 64px; background: #e0e7ff; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                <i class="fa-solid fa-code text-primary" style="font-size: 28px; color: #2563eb !important;"></i>
+    <div class="fullscreen-wrapper">
+        <!-- Left Pane: Branding & Value Proposition -->
+        <div class="brand-pane">
+            <a href="/" class="brand-logo">
+                <img src="/public/logo.png" alt="Logo Primadev">
+            </a>
+
+            <div class="brand-content">
+                <div class="brand-badge">
+                    <i class="fa-solid fa-circle-check"></i> Layanan Konsultasi & Pengembangan Resmi
+                </div>
+                <h1 class="brand-title">Wujudkan Sistem Digital Berkualitas Tinggi</h1>
+
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fa-solid fa-code"></i></div>
+                        <div class="feature-text">
+                            <h4>Pengembangan 100% Kustom</h4>
+                            <p>Arsitektur sistem dibangun khusus menyesuaikan alur bisnis dan kebutuhan spesifik Anda.
+                            </p>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="feature-text">
+                            <h4>Aman, Cepat & Skalabel</h4>
+                            <p>Keamanan standar industri dengan performa tinggi yang siap menangani pertumbuhan traffic.
+                            </p>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fa-solid fa-headset"></i></div>
+                        <div class="feature-text">
+                            <h4>Konsultasi Ahli Terbuka</h4>
+                            <p>Terhubung langsung ke WhatsApp tim developer untuk diskusi transparan tanpa perantara.
+                            </p>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            <h1>Ajukan Project Custom</h1>
-            <p>Konsultasikan kebutuhan aplikasi atau website Anda bersama tim developer profesional kami.</p>
+
+            <div class="brand-footer">
+                &copy; 2026 PT. Primadev Digital Technology. All Rights Reserved.
+            </div>
         </div>
 
-        <form id="orderForm">
-            <div class="mb-3">
-                <label class="form-label">Nama Lengkap</label>
-                <input type="text" class="form-control" id="name" placeholder="Cth: Prima Wisnu" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Nomor Telepon / WA</label>
-                <input type="tel" class="form-control" id="phone" placeholder="Cth: 08123456789" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Alamat Email</label>
-                <input type="email" class="form-control" id="email" placeholder="Cth: email@domain.com" required>
-            </div>
-            <div class="mb-4">
-                <label class="form-label">Deskripsi Project / Kebutuhan</label>
-                <textarea class="form-control" id="description" rows="4"
-                    placeholder="Ceritakan ide atau kebutuhan sistem yang ingin Anda bangun secara singkat..."
-                    required></textarea>
+        <!-- Right Pane: Professional Fullscreen Form -->
+        <div class="form-pane">
+            <div class="top-nav">
+                <a href="/" class="btn-back">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+                </a>
             </div>
 
-            <button type="button" class="btn-wa" onclick="submitForm('wa')">
-                <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Kirim via WhatsApp
-            </button>
-            <button type="button" class="btn-email" onclick="submitForm('email')">
-                <i class="fa-solid fa-envelope"></i> Kirim via Email
-            </button>
-        </form>
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Lengkapi Detail Proyek</h2>
+                    <p>Isi formulir di bawah ini agar kami dapat memberikan estimasi dan solusi terbaik.</p>
+                </div>
 
-        <a href="/" class="back-link"><i class="fa-solid fa-arrow-left me-2"></i> Kembali ke Beranda</a>
+                <form id="orderForm" onsubmit="return false;">
+                    <div class="form-group-custom">
+                        <label class="form-label-custom" for="name">Nama Lengkap / Instansi</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user input-icon"></i>
+                            <input type="text" class="form-control-custom" id="name" placeholder="Cth: Prima Wisnu"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom" for="phone">Nomor WhatsApp</label>
+                        <div class="input-wrapper">
+                            <i class="fa-brands fa-whatsapp input-icon"></i>
+                            <input type="tel" class="form-control-custom" id="phone" placeholder="Cth: 08123456789"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom" for="email">Alamat Email Resmi</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope input-icon"></i>
+                            <input type="email" class="form-control-custom" id="email"
+                                placeholder="Cth: email@perusahaan.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom" for="description">Deskripsi Proyek & Kebutuhan</label>
+                        <textarea class="form-control-custom textarea-custom" id="description" rows="4"
+                            placeholder="Jelaskan jenis aplikasi (website/mobile/sistem kasir) dan fitur utama yang Anda inginkan..."
+                            required></textarea>
+                    </div>
+
+                    <div class="actions-group">
+                        <button type="button" class="btn-wa-action" onclick="submitForm('wa')">
+                            <i class="fa-brands fa-whatsapp" style="font-size: 1.25rem;"></i> Kirim via WhatsApp
+                        </button>
+                        <button type="button" class="btn-email-action" onclick="submitForm('email')">
+                            <i class="fa-regular fa-paper-plane"></i> Kirim via Email
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -211,8 +502,8 @@
             if (!name || !phone || !email || !desc) {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Form Belum Lengkap',
-                    text: 'Mohon isi semua data yang diperlukan agar kami dapat merespons pengajuan Anda dengan baik.',
+                    title: 'Formulir Belum Lengkap',
+                    text: 'Mohon isi semua kolom (Nama, WhatsApp, Email, dan Deskripsi) agar kami dapat memproses pengajuan Anda.',
                     confirmButtonColor: '#2563eb',
                     customClass: {
                         popup: 'rounded-4'
@@ -221,12 +512,10 @@
                 return;
             }
 
-            // Membangun format pesan rapi
-            const message = `Halo PT. Primadev Digital Technology,\nSaya tertarik untuk mengajukan pembuatan Custom Website/Aplikasi.\n\n*Detail Kontak:*\n- Nama: ${name}\n- Email: ${email}\n- No. Telp: ${phone}\n\n*Deskripsi Kebutuhan:*\n${desc}`;
+            const message = `Halo PT. Primadev Digital Technology,\nSaya tertarik untuk mengajukan pembuatan Custom Website/Aplikasi.\n\n*Detail Kontak:*\n- Nama: ${name}\n- Email: ${email}\n- No. WA: ${phone}\n\n*Deskripsi Kebutuhan:*\n${desc}`;
 
             if (method === 'wa') {
-                // Menghapus angka 0 di depan jika ada, karena format WA menggunakan kode negara 62
-                let waNumber = "6283863867266";
+                const waNumber = "6283863867266";
                 const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
                 window.open(waUrl, '_blank');
             } else if (method === 'email') {
