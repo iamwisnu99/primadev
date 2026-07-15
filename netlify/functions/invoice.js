@@ -102,7 +102,7 @@ exports.handler = async (event, context) => {
       // Alamat Perusahaan (Kiri Atas)
       doc.fillColor('#1e293b').fontSize(8).font('Helvetica-Bold').text('PT PRIMADEV DIGITAL TECHNOLOGY', 50, 95);
       doc.fillColor('#64748b').font('Helvetica').fontSize(7)
-        .text('Jl. Kedoya Raya No. 1, Kedoya Selatan\nKebon Jeruk, Jakarta Barat, 11520\nEmail: wisnu.bussines99@gmail.com | Web: apps-primadev.netlify.app', 50, 107, { lineGap: 2 });
+        .text('Jl. Kedoya Raya No. 1, Kedoya Selatan\nKebon Jeruk, Jakarta Barat, 11520\nEmail: admin.primadev@gmail.com | Web: apps-primadev.netlify.app', 50, 107, { lineGap: 2 });
 
       // Judul Dokumen (Kanan Atas)
       doc.fillColor('#4f46e5').fontSize(26).font('Helvetica-Bold').text('INVOICE', 350, 45, { align: 'right', width: 200 });
@@ -199,7 +199,7 @@ exports.handler = async (event, context) => {
       doc.rect(50, footerTop, 500, 1).fill('#e2e8f0');
 
       doc.fillColor('#1e293b').fontSize(9).font('Helvetica-Bold').text('Notes & Terms:', 50, footerTop + 15);
-      doc.fillColor('#64748b').fontSize(8).font('Helvetica').text('1. Invoice ini adalah bukti pembayaran yang sah.\n2. Lisensi bersifat mengikat pada satu perangkat kecuali disebutkan lain.\n3. Pertanyaan lebih lanjut? Hubungi wisnu.bussines99@gmail.com', 50, footerTop + 30, { lineGap: 3 });
+      doc.fillColor('#64748b').fontSize(8).font('Helvetica').text('1. Invoice ini adalah bukti pembayaran yang sah.\n2. Lisensi bersifat mengikat pada satu perangkat kecuali disebutkan lain.\n3. Pertanyaan lebih lanjut? Hubungi admin.primadev@gmail.com', 50, footerTop + 30, { lineGap: 3 });
 
       // Digital signature or Seal
       doc.fillColor('#94a3b8').fontSize(7).font('Helvetica-Bold').text('COMPUTER GENERATED DOCUMENT\nNO SIGNATURE REQUIRED', 350, footerTop + 45, { align: 'center', width: 200 });

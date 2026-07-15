@@ -127,22 +127,56 @@ exports.handler = async (event) => {
     const notification = JSON.parse(event.body);
     console.log("[WEBHOOK] Received notification:", JSON.stringify(notification));
 
-    // Cek Status ke Midtrans (Validasi Keamanan)
-    let statusResponse;
-    try {
-      statusResponse = await apiClient.transaction.notification(notification);
-    } catch (apiErr) {
-      console.warn("[WEBHOOK] Midtrans API verification warning (Test Notification / Dummy ID):", apiErr.message);
-      // Jika pengetesan dari tombol Test Notification di Dashboard Midtrans (ID tidak ada di server Midtrans),
-      // tetap kembalikan 200 OK agar Midtrans Dashboard mencatat koneksi webhook berhasil.
-      return { statusCode: 200, body: 'OK - Test notification received' };
+    // --- DETEKSI SUMBER NOTIFIKASI (XENDIT VS MIDTRANS) ---
+    const xCallbackToken = event.headers ? (event.headers['x-callback-token'] || event.headers['X-Callback-Token'] || event.headers['x-callback-Token']) : null;
+    const isXendit = !!xCallbackToken || !!notification.external_id || !!notification.reference_id || (notification.data && !!notification.data.reference_id);
+
+    let orderId = null;
+    let transactionStatus = null;
+    let fraudStatus = 'accept';
+    let paymentType = 'Midtrans';
+
+    if (isXendit) {
+      console.log("[WEBHOOK] Detected Xendit notification payload");
+      if (process.env.XENDIT_CALLBACK_TOKEN && xCallbackToken && xCallbackToken !== process.env.XENDIT_CALLBACK_TOKEN) {
+        console.error("[WEBHOOK ERROR] Invalid Xendit callback token!");
+        return { statusCode: 403, body: 'Forbidden - Invalid callback token' };
+      }
+
+      orderId = notification.external_id || notification.reference_id || (notification.data && notification.data.reference_id);
+      const rawStatus = (notification.status || '').toUpperCase();
+
+      if (rawStatus === 'SUCCEEDED' || rawStatus === 'COMPLETED' || rawStatus === 'PAID' || (!rawStatus && notification.bank_code && notification.account_number)) {
+        transactionStatus = 'settlement';
+      } else if (rawStatus === 'FAILED' || rawStatus === 'EXPIRED' || rawStatus === 'CANCELLED') {
+        transactionStatus = 'cancel';
+      } else {
+        transactionStatus = 'pending';
+      }
+
+      if (notification.bank_code) paymentType = `Xendit VA (${notification.bank_code})`;
+      else if (notification.channel_code) paymentType = `Xendit (${notification.channel_code})`;
+      else if (notification.qr_string || notification.type === 'DYNAMIC') paymentType = `Xendit QRIS`;
+      else if (notification.retail_outlet_name) paymentType = `Xendit Store (${notification.retail_outlet_name})`;
+      else paymentType = `Xendit Payment`;
+
+      console.log(`[WEBHOOK] Xendit Verified Order: ${orderId} | Status: ${transactionStatus} (${rawStatus})`);
+    } else {
+      let statusResponse;
+      try {
+        statusResponse = await apiClient.transaction.notification(notification);
+      } catch (apiErr) {
+        console.warn("[WEBHOOK] Midtrans API verification warning (Test Notification / Dummy ID):", apiErr.message);
+        return { statusCode: 200, body: 'OK - Test notification received' };
+      }
+
+      orderId = statusResponse.order_id;
+      transactionStatus = statusResponse.transaction_status;
+      fraudStatus = statusResponse.fraud_status;
+      paymentType = `Midtrans (${statusResponse.payment_type})`;
+
+      console.log(`[WEBHOOK] Verified Midtrans Order: ${orderId} | Status: ${transactionStatus}`);
     }
-
-    const orderId = statusResponse.order_id;
-    const transactionStatus = statusResponse.transaction_status;
-    const fraudStatus = statusResponse.fraud_status;
-
-    console.log(`[WEBHOOK] Verified Order: ${orderId} | Status: ${transactionStatus}`);
 
     // Jika Sukses Bayar
     if (transactionStatus == 'capture' || transactionStatus == 'settlement') {
@@ -169,7 +203,7 @@ exports.handler = async (event) => {
       // Update Status Transaksi jadi Success
       await db.ref(`transactions/${orderId}`).update({
         status: 'success',
-        payment_type: statusResponse.payment_type,
+        payment_type: paymentType,
         paidAt: Date.now()
       });
 
@@ -260,7 +294,7 @@ exports.handler = async (event) => {
           price: trxData.amount,
           deviceId: '',
           expiryDate: expiry.toISOString().split('T')[0],
-          paymentMethod: `Midtrans (${statusResponse.payment_type})`,
+          paymentMethod: paymentType,
           transactionId: orderId,
           createdAt: Date.now()
         };

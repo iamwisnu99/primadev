@@ -5,6 +5,7 @@ const midtransClient = require('midtrans-client');
 const IS_PRODUCTION = process.env.MIDTRANS_IS_PRODUCTION === 'true';
 const SERVER_KEY = process.env.MIDTRANS_SERVER_KEY;
 const CLIENT_KEY = process.env.MIDTRANS_CLIENT_KEY;
+const XENDIT_PUBLIC_KEY = process.env.XENDIT_PUBLIC_KEY || '';
 
 const { getPremiumTemplate, getRenewalTemplate } = require('./email_template')
 
@@ -130,6 +131,171 @@ const sendEmail = async (data, isRenewal = false) => {
     }
 };
 
+// --- HELPER: XENDIT DIRECT API ADAPTER ---
+const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, successRedirectUrl, failedRedirectUrl) => {
+    if (!xenditSecretKey) {
+        throw new Error("XENDIT_SECRET_KEY belum dikonfigurasi di file .env server.");
+    }
+    const { orderId, grossAmount, buyerName, buyerEmail, buyerPhone, paymentMethod } = payload;
+    const authHeader = 'Basic ' + Buffer.from(xenditSecretKey + ':').toString('base64');
+    const commonHeaders = {
+        'Authorization': authHeader,
+        'Content-Type': 'application/json',
+        'x-callback-url': dynamicWebhookUrl
+    };
+
+    console.log(`[XENDIT ADAPTER] Executing charge for ${orderId} | Method: ${paymentMethod} | Amount: ${grossAmount}`);
+
+    // 1. Virtual Account
+    if (['bca', 'bni', 'bri', 'permata', 'mandiri', 'cimb'].includes(paymentMethod)) {
+        const bankCode = paymentMethod.toUpperCase();
+        const expirationDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+        
+        const vaBody = {
+            external_id: orderId,
+            bank_code: bankCode,
+            name: buyerName || "Pelanggan Primadev",
+            expected_amount: grossAmount,
+            is_closed: true,
+            is_single_use: true,
+            expiration_date: expirationDate
+        };
+
+        const res = await fetch('https://api.xendit.co/callback_virtual_accounts', {
+            method: 'POST',
+            headers: commonHeaders,
+            body: JSON.stringify(vaBody)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.message || data.error_code || "Gagal membuat Virtual Account Xendit.");
+        }
+
+        return {
+            order_id: orderId,
+            gross_amount: grossAmount,
+            payment_type: 'bank_transfer',
+            va_numbers: [{
+                bank: paymentMethod,
+                va_number: data.account_number
+            }],
+            transaction_status: 'pending',
+            gateway: 'xendit'
+        };
+    }
+
+    // 2. QRIS (atau OVO / DANA dialihkan via QRIS)
+    if (paymentMethod === 'qris' || paymentMethod === 'ovo' || paymentMethod === 'dana') {
+        const qrisBody = {
+            reference_id: orderId,
+            type: 'DYNAMIC',
+            currency: 'IDR',
+            amount: grossAmount,
+            callback_url: dynamicWebhookUrl
+        };
+
+        const res = await fetch('https://api.xendit.co/qr_codes', {
+            method: 'POST',
+            headers: commonHeaders,
+            body: JSON.stringify(qrisBody)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.message || data.error_code || "Gagal membuat QRIS Xendit.");
+        }
+
+        const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(data.qr_string)}`;
+        return {
+            order_id: orderId,
+            gross_amount: grossAmount,
+            payment_type: 'qris',
+            actions: [{
+                name: 'generate-qr-code',
+                url: qrImageUrl
+            }],
+            qr_string: data.qr_string,
+            transaction_status: 'pending',
+            gateway: 'xendit'
+        };
+    }
+
+    // 3. e-Wallet (GoPay, ShopeePay)
+    if (paymentMethod === 'gopay' || paymentMethod === 'shopeepay') {
+        const channelCode = paymentMethod === 'gopay' ? 'ID_GOPAY' : 'ID_SHOPEEPAY';
+        const ewalletBody = {
+            reference_id: orderId,
+            currency: 'IDR',
+            amount: grossAmount,
+            checkout_method: 'ONE_TIME_PAYMENT',
+            channel_code: channelCode,
+            channel_properties: {
+                success_redirect_url: successRedirectUrl,
+                failure_redirect_url: failedRedirectUrl,
+                cancel_redirect_url: failedRedirectUrl
+            },
+            metadata: { order_id: orderId }
+        };
+
+        const res = await fetch('https://api.xendit.co/ewallets/charges', {
+            method: 'POST',
+            headers: commonHeaders,
+            body: JSON.stringify(ewalletBody)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.message || data.error_code || `Gagal membuat pembayaran e-Wallet ${paymentMethod} Xendit.`);
+        }
+
+        const deepLinkUrl = data.actions?.mobile_web_checkout_url || data.actions?.desktop_web_checkout_url || successRedirectUrl;
+        const qrAction = data.actions?.qr_checkout_url ? [{ name: 'generate-qr-code', url: data.actions.qr_checkout_url }] : [];
+
+        return {
+            order_id: orderId,
+            gross_amount: grossAmount,
+            payment_type: paymentMethod,
+            actions: [
+                { name: 'deeplink-redirect', url: deepLinkUrl },
+                ...qrAction
+            ],
+            transaction_status: 'pending',
+            gateway: 'xendit'
+        };
+    }
+
+    // 4. Retail Outlet / cstore (Indomaret, Alfamart)
+    if (paymentMethod === 'indomaret' || paymentMethod === 'alfamart') {
+        const cstoreBody = {
+            external_id: orderId,
+            retail_outlet_name: paymentMethod.toUpperCase(),
+            name: buyerName || "Pelanggan Primadev",
+            expected_amount: grossAmount,
+            is_single_use: true
+        };
+
+        const res = await fetch('https://api.xendit.co/fixed_payment_code', {
+            method: 'POST',
+            headers: commonHeaders,
+            body: JSON.stringify(cstoreBody)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.message || data.error_code || `Gagal membuat kode pembayaran ${paymentMethod} Xendit.`);
+        }
+
+        return {
+            order_id: orderId,
+            gross_amount: grossAmount,
+            payment_type: 'cstore',
+            store: paymentMethod,
+            payment_code: data.payment_code,
+            transaction_status: 'pending',
+            gateway: 'xendit'
+        };
+    }
+
+    throw new Error(`Metode pembayaran "${paymentMethod}" belum didukung oleh adapter Xendit.`);
+};
+
 exports.handler = async (event, context) => {
     // Header agar bisa diakses dari frontend (CORS)
     const headers = {
@@ -140,6 +306,27 @@ exports.handler = async (event, context) => {
 
     const db = getDb();
     let PRICING_DB = {};
+
+    // --- LOAD GATEWAY SETTINGS (Firebase / ENV) ---
+    let activeGateway = process.env.ACTIVE_PAYMENT_GATEWAY || 'midtrans';
+    if (db) {
+        try {
+            const gwSnap = await db.ref('settings/payment_gateway/active_gateway').once('value');
+            if (gwSnap.exists() && gwSnap.val()) {
+                activeGateway = gwSnap.val();
+            }
+        } catch (e) {
+            console.error("[BACKEND] Failed reading active payment gateway from DB:", e.message);
+        }
+    }
+
+    // --- DYNAMIC WEBHOOK & REDIRECT URLS ---
+    const host = event.headers.host || event.headers.Host || 'apps-primadev.netlify.app';
+    const proto = event.headers['x-forwarded-proto'] || 'https';
+    const originUrl = `${proto}://${host}`;
+    const dynamicWebhookUrl = `${originUrl}/.netlify/functions/webhook`;
+    const successRedirectUrl = `${originUrl}/app/thankyou`;
+    const failedRedirectUrl = `${originUrl}/app/checkout`;
 
     if (db) {
         try {
@@ -167,6 +354,8 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({
                 catalog: PRICING_DB,
                 clientKey: CLIENT_KEY,
+                xenditPublicKey: XENDIT_PUBLIC_KEY,
+                activeGateway: activeGateway,
                 isProduction: IS_PRODUCTION
             })
         };
@@ -202,6 +391,60 @@ exports.handler = async (event, context) => {
                 custom_field1: appId, custom_field2: duration, custom_field3: 'public_store'
             };
 
+            // 1. Cek jika Gateway Xendit yang dipilih (kecuali metode kartu atau cicilan yang diproses Midtrans)
+            if (activeGateway === 'xendit' && paymentMethod !== 'card' && paymentMethod !== 'akulaku' && paymentMethod !== 'kredivo') {
+                try {
+                    const xenditResponse = await executeXenditCharge(
+                        { orderId, grossAmount: price, buyerName, buyerEmail, buyerPhone, paymentMethod },
+                        process.env.XENDIT_SECRET_KEY,
+                        dynamicWebhookUrl,
+                        successRedirectUrl,
+                        failedRedirectUrl
+                    );
+                    console.log("[BACKEND] Xendit Charge Success:", JSON.stringify(xenditResponse));
+
+                    if (db) {
+                        await db.ref(`transactions/${orderId}`).set({
+                            orderId,
+                            status: 'pending',
+                            amount: price,
+                            customerName: buyerName,
+                            customerEmail: buyerEmail,
+                            customerPhone: buyerPhone,
+                            appName: product.name,
+                            appId: appId,
+                            duration,
+                            orderType: 'NEW',
+                            paymentMethod: paymentMethod,
+                            gateway: 'xendit',
+                            createdAt: Date.now()
+                        });
+                    }
+                    return { statusCode: 200, headers, body: JSON.stringify(xenditResponse) };
+                } catch (xenditError) {
+                    console.error("[BACKEND] Xendit Charge Failed:", xenditError.message);
+                    return {
+                        statusCode: 400,
+                        headers,
+                        body: JSON.stringify({ error: "Xendit Error: " + xenditError.message })
+                    };
+                }
+            }
+
+            // 2. Midtrans Path dengan Dynamic Webhook Override & Redirect URLs
+            const dynamicCore = new midtransClient.CoreApi({
+                isProduction: IS_PRODUCTION,
+                serverKey: SERVER_KEY,
+                clientKey: CLIENT_KEY,
+                httpHeaders: { 'X-Override-Notification': dynamicWebhookUrl }
+            });
+            const dynamicSnap = new midtransClient.Snap({
+                isProduction: IS_PRODUCTION,
+                serverKey: SERVER_KEY,
+                clientKey: CLIENT_KEY,
+                httpHeaders: { 'X-Override-Notification': dynamicWebhookUrl }
+            });
+
             if (paymentMethod === 'qris') {
                 parameter.payment_type = 'qris';
                 parameter.qris = { acquirer: 'gopay' };
@@ -215,7 +458,7 @@ exports.handler = async (event, context) => {
                 }
             } else if (paymentMethod === 'gopay' || paymentMethod === 'shopeepay') {
                 parameter.payment_type = paymentMethod;
-                parameter[paymentMethod] = { callback_url: "https://apps-primadev.netlify.app/app/thankyou" };
+                parameter[paymentMethod] = { callback_url: successRedirectUrl };
             } else if (paymentMethod === 'ovo' || paymentMethod === 'dana') {
                 parameter.payment_type = 'qris';
                 parameter.qris = { acquirer: 'gopay' };
@@ -232,16 +475,12 @@ exports.handler = async (event, context) => {
                     return { statusCode: 400, headers, body: JSON.stringify({ error: "Data kartu tidak ditemukan. Silakan coba lagi." }) };
                 }
 
-                // Using Snap for card payment (simpler & more reliable)
                 try {
                     console.log("[BACKEND] Processing credit card payment via Snap API for order:", orderId);
-
                     if (!CLIENT_KEY) {
-                        console.error("[BACKEND] CRITICAL: CLIENT_KEY is not set!");
                         throw new Error("CLIENT_KEY tidak dikonfigurasi. Hubungi administrator.");
                     }
 
-                    // Prepare Snap parameter with card data
                     let snapParameter = {
                         transaction_details: { order_id: orderId, gross_amount: price },
                         customer_details: { first_name: buyerName, email: buyerEmail, phone: buyerPhone },
@@ -250,23 +489,12 @@ exports.handler = async (event, context) => {
                         payment_type: 'credit_card',
                         credit_card: {
                             secure: true,
-                            bank: 'bca', // Can be customized
-                            installment: {
-                                required: false
-                            }
+                            bank: 'bca',
+                            installment: { required: false }
                         }
                     };
 
-                    console.log("[BACKEND] Creating Snap transaction for card payment");
-
-                    // Create Snap transaction which will return snap token + redirect URL
-                    const snapTransaction = await snap.createTransaction(snapParameter);
-
-                    console.log("[BACKEND] Snap transaction created successfully");
-                    console.log("[BACKEND] Snap token:", snapTransaction.token);
-                    console.log("[BACKEND] Redirect URL:", snapTransaction.redirect_url);
-
-                    // Return snap response - frontend will redirect to Snap payment page
+                    const snapTransaction = await dynamicSnap.createTransaction(snapParameter);
                     return {
                         statusCode: 200,
                         headers,
@@ -274,27 +502,24 @@ exports.handler = async (event, context) => {
                             order_id: orderId,
                             snap_token: snapTransaction.token,
                             redirect_url: snapTransaction.redirect_url,
-                            payment_type: 'snap_redirect'
+                            payment_type: 'snap_redirect',
+                            gateway: 'midtrans'
                         })
                     };
-
                 } catch (snapError) {
                     console.error("[BACKEND] Snap transaction failed:", snapError.message);
-                    console.error("[BACKEND] Error details:", snapError);
                     return {
                         statusCode: 400,
                         headers,
-                        body: JSON.stringify({
-                            error: "Gagal membuat transaksi pembayaran: " + (snapError.message || "Silakan coba lagi.")
-                        })
+                        body: JSON.stringify({ error: "Gagal membuat transaksi pembayaran: " + (snapError.message || "Silakan coba lagi.") })
                     };
                 }
             }
 
-            console.log("[BACKEND] Charging with parameter:", JSON.stringify(parameter));
+            console.log("[BACKEND] Charging with Midtrans parameter:", JSON.stringify(parameter));
 
             try {
-                const chargeResponse = await core.charge(parameter);
+                const chargeResponse = await dynamicCore.charge(parameter);
                 console.log("[BACKEND] Charge Success:", JSON.stringify(chargeResponse));
 
                 if (db) {
@@ -310,6 +535,7 @@ exports.handler = async (event, context) => {
                         duration,
                         orderType: 'NEW',
                         paymentMethod: paymentMethod,
+                        gateway: 'midtrans',
                         createdAt: Date.now()
                     });
                 }
@@ -370,6 +596,48 @@ exports.handler = async (event, context) => {
                 custom_field3: 'renewal'
             };
 
+            if (activeGateway === 'xendit') {
+                try {
+                    const xenditResponse = await executeXenditCharge(
+                        { orderId, grossAmount: amount, buyerName, buyerEmail, paymentMethod },
+                        process.env.XENDIT_SECRET_KEY,
+                        dynamicWebhookUrl,
+                        successRedirectUrl,
+                        failedRedirectUrl
+                    );
+                    console.log('[BACKEND] Renewal Xendit Charge Success:', orderId);
+
+                    if (db) {
+                        await db.ref(`transactions/${orderId}`).set({
+                            orderId,
+                            status: 'pending',
+                            amount,
+                            customerName: buyerName,
+                            customerEmail: buyerEmail,
+                            appName,
+                            appId: licenseData?.appId || '',
+                            duration,
+                            orderType: 'RENEWAL',
+                            targetLicenseKey: licenseKey,
+                            paymentMethod,
+                            gateway: 'xendit',
+                            createdAt: Date.now()
+                        });
+                    }
+                    return { statusCode: 200, headers, body: JSON.stringify(xenditResponse) };
+                } catch (xenditErr) {
+                    console.error('[BACKEND] Renewal Xendit Charge Failed:', xenditErr.message);
+                    return { statusCode: 400, headers, body: JSON.stringify({ error: xenditErr.message }) };
+                }
+            }
+
+            const dynamicCore = new midtransClient.CoreApi({
+                isProduction: IS_PRODUCTION,
+                serverKey: SERVER_KEY,
+                clientKey: CLIENT_KEY,
+                httpHeaders: { 'X-Override-Notification': dynamicWebhookUrl }
+            });
+
             if (paymentMethod === 'qris') {
                 parameter.payment_type = 'qris';
                 parameter.qris = { acquirer: 'gopay' };
@@ -381,7 +649,7 @@ exports.handler = async (event, context) => {
                 parameter.echannel = { bill_info1: 'Renewal:', bill_info2: 'Software License' };
             } else if (paymentMethod === 'gopay' || paymentMethod === 'shopeepay') {
                 parameter.payment_type = paymentMethod;
-                parameter[paymentMethod] = { callback_url: 'https://apps-primadev.netlify.app/app/thankyou' };
+                parameter[paymentMethod] = { callback_url: successRedirectUrl };
             } else if (paymentMethod === 'dana' || paymentMethod === 'ovo') {
                 parameter.payment_type = 'qris';
                 parameter.qris = { acquirer: 'gopay' };
@@ -393,10 +661,10 @@ exports.handler = async (event, context) => {
                 parameter.qris = { acquirer: 'gopay' };
             }
 
-            console.log('[BACKEND] Renewal charge parameter:', JSON.stringify(parameter));
+            console.log('[BACKEND] Renewal charge Midtrans parameter:', JSON.stringify(parameter));
 
             try {
-                const chargeResponse = await core.charge(parameter);
+                const chargeResponse = await dynamicCore.charge(parameter);
                 console.log('[BACKEND] Renewal Charge Success:', chargeResponse.transaction_id);
 
                 if (db) {
@@ -412,6 +680,7 @@ exports.handler = async (event, context) => {
                         orderType: 'RENEWAL',
                         targetLicenseKey: licenseKey,
                         paymentMethod,
+                        gateway: 'midtrans',
                         createdAt: Date.now()
                     });
                 }
@@ -431,21 +700,6 @@ exports.handler = async (event, context) => {
             const { orderId } = body;
             if (!orderId) return { statusCode: 400, headers, body: JSON.stringify({ error: "Missing orderId" }) };
 
-            const statusResponse = await core.transaction.status(orderId);
-            const transactionStatus = statusResponse.transaction_status;
-            const fraudStatus = statusResponse.fraud_status;
-
-            console.log(`[BACKEND] Verifying ${orderId}: ${transactionStatus} | Fraud: ${fraudStatus}`);
-
-            if (transactionStatus !== 'capture' && transactionStatus !== 'settlement') {
-                return { statusCode: 200, headers, body: JSON.stringify({ status: transactionStatus, isSuccess: false }) };
-            }
-
-            // Challenge di sandbox bisa diabaikan atau ditandai
-            if (fraudStatus == 'challenge') {
-                console.warn(`[BACKEND] Transaction ${orderId} is challenged.`);
-            }
-
             if (!db) return { statusCode: 500, headers, body: JSON.stringify({ error: "Database offline" }) };
             const trxSnap = await db.ref(`transactions/${orderId}`).once('value');
             if (!trxSnap.exists()) {
@@ -454,8 +708,35 @@ exports.handler = async (event, context) => {
             }
             const trxData = trxSnap.val();
 
-            if (trxData.status === 'success') {
-                return { statusCode: 200, headers, body: JSON.stringify({ status: 'success', message: "Already processed" }) };
+            if (trxData.status === 'success' || trxData.status === 'settlement') {
+                if (trxData.status === 'success') {
+                    return { statusCode: 200, headers, body: JSON.stringify({ status: 'success', message: "Already processed" }) };
+                }
+            } else {
+                let isPaid = false;
+                if (trxData.gateway === 'xendit' || activeGateway === 'xendit') {
+                    if (trxData.status === 'capture' || trxData.status === 'settlement' || trxData.status === 'PAID' || trxData.status === 'COMPLETED') {
+                        isPaid = true;
+                    } else {
+                        return { statusCode: 200, headers, body: JSON.stringify({ status: trxData.status || 'pending', isSuccess: false }) };
+                    }
+                } else {
+                    try {
+                        const statusResponse = await core.transaction.status(orderId);
+                        const transactionStatus = statusResponse.transaction_status;
+                        const fraudStatus = statusResponse.fraud_status;
+                        console.log(`[BACKEND] Verifying ${orderId}: ${transactionStatus} | Fraud: ${fraudStatus}`);
+                        if (transactionStatus === 'capture' || transactionStatus === 'settlement') {
+                            isPaid = true;
+                        }
+                    } catch (err) {
+                        console.warn("[BACKEND] Midtrans status check error:", err.message);
+                    }
+                }
+
+                if (!isPaid) {
+                    return { statusCode: 200, headers, body: JSON.stringify({ status: 'pending', isSuccess: false }) };
+                }
             }
 
             console.log(`[BACKEND] OrderType: ${trxData.orderType} | TargetKey: ${trxData.targetLicenseKey || 'NewUser'}`);

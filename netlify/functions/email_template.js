@@ -77,7 +77,7 @@ const getPremiumTemplate = (data) => {
 
             <div class="footer">
                 <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PT. PRIMADEV DIGITAL TECHNOLOGY</p>
-                <p>SPBU Pertamina 34.115.06<br>Jl. Kedoya Raya No. 23, Kedoya Selatan<br>Kebon Jeruk, Jakarta Barat, DKI Jakarta 11520</p>
+                <p>Wangon<br>Kelurahan Wangon, Kecamatan Wangon<br>Kabupaten Banyumas, Jawa Tengah, Indonesia<br>53176</p>
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
                     &copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.<br>
