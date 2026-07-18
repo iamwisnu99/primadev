@@ -25,20 +25,20 @@
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
             --primary-light: #eff6ff;
-            --sidebar-bg: #0f172a;
-            --sidebar-hover: rgba(255, 255, 255, 0.06);
-            --sidebar-active: rgba(37, 99, 235, 0.2);
+            --sidebar-bg: #ffffff;
+            --sidebar-hover: #f8fafc;
+            --sidebar-active: #eff6ff;
             --sidebar-active-border: #2563eb;
             --bg: #f1f5f9;
             --surface: #ffffff;
             --border: #e2e8f0;
-            --text: #1e293b;
-            --text-2: #64748b;
+            --text: #0f172a;
+            --text-2: #475569;
             --text-3: #94a3b8;
             --radius: 12px;
             --shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.04);
-            --sidebar-w: 256px;
-            --topbar-h: 64px;
+            --sidebar-w: 260px;
+            --topbar-h: 68px;
         }
 
         body {
@@ -49,6 +49,7 @@
         }
 
         /* ===== SIDEBAR ===== */
+        /* ===== SIDEBAR (Bright & Modern SaaS Theme) ===== */
         .sidebar {
             position: fixed;
             top: 0;
@@ -56,136 +57,180 @@
             bottom: 0;
             width: var(--sidebar-w);
             background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             z-index: 200;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 4px 0 24px rgba(148, 163, 184, 0.06);
         }
 
         .sidebar-logo {
-            padding: 24px 20px;
+            padding: 24px 16px 20px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            justify-content: center;
+            border-bottom: 1px solid var(--border);
+            background: #ffffff;
+            text-align: center;
         }
 
         .sidebar-logo img {
-            height: 30px;
-            filter: brightness(0) invert(1);
+            height: 40px;
+            margin-bottom: 8px;
         }
 
-        .sidebar-logo-label {
-            font-size: 0.85rem;
+        .sidebar-company-title {
+            font-size: 0.74rem;
             font-weight: 700;
-            color: #fff;
-            letter-spacing: -0.2px;
-        }
-
-        .sidebar-logo-sub {
-            font-size: 0.7rem;
-            color: #475569;
-            font-weight: 500;
+            color: #334155;
+            letter-spacing: 0.01em;
+            line-height: 1.3;
         }
 
         .sidebar-nav {
-            padding: 16px 12px;
+            padding: 20px 14px;
             flex: 1;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .nav-section-label {
-            font-size: 0.65rem;
+            font-size: 0.68rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #475569;
-            padding: 8px 10px 6px;
-            margin-top: 8px;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            padding: 12px 10px 6px;
+            margin-top: 4px;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 12px;
-            border-radius: 8px;
+            padding: 11px 14px;
+            border-radius: 10px;
             cursor: pointer;
-            color: #94a3b8;
+            color: #475569;
             font-size: 0.88rem;
             font-weight: 500;
-            margin-bottom: 2px;
-            transition: all 0.15s;
-            border-left: 2px solid transparent;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             text-decoration: none;
+            position: relative;
+            border: 1px solid transparent;
         }
 
         .nav-item i {
-            width: 18px;
+            width: 20px;
             text-align: center;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            color: #64748b;
+            transition: color 0.2s ease;
         }
 
         .nav-item:hover {
             background: var(--sidebar-hover);
-            color: #cbd5e1;
+            color: #0f172a;
+            transform: translateX(3px);
+        }
+
+        .nav-item:hover i {
+            color: #2563eb;
         }
 
         .nav-item.active {
-            background: var(--sidebar-active);
-            color: #93c5fd;
-            border-left-color: var(--sidebar-active-border);
-            font-weight: 600;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+            border-color: rgba(37, 99, 235, 0.15);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.06);
+        }
+
+        .nav-item.active i {
+            color: var(--primary);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            bottom: 20%;
+            width: 3.5px;
+            background: var(--primary);
+            border-radius: 0 4px 4px 0;
         }
 
         .nav-item .badge {
             margin-left: auto;
-            background: #2563eb;
-            color: #fff;
-            font-size: 0.68rem;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.72rem;
             font-weight: 700;
-            padding: 2px 7px;
+            padding: 2px 8px;
             border-radius: 100px;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .nav-item.active .badge {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
         }
 
         .sidebar-footer {
-            padding: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 16px 14px;
+            border-top: 1px solid var(--border);
+            background: #fafbfc;
         }
 
         .admin-info {
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 10px 12px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
             margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
         }
 
         .admin-avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            border-radius: 9px;
+            width: 38px;
+            height: 38px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            font-size: 0.9rem;
-            font-weight: 700;
             flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .admin-avatar img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
         }
 
         .admin-name {
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #e2e8f0;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0f172a;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
         .admin-email {
-            font-size: 0.7rem;
-            color: #475569;
+            font-size: 0.72rem;
+            color: #64748b;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -193,12 +238,12 @@
 
         .btn-logout {
             width: 100%;
-            padding: 9px;
-            background: rgba(239, 68, 68, 0.1);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.15);
-            border-radius: 8px;
-            font-size: 0.82rem;
+            padding: 10px;
+            background: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -206,12 +251,15 @@
             justify-content: center;
             gap: 8px;
             font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
+            background: #fee2e2;
+            color: #dc2626;
+            border-color: #f87171;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);
         }
 
         /* ===== TOPBAR ===== */
@@ -1350,10 +1398,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev">
-            <div>
-                <div class="sidebar-logo-label">Primadev</div>
-                <div class="sidebar-logo-sub">Admin Panel</div>
-            </div>
+            <div class="sidebar-company-title">PT. Primadev Digital Technology</div>
         </div>
 
         <nav class="sidebar-nav">
@@ -1377,7 +1422,9 @@
 
         <div class="sidebar-footer">
             <div class="admin-info">
-                <div class="admin-avatar" id="adminAvatar">A</div>
+                <div class="admin-avatar" id="adminAvatar">
+                    <img src="https://i.imgur.com/BZ1xLO3.png" alt="Logo">
+                </div>
                 <div style="overflow:hidden;">
                     <div class="admin-name" id="adminName">Admin</div>
                     <div class="admin-email" id="adminEmail">—</div>
@@ -1972,7 +2019,7 @@
                 const name = email.split('@')[0];
                 document.getElementById('adminEmail').textContent = email;
                 document.getElementById('adminName').textContent = name;
-                document.getElementById('adminAvatar').textContent = name[0].toUpperCase();
+                document.getElementById('adminAvatar').innerHTML = '<img src="https://i.imgur.com/BZ1xLO3.png" alt="Logo">';
 
                 fetchData();
                 loadProducts();

@@ -141,10 +141,22 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
     const commonHeaders = {
         'Authorization': authHeader,
         'Content-Type': 'application/json',
-        'x-callback-url': dynamicWebhookUrl
+        'x-callback-url': dynamicWebhookUrl,
+        'callback-url': dynamicWebhookUrl,
+        'api-version': '2022-07-31'
     };
 
     console.log(`[XENDIT ADAPTER] Executing charge for ${orderId} | Method: ${paymentMethod} | Amount: ${grossAmount}`);
+
+    // Helper formatter error rinci dari Xendit
+    const formatXenditError = (data, defaultMsg) => {
+        let errMsg = data.message || data.error_code || defaultMsg;
+        if (Array.isArray(data.errors) && data.errors.length > 0) {
+            const detailedList = data.errors.map(e => `${e.path || e.field || ''}: ${e.message}`).join(' | ');
+            errMsg = `${errMsg} (${detailedList})`;
+        }
+        return errMsg;
+    };
 
     // 1. Virtual Account
     if (['bca', 'bni', 'bri', 'permata', 'mandiri', 'cimb'].includes(paymentMethod)) {
@@ -155,7 +167,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
             external_id: orderId,
             bank_code: bankCode,
             name: buyerName || "Pelanggan Primadev",
-            expected_amount: grossAmount,
+            expected_amount: Number(grossAmount),
             is_closed: true,
             is_single_use: true,
             expiration_date: expirationDate
@@ -168,7 +180,8 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         });
         const data = await res.json();
         if (!res.ok) {
-            throw new Error(data.message || data.error_code || "Gagal membuat Virtual Account Xendit.");
+            console.error(`[XENDIT VA ERROR] Response:`, JSON.stringify(data));
+            throw new Error(formatXenditError(data, "Gagal membuat Virtual Account Xendit."));
         }
 
         return {
@@ -190,8 +203,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
             reference_id: orderId,
             type: 'DYNAMIC',
             currency: 'IDR',
-            amount: grossAmount,
-            callback_url: dynamicWebhookUrl
+            amount: Number(grossAmount)
         };
 
         const res = await fetch('https://api.xendit.co/qr_codes', {
@@ -201,7 +213,8 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         });
         const data = await res.json();
         if (!res.ok) {
-            throw new Error(data.message || data.error_code || "Gagal membuat QRIS Xendit.");
+            console.error(`[XENDIT QRIS ERROR] Response:`, JSON.stringify(data));
+            throw new Error(formatXenditError(data, "Gagal membuat QRIS Xendit."));
         }
 
         const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(data.qr_string)}`;
@@ -221,11 +234,11 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
 
     // 3. e-Wallet (GoPay, ShopeePay)
     if (paymentMethod === 'gopay' || paymentMethod === 'shopeepay') {
-        const channelCode = paymentMethod === 'gopay' ? 'ID_GOPAY' : 'ID_SHOPEEPAY';
+        const channelCode = paymentMethod === 'gopay' ? 'GOPAY' : 'ID_SHOPEEPAY';
         const ewalletBody = {
             reference_id: orderId,
             currency: 'IDR',
-            amount: grossAmount,
+            amount: Number(grossAmount),
             checkout_method: 'ONE_TIME_PAYMENT',
             channel_code: channelCode,
             channel_properties: {
@@ -233,6 +246,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
                 failure_redirect_url: failedRedirectUrl,
                 cancel_redirect_url: failedRedirectUrl
             },
+            callback_url: dynamicWebhookUrl,
             metadata: { order_id: orderId }
         };
 
@@ -243,7 +257,8 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         });
         const data = await res.json();
         if (!res.ok) {
-            throw new Error(data.message || data.error_code || `Gagal membuat pembayaran e-Wallet ${paymentMethod} Xendit.`);
+            console.error(`[XENDIT EWALLET ERROR] Response:`, JSON.stringify(data));
+            throw new Error(formatXenditError(data, `Gagal membuat pembayaran e-Wallet ${paymentMethod} Xendit.`));
         }
 
         const deepLinkUrl = data.actions?.mobile_web_checkout_url || data.actions?.desktop_web_checkout_url || successRedirectUrl;
@@ -323,8 +338,13 @@ exports.handler = async (event, context) => {
     // --- DYNAMIC WEBHOOK & REDIRECT URLS ---
     const host = event.headers.host || event.headers.Host || 'apps-primadev.netlify.app';
     const proto = event.headers['x-forwarded-proto'] || 'https';
+    const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
     const originUrl = `${proto}://${host}`;
-    const dynamicWebhookUrl = `${originUrl}/.netlify/functions/webhook`;
+    
+    // Xendit menolak URL localhost (regex validator membutuhkan domain publik yang sah dengan TLD).
+    // Jika berjalan di localhost, fallback ke domain publik agar lolos validasi regex Xendit.
+    const publicOriginForWebhook = isLocalhost ? (process.env.PUBLIC_ORIGIN_URL || 'https://apps-primadev.netlify.app') : originUrl;
+    const dynamicWebhookUrl = `${publicOriginForWebhook}/.netlify/functions/webhook`;
     const successRedirectUrl = `${originUrl}/app/thankyou`;
     const failedRedirectUrl = `${originUrl}/app/checkout`;
 

@@ -180,7 +180,7 @@
         .left-footer {
             margin-top: 60px;
             font-size: 0.75rem;
-            color: #334155;
+            color: #ffffff;
             position: relative;
             z-index: 1;
         }
@@ -233,13 +233,14 @@
             position: relative;
         }
 
-        .form-input-wrap i {
+        .form-input-wrap > i:first-child {
             position: absolute;
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
             color: #94a3b8;
             font-size: 0.9rem;
+            pointer-events: none;
         }
 
         .form-input {
@@ -253,6 +254,10 @@
             background: #f8fafc;
             outline: none;
             transition: all 0.2s;
+        }
+
+        #loginPassword {
+            padding-right: 48px;
         }
 
         .form-input:focus {
@@ -275,12 +280,25 @@
             border: none;
             color: #94a3b8;
             cursor: pointer;
-            padding: 4px;
-            font-size: 0.9rem;
+            padding: 6px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .password-toggle i {
+            position: static !important;
+            left: auto !important;
+            top: auto !important;
+            transform: none !important;
+            color: inherit;
+            font-size: 0.95rem;
         }
 
         .password-toggle:hover {
-            color: #475569;
+            color: #3b82f6;
         }
 
         .form-options {
@@ -395,6 +413,7 @@
 
             .left-footer {
                 margin-top: 30px;
+                color: #ffffff;
             }
 
             .panel-right {
@@ -425,7 +444,6 @@
     <div class="panel-left">
         <div class="left-logo">
             <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev">
-            <span class="left-logo-text">Primadev</span>
         </div>
 
         <div class="left-main">
@@ -454,7 +472,7 @@
         </div>
 
         <div class="left-footer">
-            © 2026 PT. Primadev Digital Technology · Jakarta, Indonesia
+            © <span id="dynamicYear">2026</span> PT. Primadev Digital Technology · Banyumas, Indonesia
         </div>
     </div>
 
@@ -511,6 +529,12 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearEl = document.getElementById('dynamicYear');
+            if (yearEl) yearEl.textContent = new Date().getFullYear();
+        });
+    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
