@@ -1,332 +1,368 @@
 const admin = require('firebase-admin');
-const midtransClient = require('midtrans-client');
 const fetch = require('node-fetch');
 
-// --- LOAD ENV ---
-const IS_PRODUCTION = process.env.MIDTRANS_IS_PRODUCTION === 'true';
-const SERVER_KEY = process.env.MIDTRANS_SERVER_KEY;
-const CLIENT_KEY = process.env.MIDTRANS_CLIENT_KEY;
+// =====================================================================
+// XENDIT-ONLY WEBHOOK
+// Midtrans telah dihapus. Hanya memproses notifikasi dari Xendit.
+// =====================================================================
 const { getPremiumTemplate, getRenewalTemplate } = require('./email_template');
 
-// --- LOAD DB HARGA (Biar tau detail produk) ---
+// Fallback produk lokal (jika Firebase tidak terbaca)
 let PRICING_DB;
 try { PRICING_DB = require('../../products.json'); } catch (e) { PRICING_DB = {}; }
 
-// --- INIT MIDTRANS ---
-let apiClient = new midtransClient.CoreApi({
-  isProduction: IS_PRODUCTION,
-  serverKey: SERVER_KEY,
-  clientKey: CLIENT_KEY
-});
-
-// --- INIT FIREBASE ---
+// =====================================================================
+// INISIALISASI FIREBASE
+// =====================================================================
 if (!admin.apps.length) {
-  let serviceAccount = null;
-
-  try {
-    if (process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL) {
-      console.log("[INIT] Menggunakan ENV Variable Terpisah...");
-      serviceAccount = {
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/"/g, '')
-      };
-    }
-    // CARA 2: Cek Format JSON Satu Blok (Cara Lama)
-    else if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-      console.log("[INIT] Menggunakan ENV JSON Blob...");
-      const raw = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-      serviceAccount = {
-        projectId: raw.project_id,
-        clientEmail: raw.client_email,
-        privateKey: raw.private_key.replace(/\\n/g, '\n') // Sanitasi juga
-      };
-    }
-    // CARA 3: File Lokal (Hanya di Localhost)
-    else if (!process.env.NETLIFY) {
-      try {
-        const localKey = '../../strukmaker-3327d110-firebase-adminsdk-fbsvc-28cd459e84.json';
-        serviceAccount = require(localKey);
-      } catch (e) {
-        console.log("[INIT] File JSON lokal tidak ditemukan.");
-      }
+    let serviceAccount = null;
+    try {
+        if (process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL) {
+            serviceAccount = {
+                projectId: process.env.FIREBASE_PROJECT_ID,
+                clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/"/g, '')
+            };
+        } else if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+            const raw = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+            serviceAccount = {
+                projectId: raw.project_id,
+                clientEmail: raw.client_email,
+                privateKey: raw.private_key.replace(/\\n/g, '\n')
+            };
+        } else if (!process.env.NETLIFY) {
+            try {
+                serviceAccount = require('../../strukmaker-3327d110-firebase-adminsdk-fbsvc-28cd459e84.json');
+            } catch (e) {
+                console.log("[INIT] File JSON lokal tidak ditemukan.");
+            }
+        }
+    } catch (err) {
+        console.error("[INIT ERROR] Gagal memproses kredensial:", err.message);
     }
 
-  } catch (err) {
-    console.error("[INIT ERROR] Gagal memproses kredensial:", err.message);
-  }
-
-  // --- FINAL CHECK & CONNECT ---
-  const dbUrl = process.env.FIREBASE_DATABASE_URL || "https://strukmaker-3327d110-default-rtdb.asia-southeast1.firebasedatabase.app";
-
-  if (serviceAccount && serviceAccount.privateKey) {
-    const keySample = serviceAccount.privateKey.substring(0, 30);
-    console.log(`[INIT] Private Key Check: ${keySample}... (Valid Header?)`);
-
-    if (!serviceAccount.privateKey.includes("BEGIN PRIVATE KEY")) {
-      console.error("❌ FATAL: Format Private Key SALAH! Pastikan mengandung '-----BEGIN PRIVATE KEY-----'");
+    const dbUrl = process.env.FIREBASE_DATABASE_URL || "https://strukmaker-3327d110-default-rtdb.asia-southeast1.firebasedatabase.app";
+    if (serviceAccount && serviceAccount.privateKey) {
+        if (!serviceAccount.privateKey.includes("BEGIN PRIVATE KEY")) {
+            console.error("❌ FATAL: Format Private Key SALAH!");
+        } else {
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount),
+                databaseURL: dbUrl
+            });
+            console.log("✅ Firebase Webhook: Connected");
+        }
     } else {
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        databaseURL: dbUrl
-      });
-      console.log("✅ Firebase Berhasil Terhubung!");
+        console.error("❌ FATAL: Kredensial Firebase tidak tersedia.");
     }
-  } else {
-    console.error("❌ FATAL: Tidak ada kredensial yang terbaca. Cek .env kamu!");
-  }
 }
 
 const db = admin.database();
 
-// --- HELPER: KEY GENERATOR ---
+// =====================================================================
+// HELPER: GENERATE LICENSE KEY
+// =====================================================================
 const generateRandomKey = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const seg = () => Array(4).fill(0).map(() => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
-  return `PRIMA-${seg()}-${seg()}-${seg()}`;
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const seg = () => Array(4).fill(0).map(() => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+    return `PRIMA-${seg()}-${seg()}-${seg()}`;
 };
 
+// =====================================================================
+// HELPER: KIRIM EMAIL
+// =====================================================================
 const sendEmail = async (data, isRenewal = false) => {
-  const url = 'https://api.emailjs.com/api/v1.0/email/send';
-  if (!process.env.EMAILJS_SERVICE_ID) return;
+    const url = 'https://api.emailjs.com/api/v1.0/email/send';
+    if (!process.env.EMAILJS_SERVICE_ID) return;
 
-  const templateData = {
-    name: data.name,
-    key: data.key,
-    appName: data.appName || 'Aplikasi',
-    type: data.type || (isRenewal ? 'Renewal' : 'Monthly'),
-    expiryDate: data.expiryDate,
-    transactionId: data.transactionId || data.orderId
-  };
+    const templateData = {
+        name: data.name,
+        key: data.key,
+        appName: data.appName || 'Aplikasi',
+        type: data.type || (isRenewal ? 'Renewal' : 'Monthly'),
+        expiryDate: data.expiryDate,
+        transactionId: data.transactionId || data.orderId
+    };
 
-  const messageHtml = isRenewal ? getRenewalTemplate(templateData) : getPremiumTemplate(templateData);
+    const messageHtml = isRenewal ? getRenewalTemplate(templateData) : getPremiumTemplate(templateData);
 
-  const payload = {
-    service_id: process.env.EMAILJS_SERVICE_ID,
-    template_id: process.env.EMAILJS_TEMPLATE_ID,
-    user_id: process.env.EMAILJS_PUBLIC_KEY,
-    accessToken: process.env.EMAILJS_PRIVATE_KEY,
-    template_params: {
-      to_email: data.email,
-      to_name: data.name,
-      license_key: data.key,
-      expiry_date: data.expiryDate,
-      type: isRenewal ? `Perpanjangan ${data.appName}` : `${data.appName} (${data.type})`,
-      message_html: messageHtml
+    const payload = {
+        service_id: process.env.EMAILJS_SERVICE_ID,
+        template_id: process.env.EMAILJS_TEMPLATE_ID,
+        user_id: process.env.EMAILJS_PUBLIC_KEY,
+        accessToken: process.env.EMAILJS_PRIVATE_KEY,
+        template_params: {
+            to_email: data.email,
+            to_name: data.name,
+            license_key: data.key,
+            expiry_date: data.expiryDate,
+            type: isRenewal ? `Perpanjangan ${data.appName}` : `${data.appName} (${data.type})`,
+            message_html: messageHtml
+        }
+    };
+
+    try {
+        await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    } catch (e) {
+        console.error("[EMAIL ERROR]", e.message);
     }
-  };
-  try { await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch (e) { }
 };
 
+// =====================================================================
+// MAIN WEBHOOK HANDLER — XENDIT ONLY
+// =====================================================================
 exports.handler = async (event) => {
-  try {
-    if (event.httpMethod === 'GET' || !event.body) {
-      return { statusCode: 200, body: 'Webhook endpoint active' };
-    }
-
-    const notification = JSON.parse(event.body);
-    console.log("[WEBHOOK] Received notification:", JSON.stringify(notification));
-
-    // --- DETEKSI SUMBER NOTIFIKASI (XENDIT VS MIDTRANS) ---
-    const xCallbackToken = event.headers ? (event.headers['x-callback-token'] || event.headers['X-Callback-Token'] || event.headers['x-callback-Token']) : null;
-    const isXendit = !!xCallbackToken || !!notification.external_id || !!notification.reference_id || (notification.data && !!notification.data.reference_id);
-
-    let orderId = null;
-    let transactionStatus = null;
-    let fraudStatus = 'accept';
-    let paymentType = 'Midtrans';
-
-    if (isXendit) {
-      console.log("[WEBHOOK] Detected Xendit notification payload");
-      if (process.env.XENDIT_CALLBACK_TOKEN && xCallbackToken && xCallbackToken !== process.env.XENDIT_CALLBACK_TOKEN) {
-        console.error("[WEBHOOK ERROR] Invalid Xendit callback token!");
-        return { statusCode: 403, body: 'Forbidden - Invalid callback token' };
-      }
-
-      orderId = notification.external_id || notification.reference_id || (notification.data && notification.data.reference_id);
-      const rawStatus = (notification.status || '').toUpperCase();
-
-      if (rawStatus === 'SUCCEEDED' || rawStatus === 'COMPLETED' || rawStatus === 'PAID' || (!rawStatus && notification.bank_code && notification.account_number)) {
-        transactionStatus = 'settlement';
-      } else if (rawStatus === 'FAILED' || rawStatus === 'EXPIRED' || rawStatus === 'CANCELLED') {
-        transactionStatus = 'cancel';
-      } else {
-        transactionStatus = 'pending';
-      }
-
-      if (notification.bank_code) paymentType = `Xendit VA (${notification.bank_code})`;
-      else if (notification.channel_code) paymentType = `Xendit (${notification.channel_code})`;
-      else if (notification.qr_string || notification.type === 'DYNAMIC') paymentType = `Xendit QRIS`;
-      else if (notification.retail_outlet_name) paymentType = `Xendit Store (${notification.retail_outlet_name})`;
-      else paymentType = `Xendit Payment`;
-
-      console.log(`[WEBHOOK] Xendit Verified Order: ${orderId} | Status: ${transactionStatus} (${rawStatus})`);
-    } else {
-      let statusResponse;
-      try {
-        statusResponse = await apiClient.transaction.notification(notification);
-      } catch (apiErr) {
-        console.warn("[WEBHOOK] Midtrans API verification warning (Test Notification / Dummy ID):", apiErr.message);
-        return { statusCode: 200, body: 'OK - Test notification received' };
-      }
-
-      orderId = statusResponse.order_id;
-      transactionStatus = statusResponse.transaction_status;
-      fraudStatus = statusResponse.fraud_status;
-      paymentType = `Midtrans (${statusResponse.payment_type})`;
-
-      console.log(`[WEBHOOK] Verified Midtrans Order: ${orderId} | Status: ${transactionStatus}`);
-    }
-
-    // Jika Sukses Bayar
-    if (transactionStatus == 'capture' || transactionStatus == 'settlement') {
-      if (transactionStatus == 'capture' && fraudStatus == 'challenge') {
-        console.log("[WEBHOOK] Transaction is challenged, skipping.");
-        return { statusCode: 200, body: 'Challenge ignored' };
-      }
-
-      // 1. AMBIL DATA TRANSAKSI DARI DB (Yang disimpan oleh public_order.js)
-      const trxSnap = await db.ref(`transactions/${orderId}`).once('value');
-      if (!trxSnap.exists()) {
-        console.error(`[WEBHOOK ERROR] Transaksi ${orderId} tidak ditemukan di Firebase!`);
-        return { statusCode: 200, body: 'Transaction not found in DB but acknowledged' };
-      }
-
-      const trxData = trxSnap.val();
-
-      // Cek biar gak double process
-      if (trxData.status === 'success') {
-        console.log(`[WEBHOOK] Order ${orderId} already processed as success.`);
-        return { statusCode: 200, body: 'Already processed' };
-      }
-
-      // Update Status Transaksi jadi Success
-      await db.ref(`transactions/${orderId}`).update({
-        status: 'success',
-        payment_type: paymentType,
-        paidAt: Date.now()
-      });
-
-      console.log(`[WEBHOOK] Processing orderType: ${trxData.orderType || 'NEW'}`);
-
-      if (trxData.orderType === 'RENEWAL') {
-        const targetKey = trxData.targetLicenseKey;
-        console.log(`[WEBHOOK] Processing RENEWAL for Key: ${targetKey}`);
-
-        if (!targetKey) {
-          console.error("[WEBHOOK ERROR] targetLicenseKey is missing in transaction data!");
-          return { statusCode: 200, body: 'Missing target key' };
+    try {
+        // Biarkan GET request tetap sukses (untuk health check Xendit)
+        if (event.httpMethod === 'GET' || !event.body) {
+            return { statusCode: 200, body: 'Webhook endpoint active (Xendit-only)' };
         }
 
-        const licRef = db.ref(`licenses/${targetKey}`);
-        const licSnap = await licRef.once('value');
+        const notification = JSON.parse(event.body);
+        console.log("[WEBHOOK] Received notification:", JSON.stringify(notification));
 
-        if (licSnap.exists()) {
-          const currentData = licSnap.val();
-          const duration = trxData.duration || 'monthly';
+        // ----------------------------------------------------------------
+        // VERIFIKASI TOKEN XENDIT
+        // Xendit mengirim header 'x-callback-token' pada setiap notifikasi.
+        // Wajib diverifikasi agar tidak ada pihak lain yang bisa trigger webhook.
+        // ----------------------------------------------------------------
+        const xCallbackToken = event.headers?.['x-callback-token']
+            || event.headers?.['X-Callback-Token']
+            || event.headers?.['x-callback-Token']
+            || null;
 
-          const now = new Date();
-          let currentExpiry = currentData.expiryDate ? new Date(currentData.expiryDate) : null;
-
-          // Safety Check: Jika format date di DB error/invalid
-          if (currentExpiry && isNaN(currentExpiry.getTime())) {
-            console.warn(`[WEBHOOK] Invalid expiryDate found for ${targetKey}: ${currentData.expiryDate}`);
-            currentExpiry = null;
-          }
-
-          // Gunakan date yang lebih jauh (existing expiry atau hari ini)
-          let baseDate = (currentExpiry && currentExpiry > now) ? currentExpiry : now;
-
-          let newExpiry = new Date(baseDate);
-          if (duration === 'yearly') {
-            newExpiry.setFullYear(newExpiry.getFullYear() + 1);
-          } else {
-            newExpiry.setMonth(newExpiry.getMonth() + 1);
-          }
-
-          const expiryString = newExpiry.toISOString().split('T')[0];
-
-          console.log(`[WEBHOOK] Extension: ${currentData.expiryDate} -> ${expiryString} (${duration})`);
-
-          // Update Lisensi
-          await licRef.update({
-            status: 'active',
-            expiryDate: expiryString,
-            lastRenewalDate: Date.now(),
-            lastTransactionId: orderId
-          });
-
-          // Kirim Email Perpanjangan Berhasil (WEBHOOK)
-          await sendEmail({
-            name: currentData.name,
-            email: currentData.email,
-            key: targetKey,
-            appName: currentData.appName,
-            expiryDate: expiryString,
-            transactionId: orderId
-          }, true);
-
-          console.log(`[SUCCESS] License ${targetKey} extended successfully.`);
+        if (process.env.XENDIT_CALLBACK_TOKEN) {
+            if (!xCallbackToken || xCallbackToken !== process.env.XENDIT_CALLBACK_TOKEN) {
+                console.error("[WEBHOOK] ⛔ Invalid or missing Xendit callback token!");
+                return { statusCode: 403, body: 'Forbidden - Invalid callback token' };
+            }
         } else {
-          console.error(`[WEBHOOK ERROR] License ${targetKey} not found in database!`);
+            console.warn("[WEBHOOK] ⚠️ XENDIT_CALLBACK_TOKEN tidak dikonfigurasi. Verifikasi token dilewati.");
         }
 
-      } else {
-        // --- KASUS: PEMBELIAN BARU (Kode Lama) ---
-        console.log("[WEBHOOK] Processing NEW LICENSE...");
+        // ----------------------------------------------------------------
+        // EKSTRAK ORDER ID & STATUS DARI PAYLOAD XENDIT
+        //
+        // Xendit mengirim format berbeda tergantung jenis pembayaran:
+        //
+        // [Virtual Account]  → notification.external_id, notification.status
+        // [QRIS]             → notification.reference_id, notification.status
+        // [eWallet]          → notification.data.reference_id, notification.data.status
+        //                      (status di ROOT selalu kosong untuk eWallet!)
+        // [Retail/cStore]    → notification.external_id, notification.status
+        // ----------------------------------------------------------------
 
-        const newKey = generateRandomKey();
-        const duration = trxData.duration;
+        // Deteksi apakah ini payload eWallet (punya wrapper 'data')
+        const isEwalletPayload = !!(notification.data && (notification.data.reference_id || notification.data.status));
 
-        // Hitung Expiry Awal
-        let expiry = new Date();
-        if (duration === 'monthly') expiry.setMonth(expiry.getMonth() + 1);
-        else if (duration === 'yearly') expiry.setFullYear(expiry.getFullYear() + 1);
-        else expiry.setFullYear(expiry.getFullYear() + 100); // Lifetime
+        let orderId = null;
+        let transactionStatus = null;
+        let paymentType = 'Xendit';
 
-        const newLicenseData = {
-          key: newKey,
-          status: 'active',
-          type: duration,
-          appName: trxData.appName || 'Struk SPBU',
-          name: trxData.customerName,
-          email: trxData.customerEmail,
-          price: trxData.amount,
-          deviceId: '',
-          expiryDate: expiry.toISOString().split('T')[0],
-          paymentMethod: paymentType,
-          transactionId: orderId,
-          createdAt: Date.now()
-        };
+        // --- Ekstrak orderId ---
+        if (notification.external_id) {
+            // Virtual Account & Retail Store
+            orderId = notification.external_id;
+        } else if (isEwalletPayload && notification.data.reference_id) {
+            // eWallet (nested)
+            orderId = notification.data.reference_id;
+        } else if (notification.reference_id) {
+            // QRIS (root level)
+            orderId = notification.reference_id;
+        } else if (notification.data?.metadata?.order_id) {
+            // Fallback: metadata yang diset saat create charge
+            orderId = notification.data.metadata.order_id;
+        } else if (notification.metadata?.order_id) {
+            orderId = notification.metadata.order_id;
+        }
 
-        // Simpan Lisensi Baru
-        await db.ref(`licenses/${newKey}`).set(newLicenseData);
+        if (!orderId) {
+            console.error("[WEBHOOK] ❌ Tidak bisa menemukan orderId dalam payload:", JSON.stringify(notification));
+            return { statusCode: 200, body: 'OK - No orderId found' };
+        }
 
-        // Kirim Email Lisensi Baru
-        await sendEmail({
-          email: newLicenseData.email,
-          name: newLicenseData.name,
-          key: newKey,
-          appName: newLicenseData.appName,
-          type: newLicenseData.type,
-          expiryDate: newLicenseData.expiryDate,
-          transactionId: orderId
-        });
-        console.log(`[SUCCESS] New License Created: ${newKey}`);
-      }
+        // --- Ekstrak status ---
+        // PENTING: Untuk eWallet, status ada di notification.data.status, BUKAN notification.status
+        const rawStatus = (
+            (isEwalletPayload ? notification.data?.status : null) // eWallet → cek data.status duluan
+            || notification.status                                 // VA, QRIS, Retail
+            || ''
+        ).toUpperCase();
 
-      return { statusCode: 200, body: 'OK - Processed' };
+        console.log(`[WEBHOOK] isEwallet: ${isEwalletPayload} | rawStatus: "${rawStatus}" | orderId: "${orderId}"`);
 
-    } else if (transactionStatus == 'cancel' || transactionStatus == 'deny' || transactionStatus == 'expire') {
-      // Update Status Gagal
-      await db.ref(`transactions/${orderId}`).update({ status: 'failed' });
-      return { statusCode: 200, body: 'OK - Failed status recorded' };
+        // Normalisasi status Xendit ke status internal
+        if (
+            rawStatus === 'SUCCEEDED' || rawStatus === 'COMPLETED' || rawStatus === 'PAID' ||
+            // VA yang sudah dibayar: tidak punya 'status', tapi ada bank_code + account_number
+            (!rawStatus && notification.bank_code && notification.account_number)
+
+        ) {
+            transactionStatus = 'settlement';
+        } else if (rawStatus === 'FAILED' || rawStatus === 'EXPIRED' || rawStatus === 'CANCELLED') {
+            transactionStatus = 'cancel';
+        } else {
+            transactionStatus = 'pending';
+        }
+
+        // Label metode pembayaran
+        // (eWallet: data nested; VA & Store: root level)
+        const channelCode = notification.data?.channel_code || notification.channel_code || '';
+        if (notification.bank_code) {
+            paymentType = `Xendit VA (${notification.bank_code})`;
+        } else if (channelCode) {
+            paymentType = `Xendit eWallet (${channelCode})`;
+        } else if (notification.qr_string || notification.type === 'DYNAMIC') {
+            paymentType = 'Xendit QRIS';
+        } else if (notification.retail_outlet_name) {
+            paymentType = `Xendit Store (${notification.retail_outlet_name})`;
+        }
+
+        console.log(`[WEBHOOK] OrderID: ${orderId} | RawStatus: "${rawStatus}" | InternalStatus: ${transactionStatus} | Type: ${paymentType}`);
+
+        // ----------------------------------------------------------------
+        // PROSES JIKA PEMBAYARAN BERHASIL
+        // ----------------------------------------------------------------
+        if (transactionStatus === 'settlement') {
+            // Ambil data transaksi dari Firebase
+            const trxSnap = await db.ref(`transactions/${orderId}`).once('value');
+            if (!trxSnap.exists()) {
+                console.error(`[WEBHOOK] ❌ Transaksi ${orderId} tidak ditemukan di Firebase!`);
+                // Return 200 agar Xendit tidak retry terus-menerus
+                return { statusCode: 200, body: 'Transaction not found in DB but acknowledged' };
+            }
+
+            const trxData = trxSnap.val();
+
+            // Guard: Jangan proses dua kali
+            if (trxData.status === 'success') {
+                console.log(`[WEBHOOK] ⏩ Order ${orderId} sudah diproses sebelumnya.`);
+                return { statusCode: 200, body: 'Already processed' };
+            }
+
+            // Update status transaksi di Firebase → success
+            await db.ref(`transactions/${orderId}`).update({
+                status: 'success',
+                payment_type: paymentType,
+                paidAt: Date.now()
+            });
+
+            console.log(`[WEBHOOK] ✅ Transaksi ${orderId} ditandai sukses. OrderType: ${trxData.orderType || 'NEW'}`);
+
+            // ----------------------------------------------------------
+            // RENEWAL: Perpanjang lisensi yang sudah ada
+            // ----------------------------------------------------------
+            if (trxData.orderType === 'RENEWAL') {
+                const targetKey = trxData.targetLicenseKey;
+                if (!targetKey) {
+                    console.error("[WEBHOOK] ❌ targetLicenseKey kosong untuk RENEWAL!");
+                    return { statusCode: 200, body: 'Missing target key' };
+                }
+
+                const licRef = db.ref(`licenses/${targetKey}`);
+                const licSnap = await licRef.once('value');
+
+                if (!licSnap.exists()) {
+                    console.error(`[WEBHOOK] ❌ Lisensi ${targetKey} tidak ditemukan!`);
+                    return { statusCode: 200, body: 'License not found' };
+                }
+
+                const currentData = licSnap.val();
+                const duration = trxData.duration || 'monthly';
+                const now = new Date();
+                let currentExpiry = currentData.expiryDate ? new Date(currentData.expiryDate) : null;
+                if (currentExpiry && isNaN(currentExpiry.getTime())) currentExpiry = null;
+
+                // Perpanjang dari tanggal expiry saat ini (jika belum kadaluarsa) atau dari hari ini
+                let baseDate = (currentExpiry && currentExpiry > now) ? currentExpiry : now;
+                let newExpiry = new Date(baseDate);
+                if (duration === 'yearly') newExpiry.setFullYear(newExpiry.getFullYear() + 1);
+                else newExpiry.setMonth(newExpiry.getMonth() + 1);
+
+                const expiryString = newExpiry.toISOString().split('T')[0];
+                console.log(`[WEBHOOK] Perpanjang: ${currentData.expiryDate} → ${expiryString} (${duration})`);
+
+                await licRef.update({
+                    status: 'active',
+                    expiryDate: expiryString,
+                    lastRenewalDate: Date.now(),
+                    lastTransactionId: orderId
+                });
+
+                await sendEmail({
+                    name: currentData.name,
+                    email: currentData.email,
+                    key: targetKey,
+                    appName: currentData.appName,
+                    expiryDate: expiryString,
+                    transactionId: orderId
+                }, true);
+
+                console.log(`[WEBHOOK] ✅ Lisensi ${targetKey} berhasil diperpanjang.`);
+
+            // ----------------------------------------------------------
+            // PEMBELIAN BARU: Buat lisensi baru
+            // ----------------------------------------------------------
+            } else {
+                console.log("[WEBHOOK] 🆕 Membuat lisensi baru...");
+
+                const newKey = generateRandomKey();
+                const duration = trxData.duration || 'monthly';
+
+                let expiry = new Date();
+                if (duration === 'monthly') expiry.setMonth(expiry.getMonth() + 1);
+                else if (duration === 'yearly') expiry.setFullYear(expiry.getFullYear() + 1);
+                else expiry.setFullYear(expiry.getFullYear() + 100); // Lifetime
+
+                const newLicenseData = {
+                    key: newKey,
+                    status: 'active',
+                    type: duration,
+                    appName: trxData.appName || 'Aplikasi',
+                    appId: trxData.appId || '',
+                    name: trxData.customerName || 'Customer',
+                    email: trxData.customerEmail || '',
+                    price: trxData.amount || 0,
+                    deviceId: '',
+                    expiryDate: expiry.toISOString().split('T')[0],
+                    paymentMethod: paymentType,
+                    transactionId: orderId,
+                    createdAt: Date.now()
+                };
+
+                await db.ref(`licenses/${newKey}`).set(newLicenseData);
+
+                await sendEmail({
+                    email: newLicenseData.email,
+                    name: newLicenseData.name,
+                    key: newKey,
+                    appName: newLicenseData.appName,
+                    type: newLicenseData.type,
+                    expiryDate: newLicenseData.expiryDate,
+                    transactionId: orderId
+                });
+
+                console.log(`[WEBHOOK] ✅ Lisensi baru dibuat: ${newKey}`);
+            }
+
+            return { statusCode: 200, body: 'OK - Processed' };
+
+        // ----------------------------------------------------------------
+        // PROSES JIKA PEMBAYARAN GAGAL / DIBATALKAN
+        // ----------------------------------------------------------------
+        } else if (transactionStatus === 'cancel') {
+            if (orderId) {
+                await db.ref(`transactions/${orderId}`).update({ status: 'failed' });
+                console.log(`[WEBHOOK] ❌ Transaksi ${orderId} gagal/dibatalkan.`);
+            }
+            return { statusCode: 200, body: 'OK - Failed status recorded' };
+        }
+
+        // Status lain (pending, dll.) — tidak perlu tindakan
+        return { statusCode: 200, body: 'OK - Pending or other status' };
+
+    } catch (err) {
+        console.error("[WEBHOOK] Error:", err);
+        return { statusCode: 500, body: err.message };
     }
-
-    return { statusCode: 200, body: 'OK - Pending or other status' };
-
-  } catch (err) {
-    console.error("Webhook Error:", err);
-    return { statusCode: 500, body: err.message };
-  }
 };

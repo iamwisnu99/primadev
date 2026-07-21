@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — Primadev Digital Technology</title>
+    <title>Dashboard - Primadev Digital Technology</title>
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
     <link rel="manifest" href="/public/site.webmanifest" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1655,40 +1655,46 @@
                 </div>
                 <div class="card-body">
                     <p style="font-size: 0.9rem; color: var(--text-2); margin-bottom: 24px; line-height: 1.6;">
-                        Pilih Payment Gateway yang akan digunakan untuk memproses seluruh transaksi pembayaran lisensi baru maupun perpanjangan secara otomatis. API Key dan kredensial sensitif tetap tersimpan dengan aman di file <code>.env</code> server.
+                        Pilih Payment Gateway yang akan digunakan untuk memproses seluruh transaksi pembayaran lisensi
+                        baru maupun perpanjangan secara otomatis. API Key dan kredensial sensitif tetap tersimpan dengan
+                        aman di file <code>.env</code> server.
                     </p>
-                    
+
                     <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px;">
-                        <!-- Midtrans Option -->
-                        <label class="gateway-option" id="opt-midtrans" onclick="selectGatewayOption('midtrans')" style="display: flex; align-items: center; gap: 16px; padding: 18px 20px; border: 2px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all 0.2s; background: var(--surface);">
-                            <input type="radio" name="active_gateway_radio" value="midtrans" style="width: 20px; height: 20px; accent-color: var(--primary);">
+
+                        <!-- Xendit (Aktif & Satu-satunya) -->
+                        <label class="gateway-option" id="opt-xendit"
+                            style="display: flex; align-items: center; gap: 16px; padding: 18px 20px; border: 2px solid #16a34a; border-radius: var(--radius); background: #f0fdf4; cursor: default;">
+                            <input type="radio" name="active_gateway_radio" value="xendit" checked
+                                style="width: 20px; height: 20px; accent-color: #16a34a;">
                             <div style="flex: 1;">
-                                <div style="font-weight: 700; font-size: 1.05rem; color: var(--text); display: flex; align-items: center; gap: 10px;">
-                                    Midtrans
-                                    <span class="badge" style="background: #e0f2fe; color: #0284c7; font-size: 0.7rem;">Automated Notification</span>
+                                <div
+                                    style="font-weight: 700; font-size: 1.05rem; color: var(--text); display: flex; align-items: center; gap: 10px;">
+                                    Xendit
+                                    <span class="badge"
+                                        style="background: #dcfce7; color: #15803d; font-size: 0.7rem;">✅ Aktif</span>
+                                    <span class="badge"
+                                        style="background: #e0f2fe; color: #0284c7; font-size: 0.7rem;">Satu-satunya
+                                        Gateway</span>
                                 </div>
                                 <div style="font-size: 0.85rem; color: var(--text-2); margin-top: 4px;">
-                                    Menggunakan Midtrans Core API / Snap dengan dukungan Virtual Account, QRIS, e-Wallet, dan Retail Store.
+                                    Menggunakan Xendit Direct REST API. Mendukung Virtual Account, QRIS, GoPay,
+                                    ShopeePay, DANA, OVO, Indomaret, dan Alfamart.
                                 </div>
                             </div>
                         </label>
 
-                        <!-- Xendit Option -->
-                        <label class="gateway-option" id="opt-xendit" onclick="selectGatewayOption('xendit')" style="display: flex; align-items: center; gap: 16px; padding: 18px 20px; border: 2px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all 0.2s; background: var(--surface);">
-                            <input type="radio" name="active_gateway_radio" value="xendit" style="width: 20px; height: 20px; accent-color: var(--primary);">
-                            <div style="flex: 1;">
-                                <div style="font-weight: 700; font-size: 1.05rem; color: var(--text); display: flex; align-items: center; gap: 10px;">
-                                    Xendit
-                                    <span class="badge" style="background: #f0fdf4; color: #16a34a; font-size: 0.7rem;">Custom UI Adapter</span>
-                                </div>
-                                <div style="font-size: 0.85rem; color: var(--text-2); margin-top: 4px;">
-                                    Menggunakan Xendit Direct REST API tanpa halaman invoice bawaan. UI checkout tetap 100% kustom dari aplikasi.
-                                </div>
-                            </div>
-                        </label>
+                        <div
+                            style="padding: 14px 16px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; font-size: 0.82rem; color: #9a3412; display: flex; gap: 10px; align-items: flex-start;">
+                            <i class="fa-solid fa-circle-info" style="margin-top: 2px; flex-shrink: 0;"></i>
+                            <span>Midtrans telah dinonaktifkan. Sistem kini hanya menggunakan <strong>Xendit</strong>
+                                sebagai payment gateway. Pastikan <code>XENDIT_SECRET_KEY</code> dan
+                                <code>XENDIT_CALLBACK_TOKEN</code> sudah dikonfigurasi di Netlify Dashboard.</span>
+                        </div>
                     </div>
 
-                    <div style="display: flex; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 20px;">
+                    <div
+                        style="display: flex; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 20px;">
                         <button class="btn btn-primary" onclick="saveGatewaySettings()" id="btnSaveGateway">
                             <i class="fa-solid fa-floppy-disk"></i> Simpan Pilihan Gateway
                         </button>
@@ -1770,10 +1776,9 @@
                                         </div><i class="fa-solid fa-check opt-check"></i>
                                     </div>
                                     <div class="opt-item"
-                                        onclick="selectOpt('ddPayment','Midtrans','Midtrans','paymentLabel'); togglePaymentProvider();">
-                                        <div><span class="opt-title">Midtrans</span><span
-                                                class="opt-desc">Otomatis</span></div><i
-                                            class="fa-solid fa-check opt-check"></i>
+                                        onclick="selectOpt('ddPayment','Xendit','Xendit','paymentLabel'); togglePaymentProvider();">
+                                        <div><span class="opt-title">Xendit</span><span class="opt-desc">Otomatis</span>
+                                        </div><i class="fa-solid fa-check opt-check"></i>
                                     </div>
                                 </div>
                             </div>
@@ -2078,7 +2083,7 @@
         const loadGatewaySettings = () => {
             onValue(ref(db, 'settings/payment_gateway'), (snap) => {
                 const data = snap.val() || {};
-                const activeGateway = data.active_gateway || 'midtrans';
+                const activeGateway = data.active_gateway || 'xendit';
                 window.selectGatewayOption(activeGateway);
             });
         };

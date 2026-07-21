@@ -19,10 +19,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Midtrans Core API JS (bukan Snap) -->
-    <script id="midtrans-js" src="https://api.sandbox.midtrans.com/v2/assets/js/midtrans.min.js"
-        onload="console.log('✅ Midtrans Core API Loaded')"
-        onerror="console.error('❌ Midtrans Core API Failed')"></script>
+
 
     <style>
         /* =================== VARIABLES =================== */
@@ -1510,7 +1507,7 @@
                     <div style="font-size:0.85rem; font-weight:700; color:var(--primary);">Transaksi Aman</div>
                 </div>
                 <div style="font-size:0.78rem; color:var(--primary-dark); line-height:1.6;">
-                    Pembayaran Anda diproses melalui <strong>Midtrans Core API</strong> dengan enkripsi SSL 256-bit dan
+                    Pembayaran Anda diproses melalui <strong>Xendit</strong> dengan enkripsi SSL 256-bit dan
                     terproteksi 3D Secure.
                 </div>
             </div>
@@ -1734,7 +1731,8 @@
                         action: 'renew_transaction',
                         licenseKey: currentLicenseData.key,
                         duration,
-                        amount,
+                        // [SECURITY] 'amount' TIDAK dikirim dari client
+                        // Harga selalu dihitung dari server berdasarkan licenseKey & duration
                         buyerName: currentLicenseData.name,
                         buyerEmail: currentLicenseData.email,
                         paymentMethod
@@ -1744,7 +1742,7 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Gagal membuat transaksi renewal');
 
-                // Midtrans Core API mengembalikan field 'order_id'
+                // Xendit mengembalikan field 'order_id'
                 const orderId = data.order_id || data.orderId || '—';
 
                 goToStep(3);
@@ -1899,15 +1897,9 @@
                         Tunjukkan kode ini ke kasir <strong>${storeName}</strong> terdekat.
                     </div>`;
 
-            } else if (data.payment_type === 'snap_redirect' && data.redirect_url) {
-                // Fallback redirect
-                html = `
-                    <div style="text-align:center; padding:16px 0;">
-                        <a href="${data.redirect_url}" target="_blank" style="display:inline-flex; align-items:center; gap:8px; padding:12px 28px; background:#1865ca; color:#fff; border-radius:100px; font-weight:700; text-decoration:none; font-size:0.88rem;">
-                            <i class="fa-solid fa-arrow-right"></i> Lanjut ke Halaman Pembayaran
-                        </a>
-                    </div>`;
-                setTimeout(() => window.open(data.redirect_url, '_blank'), 1500);
+                // Metode lain (fallback)
+            } else {
+                html = `<div style="padding:16px; text-align:center; color:var(--text-secondary);">Instruksi pembayaran tersedia di email Anda.</div>`;
             }
 
             area.innerHTML = html;
@@ -1921,13 +1913,10 @@
                 try {
                     const res = await fetch('/.netlify/functions/public_order', {
                         method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             action: 'verify_payment',
-                            orderId,
-                            appId: currentLicenseData?.appId,
-                            buyerName: currentLicenseData?.name,
-                            buyerEmail: currentLicenseData?.email,
-                            duration: selectedDurationValue
+                            orderId
                         })
                     });
                     const result = await res.json();
@@ -1955,22 +1944,6 @@
             }, 3000);
         }
 
-        // =================== COUNTDOWN ===================
-        function startCountdown(duration) {
-            if (countdownInterval) clearInterval(countdownInterval);
-            let timer = duration;
-
-            countdownInterval = setInterval(() => {
-                const m = String(Math.floor(timer / 60)).padStart(2, '0');
-                const s = String(timer % 60).padStart(2, '0');
-                const el = document.getElementById('renewTimer');
-                if (el) el.textContent = `${m}:${s}`;
-                if (--timer < 0) {
-                    clearInterval(countdownInterval);
-                    if (el) el.textContent = 'HABIS';
-                }
-            }, 1000);
-        }
 
         // =================== RESET ===================
         function resetStep() {

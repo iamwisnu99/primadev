@@ -604,6 +604,20 @@
                             <div class="radio-circle"></div>
                         </div>
                     </div>
+                    <!-- Input Nomor HP untuk OVO (muncul saat OVO dipilih) -->
+                    <div id="ovoPhoneWrap"
+                        style="display:none; margin-top:12px; padding:14px 16px; background:#f8f0ff; border-radius:10px; border:1px solid #e9d5ff;">
+                        <label
+                            style="font-size:0.8rem; font-weight:700; color:#7c3aed; display:block; margin-bottom:8px;">
+                            <i class="fa-solid fa-mobile-screen-button"></i> Nomor HP Terdaftar di OVO <span
+                                style="color:#dc2626;">*</span>
+                        </label>
+                        <input type="tel" id="ovoPhone" placeholder="08xxxxxxxxxx"
+                            style="width:100%; padding:10px 14px; border:1.5px solid #ddd6fe; border-radius:8px; font-size:0.95rem; font-family:inherit; outline:none;"
+                            oninput="this.style.borderColor='#7c3aed'">
+                        <div style="font-size:0.75rem; color:#6b7280; margin-top:6px;">Masukkan nomor yang sama dengan
+                            yang terdaftar di aplikasi OVO Anda.</div>
+                    </div>
                 </div>
 
                 <div class="payment-group" id="pg-cstore">
@@ -815,6 +829,12 @@
             } else if (element) {
                 element.classList.add('selected');
             }
+
+            // Tampilkan / sembunyikan input nomor HP untuk OVO
+            const ovoWrap = document.getElementById('ovoPhoneWrap');
+            if (ovoWrap) {
+                ovoWrap.style.display = (method === 'ovo') ? 'block' : 'none';
+            }
         }
 
         async function processPayment() {
@@ -824,6 +844,18 @@
 
             const buyerName = document.getElementById('buyerName').value.trim();
             const buyerEmail = document.getElementById('buyerEmail').value.trim();
+
+            // Validasi khusus OVO: butuh nomor HP
+            let buyerPhone = '';
+            if (selectedPayment === 'ovo') {
+                buyerPhone = document.getElementById('ovoPhone')?.value?.trim() || '';
+                if (!buyerPhone) {
+                    Swal.fire('Nomor HP Diperlukan', 'Masukkan nomor HP yang terdaftar di aplikasi OVO Anda.', 'warning');
+                    btn.innerHTML = '<i class="fa-solid fa-lock"></i> Bayar Sekarang';
+                    btn.disabled = false;
+                    return;
+                }
+            }
 
             try {
                 const res = await fetch('/.netlify/functions/public_order', {
@@ -835,6 +867,7 @@
                         duration: selectedDuration,
                         buyerName,
                         buyerEmail,
+                        buyerPhone,
                         paymentMethod: selectedPayment
                     })
                 });

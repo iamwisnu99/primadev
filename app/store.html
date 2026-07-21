@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Primadev Store — Toko Lisensi Software Digital Resmi & Bergaransi</title>
+    <title>Primadev Store - Toko Lisensi Software Digital Resmi & Bergaransi</title>
     <meta name="description"
         content="Toko resmi lisensi software Primadev Digital Technology. Beli lisensi aplikasi bisnis & marketing original dengan harga terjangkau, aktivasi instan otomatis 24/7, dan garansi resmi.">
     <meta name="keywords"
@@ -59,9 +59,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script id="midtrans-js" src="https://api.sandbox.midtrans.com/v2/assets/js/midtrans.min.js"
-        onload="console.log('✅ Midtrans Library Loaded Successfully')"
-        onerror="console.error('❌ Midtrans Library Failed to Load! Check Adblocker.')"></script>
+
 
     <style>
         /* =================== CSS VARIABLES =================== */
@@ -1004,7 +1002,6 @@
 
         // ===== STATE =====
         let SERVER_CATALOG = {};
-        let MIDTRANS_CLIENT_KEY = "";
 
         // App icon color cycle
         const iconColors = ['app-icon-blue', 'app-icon-green', 'app-icon-purple', 'app-icon-orange', 'app-icon-teal', 'app-icon-pink'];
@@ -1016,22 +1013,7 @@
                 const response = await fetch('/.netlify/functions/public_order');
                 const data = await response.json();
                 SERVER_CATALOG = data.catalog;
-                MIDTRANS_CLIENT_KEY = data.clientKey;
-                const isProduction = data.isProduction;
                 renderCatalog();
-
-                const targetScript = isProduction
-                    ? "https://api.midtrans.com/v2/assets/js/midtrans.min.js"
-                    : "https://api.sandbox.midtrans.com/v2/assets/js/midtrans.min.js";
-
-                const oldScript = document.getElementById('midtrans-js');
-                if (oldScript && oldScript.src !== targetScript) {
-                    const newScript = document.createElement('script');
-                    newScript.id = 'midtrans-js';
-                    newScript.src = targetScript;
-                    newScript.onload = () => console.log('✅ Midtrans Library Swapped Successfully');
-                    oldScript.parentNode.replaceChild(newScript, oldScript);
-                }
             } catch (error) {
                 console.error("Init Error", error);
                 document.getElementById('appsGrid').innerHTML = `
