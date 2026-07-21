@@ -430,6 +430,19 @@
         let pollingInterval = null;
         let countdownInterval = null;
         let orderData = null;
+        let paymentTabRef = null; // Referensi ke tab Xendit yang dibuka
+
+        // Buka tab pembayaran Xendit & simpan referensinya
+        // (Referensi diperlukan agar bisa menutup tab tsb dari sini jika perlu,
+        //  dan agar browser mengizinkan window.close() pada tab tersebut)
+        function openPaymentTab(url) {
+            if (!url || url === '#') return;
+            if (paymentTabRef && !paymentTabRef.closed) {
+                paymentTabRef.focus();
+                return;
+            }
+            paymentTabRef = window.open(url, '_blank');
+        }
 
         function init() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -437,44 +450,44 @@
             const isPaidRedirect = urlParams.get('paid') === 'true';
 
             // ----------------------------------------------------------------
-            // MODE 1: Kembali dari redirect Xendit (paid=true di URL)
-            // Xendit sudah konfirmasi pembayaran, sekarang polling cepat
-            // sampai webhook meng-update Firebase, lalu tampilkan animasi.
+            // MODE 1: Tab kembali dari redirect Xendit (paid=true)
+            // Ini adalah TAB BARU (simulator Xendit). Kirim sinyal ke Tab A
+            // (original waiting-payment) via BroadcastChannel, lalu tutup tab ini.
             // ----------------------------------------------------------------
             if (isPaidRedirect && urlOrderId) {
-                document.getElementById('mainContent').style.display = 'flex';
-
-                // Tampilkan UI konfirmasi khusus
-                const instrBody = document.getElementById('instructionBody');
-                if (instrBody) {
-                    instrBody.innerHTML = `
-                        <div style="text-align:center; padding: 32px 0;">
-                            <div style="width:72px;height:72px;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;animation:pulse 1.5s ease-in-out infinite;">
-                                <i class="fa-solid fa-check" style="font-size:2rem;color:#fff;"></i>
-                            </div>
-                            <div style="font-size:1.3rem;font-weight:800;color:#16a34a;margin-bottom:10px;">Pembayaran Dikonfirmasi!</div>
-                            <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.6;">
-                                Xendit telah menerima pembayaran Anda. Sistem sedang memverifikasi dan menyiapkan lisensi...
-                            </p>
-                            <div style="margin-top:24px;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--text-secondary);font-size:0.85rem;">
-                                <div class="spinner" style="width:18px;height:18px;border-width:2px;"></div>
-                                <span>Harap tunggu sebentar...</span>
-                            </div>
-                        </div>
-                    `;
+                try {
+                    const channel = new BroadcastChannel('xendit_payment_' + urlOrderId);
+                    channel.postMessage({ type: 'PAYMENT_SUCCESS', orderId: urlOrderId });
+                    channel.close();
+                } catch (e) {
+                    console.warn('[Tab B] BroadcastChannel tidak didukung:', e);
+                    // Fallback: tulis ke localStorage agar Tab A bisa deteksi
+                    try {
+                        localStorage.setItem('xendit_paid_' + urlOrderId, Date.now().toString());
+                    } catch (_) {}
                 }
 
-                // Update label timer & orderId jika ada
-                const elOrderId = document.getElementById('orderId');
-                if (elOrderId) elOrderId.textContent = urlOrderId;
+                // Tampilkan pesan singkat lalu tutup tab ini
+                document.body.innerHTML = `
+                    <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Inter,sans-serif;background:#f8fffe;">
+                        <div style="width:72px;height:72px;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <div style="font-size:1.4rem;font-weight:800;color:#16a34a;margin-bottom:10px;">Pembayaran Berhasil!</div>
+                        <p style="font-size:0.95rem;color:#64748b;text-align:center;max-width:320px;">Tab ini akan ditutup secara otomatis. Silakan kembali ke tab pembayaran sebelumnya.</p>
+                        <button onclick="window.close()" style="margin-top:24px;padding:12px 28px;background:#16a34a;color:#fff;border:none;border-radius:100px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;">Tutup Tab Ini</button>
+                    </div>
+                `;
 
-                // Polling agresif setiap 1.5 detik (webhook mungkin baru saja tiba)
-                startFastPolling(urlOrderId);
+                // Coba tutup otomatis setelah 2 detik
+                setTimeout(() => {
+                    try { window.close(); } catch (e) {}
+                }, 2000);
                 return;
             }
 
             // ----------------------------------------------------------------
-            // MODE 2: Halaman normal (dari checkout, data ada di localStorage)
+            // MODE 2: Tab normal (original waiting-payment dari checkout)
             // ----------------------------------------------------------------
             const rawData = localStorage.getItem('pending_order_data');
             if (!rawData) {
@@ -494,8 +507,52 @@
             renderInstructions(apiData);
             document.getElementById('mainContent').style.display = 'flex';
 
+            // Setup BroadcastChannel listener untuk terima sinyal dari Tab B
+            setupPaymentListener(apiData.order_id, orderInfo);
+
             startPolling(apiData.order_id, orderInfo);
             startCountdown(15 * 60);
+        }
+
+        // ----------------------------------------------------------------
+        // LISTENER: Tab A menunggu sinyal dari Tab B via BroadcastChannel
+        // atau localStorage sebagai fallback
+        // ----------------------------------------------------------------
+        function setupPaymentListener(orderId, orderInfo) {
+            // --- BroadcastChannel (modern browsers) ---
+            try {
+                const channel = new BroadcastChannel('xendit_payment_' + orderId);
+                channel.onmessage = (event) => {
+                    if (event.data?.type === 'PAYMENT_SUCCESS' && event.data?.orderId === orderId) {
+                        console.log('[Tab A] Menerima sinyal PAYMENT_SUCCESS dari Tab B via BroadcastChannel');
+                        channel.close();
+                        onPaymentConfirmed(orderId);
+                    }
+                };
+            } catch (e) {
+                console.warn('[Tab A] BroadcastChannel tidak didukung, pakai localStorage fallback');
+            }
+
+            // --- localStorage Fallback (Safari lama, dll.) ---
+            window.addEventListener('storage', (event) => {
+                if (event.key === 'xendit_paid_' + orderId && event.newValue) {
+                    console.log('[Tab A] Menerima sinyal PAYMENT_SUCCESS dari Tab B via localStorage');
+                    localStorage.removeItem('xendit_paid_' + orderId);
+                    onPaymentConfirmed(orderId);
+                }
+            });
+        }
+
+        // Dipanggil saat Tab A menerima konfirmasi dari Tab B
+        function onPaymentConfirmed(orderId) {
+            clearInterval(pollingInterval);
+            clearInterval(countdownInterval);
+            localStorage.removeItem('pending_order_data');
+            // Focus ke tab ini (jika user masih di Tab B)
+            try { window.focus(); } catch (e) {}
+            showSuccessAnimation(() => {
+                window.location.href = '/app/thankyou';
+            });
         }
 
         function renderInstructions(data) {
@@ -591,21 +648,21 @@
                     <div class="instruction-title">Lanjutkan Pembayaran ${walletName}</div>
                     <p style="font-size:0.98rem; color:var(--text-secondary); margin-bottom:28px; line-height:1.6;">
                         Klik tombol di bawah untuk membuka aplikasi <strong>${walletName}</strong> dan menyelesaikan pembayaran.
-                        Setelah selesai, kembali ke halaman ini — status akan otomatis diperbarui.
+                        Setelah selesai, <strong>kembali ke tab ini</strong> — status akan otomatis diperbarui.
                     </p>
                     <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                        <a href="${primaryUrl}" target="_blank" class="btn btn-primary">
+                        <button onclick="openPaymentTab('${primaryUrl}')" class="btn btn-primary">
                             <i class="fa-solid fa-mobile-screen-button"></i>
                             Buka Aplikasi ${walletName}
-                        </a>
+                        </button>
                         ${data.desktop_url && !isMobile ? `
-                        <a href="${data.desktop_url}" target="_blank" class="btn btn-outline" style="font-size:0.85rem;">
+                        <button onclick="openPaymentTab('${data.desktop_url}')" class="btn btn-outline" style="font-size:0.85rem;">
                             <i class="fa-solid fa-desktop"></i> Versi Desktop
-                        </a>` : ''}
+                        </button>` : ''}
                     </div>
-                    <div style="margin-top:16px; padding:12px 16px; background:#fff3cd; border-radius:10px; font-size:0.82rem; color:#856404; display:flex; gap:8px; align-items:flex-start;">
-                        <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px; flex-shrink:0;"></i>
-                        <span>Setelah membayar di ${walletName}, <strong>jangan tutup tab ini</strong>. Sistem akan otomatis mendeteksi pembayaran Anda.</span>
+                    <div style="margin-top:16px; padding:12px 16px; background:#e0fdf4; border-radius:10px; font-size:0.82rem; color:#065f46; display:flex; gap:8px; align-items:flex-start; border: 1px solid #a7f3d0;">
+                        <i class="fa-solid fa-circle-info" style="margin-top:2px; flex-shrink:0;"></i>
+                        <span>Setelah membayar di ${walletName}, tab pembayaran akan <strong>menutup otomatis</strong> dan Anda akan kembali ke halaman ini secara otomatis.</span>
                     </div>
                     ${qrHtml}
                 `;
@@ -613,7 +670,7 @@
                 // Auto-redirect ke URL pembayaran setelah 2 detik jika di mobile
                 if (isMobile && primaryUrl !== '#') {
                     setTimeout(() => {
-                        window.open(primaryUrl, '_blank');
+                        openPaymentTab(primaryUrl);
                     }, 2000);
                 }
 
