@@ -330,6 +330,48 @@
                 height: 220px;
             }
         }
+
+        /* ====================== ANIMATIONS ====================== */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(24, 101, 202, 0.15);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Digunakan pada ikon check saat "Pembayaran Dikonfirmasi" */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
+        }
+
+        /* Digunakan pada animasi sukses akhir */
+        @keyframes successPulse {
+            0%   { transform: scale(0.6); opacity: 0; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+            50%  { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 16px rgba(34, 197, 94, 0); }
+            100% { transform: scale(1);   opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        /* Polling indicator di panel kanan */
+        .polling-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-top: 20px;
+            padding: 12px 14px;
+            background: var(--bg-page);
+            border-radius: 10px;
+        }
+
     </style>
 </head>
 
@@ -390,6 +432,50 @@
         let orderData = null;
 
         function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOrderId = urlParams.get('orderId');
+            const isPaidRedirect = urlParams.get('paid') === 'true';
+
+            // ----------------------------------------------------------------
+            // MODE 1: Kembali dari redirect Xendit (paid=true di URL)
+            // Xendit sudah konfirmasi pembayaran, sekarang polling cepat
+            // sampai webhook meng-update Firebase, lalu tampilkan animasi.
+            // ----------------------------------------------------------------
+            if (isPaidRedirect && urlOrderId) {
+                document.getElementById('mainContent').style.display = 'flex';
+
+                // Tampilkan UI konfirmasi khusus
+                const instrBody = document.getElementById('instructionBody');
+                if (instrBody) {
+                    instrBody.innerHTML = `
+                        <div style="text-align:center; padding: 32px 0;">
+                            <div style="width:72px;height:72px;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;animation:pulse 1.5s ease-in-out infinite;">
+                                <i class="fa-solid fa-check" style="font-size:2rem;color:#fff;"></i>
+                            </div>
+                            <div style="font-size:1.3rem;font-weight:800;color:#16a34a;margin-bottom:10px;">Pembayaran Dikonfirmasi!</div>
+                            <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.6;">
+                                Xendit telah menerima pembayaran Anda. Sistem sedang memverifikasi dan menyiapkan lisensi...
+                            </p>
+                            <div style="margin-top:24px;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--text-secondary);font-size:0.85rem;">
+                                <div class="spinner" style="width:18px;height:18px;border-width:2px;"></div>
+                                <span>Harap tunggu sebentar...</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Update label timer & orderId jika ada
+                const elOrderId = document.getElementById('orderId');
+                if (elOrderId) elOrderId.textContent = urlOrderId;
+
+                // Polling agresif setiap 1.5 detik (webhook mungkin baru saja tiba)
+                startFastPolling(urlOrderId);
+                return;
+            }
+
+            // ----------------------------------------------------------------
+            // MODE 2: Halaman normal (dari checkout, data ada di localStorage)
+            // ----------------------------------------------------------------
             const rawData = localStorage.getItem('pending_order_data');
             if (!rawData) {
                 window.location.href = '/app/store';
@@ -620,6 +706,78 @@
             })
         }
 
+        // Polling CEPAT — digunakan saat kembali dari redirect Xendit eWallet
+        // Cek setiap 1.5 detik; stop setelah 60 detik jika tidak ada respons
+        function startFastPolling(orderId) {
+            let attempts = 0;
+            const MAX_ATTEMPTS = 40; // 40 × 1.5s = 60 detik
+            let fastInterval = null; // Deklarasi duluan agar poll() bisa mengakses via closure
+
+            const poll = async () => {
+                attempts++;
+                try {
+                    const res = await fetch('/.netlify/functions/public_order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'verify_payment', orderId })
+                    });
+                    const result = await res.json();
+
+                    if (res.ok && (result.status === 'success' || result.key)) {
+                        clearInterval(fastInterval);
+                        localStorage.removeItem('pending_order_data');
+                        showSuccessAnimation(() => {
+                            window.location.href = result.redirect_url || '/app/thankyou';
+                        });
+                        return;
+                    }
+                } catch (e) {
+                    console.log('[FastPolling] Error:', e);
+                }
+
+                if (attempts >= MAX_ATTEMPTS) {
+                    clearInterval(fastInterval);
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Verifikasi Memerlukan Waktu',
+                        text: 'Sistem sedang memproses pembayaran Anda. Lisensi akan dikirim ke email setelah dikonfirmasi.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/app/thankyou';
+                    });
+                }
+            };
+
+            // Langsung poll sekali, lalu setiap 1.5 detik
+            poll();
+            fastInterval = setInterval(poll, 1500);
+        }
+
+        // Tampilkan animasi sukses lalu jalankan callback
+        function showSuccessAnimation(callback) {
+            const instrBody = document.getElementById('instructionBody');
+            if (instrBody) {
+                instrBody.innerHTML = `
+                    <div style="text-align:center; padding: 40px 0;">
+                        <div style="width:80px;height:80px;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 0 0 0 rgba(34,197,94,0.4);animation:successPulse 1s ease-out forwards;">
+                            <i class="fa-solid fa-check" style="font-size:2.2rem;color:#fff;"></i>
+                        </div>
+                        <div style="font-size:1.5rem;font-weight:800;color:#16a34a;margin-bottom:12px;">Pembayaran Berhasil! 🎉</div>
+                        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.6;margin-bottom:20px;">
+                            Lisensi Anda sedang disiapkan dan akan dikirim ke email dalam beberapa saat.
+                        </p>
+                        <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.82rem;color:#16a34a;font-weight:600;">
+                            <i class="fa-solid fa-arrow-right"></i> Mengalihkan ke halaman konfirmasi...
+                        </div>
+                    </div>
+                `;
+            }
+            try {
+                new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3').play().catch(() => {});
+            } catch (e) {}
+            setTimeout(callback, 2500);
+        }
+
         function startPolling(orderId, orderInfo) {
             pollingInterval = setInterval(async () => {
                 try {
@@ -641,15 +799,8 @@
                         clearInterval(pollingInterval);
                         clearInterval(countdownInterval);
                         localStorage.removeItem('pending_order_data');
-
-                        Swal.fire({
-                            title: 'Pembayaran Berhasil!',
-                            text: 'Terima kasih, pembayaran Anda telah kami terima.',
-                            icon: 'success',
-                            confirmButtonText: 'Lanjut',
-                            allowOutsideClick: false
-                        }).then(() => {
-                            window.location.href = result.redirect_url || "/app/thankyou";
+                        showSuccessAnimation(() => {
+                            window.location.href = result.redirect_url || '/app/thankyou';
                         });
                     }
                 } catch (e) {

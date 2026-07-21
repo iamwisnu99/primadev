@@ -232,7 +232,9 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
             checkout_method: 'ONE_TIME_PAYMENT',
             channel_code: 'GOPAY',
             channel_properties: {
-                success_redirect_url: successRedirectUrl,
+                // Redirect kembali ke waiting-payment dengan orderId agar
+                // animasi sukses ditampilkan sebelum masuk ke /thankyou
+                success_redirect_url: `${successRedirectUrl.replace('/app/thankyou', '/app/waiting-payment')}?orderId=${orderId}&paid=true`,
                 failure_redirect_url: failedRedirectUrl,
                 cancel_redirect_url: failedRedirectUrl
             },
@@ -284,7 +286,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
             checkout_method: 'ONE_TIME_PAYMENT',
             channel_code: 'ID_SHOPEEPAY',
             channel_properties: {
-                success_redirect_url: successRedirectUrl,
+                success_redirect_url: `${successRedirectUrl.replace('/app/thankyou', '/app/waiting-payment')}?orderId=${orderId}&paid=true`,
                 failure_redirect_url: failedRedirectUrl,
                 cancel_redirect_url: failedRedirectUrl
             },
@@ -336,7 +338,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
             checkout_method: 'ONE_TIME_PAYMENT',
             channel_code: 'ID_DANA',
             channel_properties: {
-                success_redirect_url: successRedirectUrl,
+                success_redirect_url: `${successRedirectUrl.replace('/app/thankyou', '/app/waiting-payment')}?orderId=${orderId}&paid=true`,
                 failure_redirect_url: failedRedirectUrl,
                 cancel_redirect_url: failedRedirectUrl
             },
