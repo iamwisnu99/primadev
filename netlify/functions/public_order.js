@@ -482,7 +482,6 @@ exports.handler = async (event, context) => {
     const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
     const originUrl = `${proto}://${host}`;
 
-    // Xendit menolak URL localhost — fallback ke domain publik
     const publicOriginForWebhook = isLocalhost
         ? (process.env.PUBLIC_ORIGIN_URL || 'https://apps-primadev.netlify.app')
         : originUrl;
@@ -490,7 +489,6 @@ exports.handler = async (event, context) => {
     const successRedirectUrl = `${originUrl}/app/thankyou`;
     const failedRedirectUrl = `${originUrl}/app/checkout`;
 
-    // Load produk dari Firebase
     if (db) {
         try {
             const prodSnap = await db.ref('products').once('value');
@@ -500,7 +498,6 @@ exports.handler = async (event, context) => {
         }
     }
 
-    // Fallback ke products.json lokal
     if (Object.keys(PRICING_DB).length === 0) {
         try {
             PRICING_DB = require('../../products.json');
@@ -799,66 +796,24 @@ exports.handler = async (event, context) => {
         }
 
         // ==============================================================
+        // ==============================================================
         // ACTION: validate_extension_license
-        // Dipanggil oleh browser extension saat user mengisi form aktivasi.
-        // Memvalidasi: licenseKey ada? name cocok? email cocok? aktif? belum expired?
+        // ⚠️  DIPINDAHKAN ke file terpisah untuk arsitektur yang lebih bersih.
+        // Gunakan endpoint: POST /.netlify/functions/validate-license
+        // Lihat: netlify/functions/validate-license.js
         // ==============================================================
         if (action === 'validate_extension_license') {
-            const { licenseKey, name, email } = body;
-
-            if (!licenseKey || !name || !email) {
-                return { statusCode: 400, headers, body: JSON.stringify({ valid: false, error: 'Data tidak lengkap. Isi Nama, Email, dan License Key.' }) };
-            }
-            if (typeof licenseKey !== 'string' || licenseKey.length > 64) {
-                return { statusCode: 400, headers, body: JSON.stringify({ valid: false, error: 'Format license key tidak valid.' }) };
-            }
-            if (!db) {
-                return { statusCode: 500, headers, body: JSON.stringify({ valid: false, error: 'Koneksi database gagal. Coba lagi.' }) };
-            }
-
-            // Lookup license di Firebase
-            const licSnap = await db.ref(`licenses/${licenseKey}`).once('value');
-            if (!licSnap.exists()) {
-                return { statusCode: 200, headers, body: JSON.stringify({ valid: false, error: 'License key tidak ditemukan.' }) };
-            }
-
-            const lic = licSnap.val();
-
-            // Validasi nama & email (case-insensitive, trim whitespace)
-            const nameMatch = (lic.name || '').toLowerCase().trim() === name.toLowerCase().trim();
-            const emailMatch = (lic.email || '').toLowerCase().trim() === email.toLowerCase().trim();
-
-            if (!nameMatch || !emailMatch) {
-                return { statusCode: 200, headers, body: JSON.stringify({ valid: false, error: 'Nama atau email tidak cocok dengan data pembelian.' }) };
-            }
-
-            // Cek status aktif
-            if (lic.status !== 'active') {
-                const statusMsg = lic.status === 'expired' ? 'Lisensi sudah kedaluwarsa.' : 'Lisensi tidak aktif atau dinonaktifkan.';
-                return { statusCode: 200, headers, body: JSON.stringify({ valid: false, error: statusMsg }) };
-            }
-
-            // Cek expiry date (jika bukan lifetime)
-            if (lic.expiryDate && lic.expiryDate !== 'Seumur Hidup') {
-                const expiry = new Date(lic.expiryDate);
-                if (!isNaN(expiry) && expiry < new Date()) {
-                    // Auto-update status ke expired di Firebase
-                    await db.ref(`licenses/${licenseKey}`).update({ status: 'expired' });
-                    return { statusCode: 200, headers, body: JSON.stringify({ valid: false, error: 'Lisensi Anda sudah kedaluwarsa. Silakan perpanjang.' }) };
-                }
-            }
-
-            // ✅ Semua validasi lulus
-            console.log(`[EXTENSION] License valid: ${licenseKey} untuk ${email}`);
             return {
-                statusCode: 200,
-                headers,
+                statusCode: 301,
+                headers: {
+                    ...headers,
+                    'Location': '/.netlify/functions/validate-license'
+                },
                 body: JSON.stringify({
-                    valid: true,
-                    appName: lic.appName || 'Primadev Extension',
-                    expiryDate: lic.expiryDate || 'Seumur Hidup',
-                    type: lic.type || 'extension',
-                    holderName: lic.name
+                    error: 'Endpoint ini sudah dipindahkan.',
+                    newEndpoint: '/.netlify/functions/validate-license',
+                    method: 'POST',
+                    note: 'Gunakan endpoint baru untuk validasi license extension.'
                 })
             };
         }
