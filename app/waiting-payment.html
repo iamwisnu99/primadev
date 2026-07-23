@@ -343,20 +343,45 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Digunakan pada ikon check saat "Pembayaran Dikonfirmasi" */
         @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 12px rgba(34, 197, 94, 0);
+            }
         }
 
         /* Digunakan pada animasi sukses akhir */
         @keyframes successPulse {
-            0%   { transform: scale(0.6); opacity: 0; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
-            50%  { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 16px rgba(34, 197, 94, 0); }
-            100% { transform: scale(1);   opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+            0% {
+                transform: scale(0.6);
+                opacity: 0;
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+                box-shadow: 0 0 0 16px rgba(34, 197, 94, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
         }
 
         /* Polling indicator di panel kanan */
@@ -371,7 +396,6 @@
             background: var(--bg-page);
             border-radius: 10px;
         }
-
     </style>
 </head>
 
@@ -430,11 +454,8 @@
         let pollingInterval = null;
         let countdownInterval = null;
         let orderData = null;
-        let paymentTabRef = null; // Referensi ke tab Xendit yang dibuka
+        let paymentTabRef = null;
 
-        // Buka tab pembayaran Xendit & simpan referensinya
-        // (Referensi diperlukan agar bisa menutup tab tsb dari sini jika perlu,
-        //  dan agar browser mengizinkan window.close() pada tab tersebut)
         function openPaymentTab(url) {
             if (!url || url === '#') return;
             if (paymentTabRef && !paymentTabRef.closed) {
@@ -449,11 +470,6 @@
             const urlOrderId = urlParams.get('orderId');
             const isPaidRedirect = urlParams.get('paid') === 'true';
 
-            // ----------------------------------------------------------------
-            // MODE 1: Tab kembali dari redirect Xendit (paid=true)
-            // Ini adalah TAB BARU (simulator Xendit). Kirim sinyal ke Tab A
-            // (original waiting-payment) via BroadcastChannel, lalu tutup tab ini.
-            // ----------------------------------------------------------------
             if (isPaidRedirect && urlOrderId) {
                 try {
                     const channel = new BroadcastChannel('xendit_payment_' + urlOrderId);
@@ -461,13 +477,11 @@
                     channel.close();
                 } catch (e) {
                     console.warn('[Tab B] BroadcastChannel tidak didukung:', e);
-                    // Fallback: tulis ke localStorage agar Tab A bisa deteksi
                     try {
                         localStorage.setItem('xendit_paid_' + urlOrderId, Date.now().toString());
-                    } catch (_) {}
+                    } catch (_) { }
                 }
 
-                // Tampilkan pesan singkat lalu tutup tab ini
                 document.body.innerHTML = `
                     <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Inter,sans-serif;background:#f8fffe;">
                         <div style="width:72px;height:72px;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
@@ -479,16 +493,14 @@
                     </div>
                 `;
 
-                // Coba tutup otomatis setelah 2 detik
                 setTimeout(() => {
-                    try { window.close(); } catch (e) {}
+                    try { window.close(); } catch (e) { }
                 }, 2000);
                 return;
             }
 
-            // ----------------------------------------------------------------
+
             // MODE 2: Tab normal (original waiting-payment dari checkout)
-            // ----------------------------------------------------------------
             const rawData = localStorage.getItem('pending_order_data');
             if (!rawData) {
                 window.location.href = '/app/store';
@@ -507,19 +519,13 @@
             renderInstructions(apiData);
             document.getElementById('mainContent').style.display = 'flex';
 
-            // Setup BroadcastChannel listener untuk terima sinyal dari Tab B
             setupPaymentListener(apiData.order_id, orderInfo);
 
             startPolling(apiData.order_id, orderInfo);
             startCountdown(15 * 60);
         }
 
-        // ----------------------------------------------------------------
-        // LISTENER: Tab A menunggu sinyal dari Tab B via BroadcastChannel
-        // atau localStorage sebagai fallback
-        // ----------------------------------------------------------------
         function setupPaymentListener(orderId, orderInfo) {
-            // --- BroadcastChannel (modern browsers) ---
             try {
                 const channel = new BroadcastChannel('xendit_payment_' + orderId);
                 channel.onmessage = (event) => {
@@ -533,7 +539,6 @@
                 console.warn('[Tab A] BroadcastChannel tidak didukung, pakai localStorage fallback');
             }
 
-            // --- localStorage Fallback (Safari lama, dll.) ---
             window.addEventListener('storage', (event) => {
                 if (event.key === 'xendit_paid_' + orderId && event.newValue) {
                     console.log('[Tab A] Menerima sinyal PAYMENT_SUCCESS dari Tab B via localStorage');
@@ -543,13 +548,11 @@
             });
         }
 
-        // Dipanggil saat Tab A menerima konfirmasi dari Tab B
         function onPaymentConfirmed(orderId) {
             clearInterval(pollingInterval);
             clearInterval(countdownInterval);
             localStorage.removeItem('pending_order_data');
-            // Focus ke tab ini (jika user masih di Tab B)
-            try { window.focus(); } catch (e) {}
+            try { window.focus(); } catch (e) { }
             showSuccessAnimation(() => {
                 window.location.href = '/app/thankyou';
             });
@@ -606,7 +609,6 @@
                 let bankLogo = getLogo(bankCode);
                 let copyValue = data.bill_key || vaNumber;
 
-                // Format VA number with spaces for readability (e.g. 8077 1234 5678)
                 const formattedVA = copyValue.replace(/(.{4})/g, '$1 ').trim();
 
                 content = `
@@ -619,11 +621,9 @@
                     <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">Silakan transfer tepat sesuai tagihan ke nomor Virtual Account di atas. Pastikan nama penerima adalah <strong>Primadev</strong>.</p>
                 `;
             } else if (data.payment_type === 'gopay' || data.payment_type === 'shopeepay' || data.payment_type === 'dana') {
-                // --- E-WALLET REDIRECT FLOW (GoPay, ShopeePay, DANA) ---
                 const walletLogo = getLogo(data.payment_type);
                 const walletName = { gopay: 'GoPay', shopeepay: 'ShopeePay', dana: 'DANA' }[data.payment_type] || data.payment_type.toUpperCase();
 
-                // Deteksi perangkat untuk pilih URL yang tepat
                 const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
                 const primaryUrl = isMobile
                     ? (data.mobile_url || data.desktop_url || '#')
@@ -667,7 +667,6 @@
                     ${qrHtml}
                 `;
 
-                // Auto-redirect ke URL pembayaran setelah 2 detik jika di mobile
                 if (isMobile && primaryUrl !== '#') {
                     setTimeout(() => {
                         openPaymentTab(primaryUrl);
@@ -675,7 +674,6 @@
                 }
 
             } else if (data.payment_type === 'ovo') {
-                // --- E-WALLET OVO: PUSH NOTIFICATION (Tidak perlu redirect) ---
                 const mobileNumber = data.mobile_number || '-';
                 content = `
                     <img src="${getLogo('ovo') || 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg'}" height="48" style="margin-bottom: 20px;" alt="OVO">
@@ -763,12 +761,10 @@
             })
         }
 
-        // Polling CEPAT — digunakan saat kembali dari redirect Xendit eWallet
-        // Cek setiap 1.5 detik; stop setelah 60 detik jika tidak ada respons
         function startFastPolling(orderId) {
             let attempts = 0;
-            const MAX_ATTEMPTS = 40; // 40 × 1.5s = 60 detik
-            let fastInterval = null; // Deklarasi duluan agar poll() bisa mengakses via closure
+            const MAX_ATTEMPTS = 40;
+            let fastInterval = null;
 
             const poll = async () => {
                 attempts++;
@@ -805,12 +801,10 @@
                 }
             };
 
-            // Langsung poll sekali, lalu setiap 1.5 detik
             poll();
             fastInterval = setInterval(poll, 1500);
         }
 
-        // Tampilkan animasi sukses lalu jalankan callback
         function showSuccessAnimation(callback) {
             const instrBody = document.getElementById('instructionBody');
             if (instrBody) {
@@ -830,8 +824,8 @@
                 `;
             }
             try {
-                new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3').play().catch(() => {});
-            } catch (e) {}
+                new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3').play().catch(() => { });
+            } catch (e) { }
             setTimeout(callback, 2500);
         }
 

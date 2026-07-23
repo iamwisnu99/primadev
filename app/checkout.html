@@ -491,7 +491,6 @@
             <div id="step1" class="step-section active">
                 <h2 class="section-title">Pilih Durasi Paket</h2>
                 <div id="durationList">
-                    <!-- Populated by JS -->
                 </div>
 
                 <h2 class="section-title" style="margin-top: 32px;">Informasi Penerima</h2>
@@ -604,7 +603,6 @@
                             <div class="radio-circle"></div>
                         </div>
                     </div>
-                    <!-- Input Nomor HP untuk OVO (muncul saat OVO dipilih) -->
                     <div id="ovoPhoneWrap"
                         style="display:none; margin-top:12px; padding:14px 16px; background:#f8f0ff; border-radius:10px; border:1px solid #e9d5ff;">
                         <label
@@ -715,7 +713,7 @@
 
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('mainContent').style.display = 'flex';
-                selectPayment('qris', null); // default
+                selectPayment('qris', null);
             } catch (err) {
                 Swal.fire('Error', 'Gagal memuat data toko.', 'error').then(() => window.location.href = '/app/store');
             }
@@ -830,7 +828,6 @@
                 element.classList.add('selected');
             }
 
-            // Tampilkan / sembunyikan input nomor HP untuk OVO
             const ovoWrap = document.getElementById('ovoPhoneWrap');
             if (ovoWrap) {
                 ovoWrap.style.display = (method === 'ovo') ? 'block' : 'none';
@@ -875,7 +872,6 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Terjadi kesalahan internal.');
 
-                // Save to localStorage and redirect
                 localStorage.setItem('pending_order_data', JSON.stringify({
                     apiData: data,
                     orderInfo: { buyerName, buyerEmail, duration: selectedDuration, productId }

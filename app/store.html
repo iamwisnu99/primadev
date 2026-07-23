@@ -39,7 +39,7 @@
       "image": "https://i.imgur.com/BZ1xLO3.png",
       "@id": "https://apps-primadev.netlify.app/app/store",
       "url": "https://apps-primadev.netlify.app/app/store",
-      "telephone": "+6283863867266",
+      "telephone": "+6283829520561",
       "description": "Toko resmi lisensi software Primadev Digital Technology dengan aktivasi otomatis.",
       "brand": {
         "@type": "Brand",
@@ -62,7 +62,6 @@
 
 
     <style>
-        /* =================== CSS VARIABLES =================== */
         :root {
             --primary: #1865ca;
             --primary-dark: #1456a8;
@@ -819,8 +818,140 @@
         .app-card:nth-child(6) {
             animation-delay: 0.3s;
         }
+
+        /* ===== CATALOG TABS ===== */
+        .catalog-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 22px;
+            padding: 4px;
+            background: #f1f5f9;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            width: fit-content;
+        }
+
+        .catalog-tab {
+            padding: 9px 20px;
+            border: none;
+            border-radius: 11px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .catalog-tab.active {
+            background: #ffffff;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .catalog-tab[data-filter="extension"].active {
+            color: #7c3aed;
+        }
+
+        .catalog-tab:hover:not(.active) {
+            background: rgba(255,255,255,0.6);
+            color: var(--text-primary);
+        }
+
+        /* ===== EXTENSION CARD ===== */
+        .ext-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s both;
+        }
+
+        .ext-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #a855f7, #c084fc);
+        }
+
+        .ext-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 36px rgba(124,58,237,0.12), 0 4px 12px rgba(0,0,0,0.08);
+            border-color: #c4b5fd;
+        }
+
+        .ext-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(124,58,237,0.25);
+        }
+
+        .browser-badges {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .browser-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border: 1px solid;
+        }
+
+        .browser-badge.chrome { background:#e8f0fe; color:#1a56db; border-color:#c3d9ff; }
+        .browser-badge.edge   { background:#e3f2fd; color:#0078D4; border-color:#bde0fc; }
+        .browser-badge.firefox{ background:#fff3e0; color:#e65100; border-color:#ffe0b2; }
+        .browser-badge.all    { background:#f3e8ff; color:#7c3aed; border-color:#ddd6fe; }
+
+        .btn-install-ext {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            border: none;
+            border-radius: 100px;
+            padding: 10px 20px;
+            font-size: 0.83rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-install-ext:hover {
+            background: linear-gradient(135deg, #6d28d9, #5b21b6);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(124,58,237,0.35);
+        }
+
     </style>
 </head>
+
 
 <body>
 
@@ -900,9 +1031,18 @@
 
         <!-- CATALOG SECTION -->
         <div id="catalogSection">
-            <div class="section-title">
-                <i class="fa-solid fa-th-large" style="color: var(--primary); font-size: 0.9rem;"></i>
-                Semua Aplikasi
+
+            <!-- TAB NAVIGATION -->
+            <div class="catalog-tabs" id="catalogTabs">
+                <button class="catalog-tab active" data-filter="all" onclick="switchCatalogTab(this, 'all')">
+                    <i class="fa-solid fa-th-large"></i> Semua
+                </button>
+                <button class="catalog-tab" data-filter="app" onclick="switchCatalogTab(this, 'app')">
+                    <i class="fa-solid fa-mobile-screen"></i> Aplikasi
+                </button>
+                <button class="catalog-tab" data-filter="extension" onclick="switchCatalogTab(this, 'extension')">
+                    <i class="fa-solid fa-puzzle-piece"></i> Extension
+                </button>
             </div>
 
             <div id="appsGrid" class="apps-grid">
@@ -976,11 +1116,9 @@
         </div>
     </footer>
 
-    <!-- Bootstrap (only JS, no CSS) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // ===== PAGE LOAD =====
         document.addEventListener("DOMContentLoaded", () => {
             requestAnimationFrame(() => document.body.classList.add("loaded"));
         });
@@ -1002,6 +1140,7 @@
 
         // ===== STATE =====
         let SERVER_CATALOG = {};
+        let currentCatalogFilter = 'all';
 
         // App icon color cycle
         const iconColors = ['app-icon-blue', 'app-icon-green', 'app-icon-purple', 'app-icon-orange', 'app-icon-teal', 'app-icon-pink'];
@@ -1014,6 +1153,14 @@
                 const data = await response.json();
                 SERVER_CATALOG = data.catalog;
                 renderCatalog();
+
+                // Check URL param for tab
+                const urlParams = new URLSearchParams(window.location.search);
+                const tabParam = urlParams.get('tab');
+                if (tabParam === 'extension') {
+                    const extBtn = document.querySelector('[data-filter="extension"]');
+                    if (extBtn) switchCatalogTab(extBtn, 'extension');
+                }
             } catch (error) {
                 console.error("Init Error", error);
                 document.getElementById('appsGrid').innerHTML = `
@@ -1024,71 +1171,147 @@
             }
         }
 
+        // ===== BUILD BROWSER BADGES =====
+        function buildBrowserBadges(platforms) {
+            if (!platforms) return '';
+            const list = Array.isArray(platforms) ? platforms : [platforms];
+            const isAll = ['chrome','edge','firefox'].every(b => list.includes(b));
+            if (isAll) return `<span class="browser-badge all"><i class="fa-solid fa-earth-asia"></i> All Browser</span>`;
+            const icons = {
+                chrome: `<span class="browser-badge chrome"><i class="fa-brands fa-chrome"></i> Chrome</span>`,
+                edge:   `<span class="browser-badge edge"><i class="fa-brands fa-edge"></i> Edge</span>`,
+                firefox:`<span class="browser-badge firefox"><i class="fa-brands fa-firefox-browser"></i> Firefox</span>`,
+            };
+            return list.map(p => icons[p] || `<span class="browser-badge all">${p}</span>`).join('');
+        }
+
         // ===== RENDER CATALOG =====
-        function renderCatalog() {
+        function renderCatalog(filter = currentCatalogFilter) {
             const container = document.getElementById('appsGrid');
             container.innerHTML = '';
             const keys = Object.keys(SERVER_CATALOG);
 
             keys.forEach((key, index) => {
                 const item = SERVER_CATALOG[key];
-                const colorClass = iconColors[index % iconColors.length];
-                const badgeClass = badgeTypes[index % badgeTypes.length];
-                const minPrice = item.price ? Math.min(...Object.values(item.price)) : 0;
-                const badgeHtml = badgeClass ? `<span class="card-badge ${badgeClass}">${badgeClass === 'badge-popular' ? '🔥 Popular' : badgeClass === 'badge-new' ? '✨ Baru' : '⚡ Hot'}</span>` : '';
+                const itemType = item.type || 'app';
 
-                const html = `
-                <div class="app-card" style="animation-delay: ${index * 0.07}s;">
-                    ${badgeHtml}
-                    <div class="app-card-header">
-                        <div class="app-icon ${colorClass}">
-                            <i class="fa-solid ${item.icon || 'fa-box'}"></i>
-                        </div>
-                        <div class="app-meta">
-                            <div class="app-name">${item.name}</div>
-                            <div class="app-developer">Primadev Digital Technology</div>
-                            <div class="app-rating">
-                                <span class="stars">★★★★★</span>
-                                <span class="rating-text">4.9 (500+ ulasan)</span>
+                // Filter
+                if (filter !== 'all' && itemType !== filter) return;
+
+                if (itemType === 'extension') {
+                    // ===== EXTENSION CARD =====
+                    const platforms = item.platform || ['chrome'];
+                    const browserBadges = buildBrowserBadges(platforms);
+                    const minPrice = item.price ? Math.min(...Object.values(item.price).filter(p => p > 0)) : 0;
+
+                    container.innerHTML += `
+                    <div class="ext-card" style="animation-delay: ${index * 0.07}s;" data-type="extension">
+                        <div style="display:flex; align-items:flex-start; gap:14px; margin-bottom:12px;">
+                            <div class="ext-icon">
+                                <i class="fa-solid ${item.icon || 'fa-puzzle-piece'}"></i>
+                            </div>
+                            <div style="flex:1; min-width:0;">
+                                <div style="font-weight:700; font-size:0.97rem; color:var(--text-primary); margin-bottom:2px;">${item.name}</div>
+                                <div style="font-size:0.76rem; color:var(--text-secondary);">Primadev Digital Technology</div>
+                                <div style="display:flex; align-items:center; gap:4px; margin-top:4px;">
+                                    <span style="color:#f59e0b; font-size:0.8rem;">★★★★★</span>
+                                    <span style="font-size:0.73rem; color:var(--text-tertiary);">4.9</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="app-package">${item.package || 'com.primadev.app'}</div>
-                    <div class="app-description">${item.description || 'Aplikasi premium resmi dari Primadev Digital Technology dengan fitur lengkap dan dukungan penuh.'}</div>
-                    <div class="app-card-screenshots">
-                        <div class="screenshot-pill"></div>
-                        <div class="screenshot-pill"></div>
-                        <div class="screenshot-pill"></div>
-                        <div class="screenshot-pill"></div>
-                    </div>
-                    <div class="app-card-footer">
-                        <div class="price-tag">
-                            <span class="price-label">Mulai dari</span>
-                            <span class="price-amount">Rp ${minPrice.toLocaleString('id-ID')}</span>
-                            <span class="price-period">/bulan</span>
+                        <p style="font-size:0.82rem; color:var(--text-secondary); line-height:1.55; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                            ${item.description || 'Browser extension resmi dari Primadev Digital Technology.'}
+                        </p>
+                        <div class="browser-badges">${browserBadges}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:14px; border-top:1px solid var(--border-light);">
+                            <div>
+                                <div style="font-size:0.7rem; color:var(--text-tertiary); font-weight:500;">Mulai dari</div>
+                                <div style="font-size:1.05rem; font-weight:800; color:#7c3aed;">Rp ${minPrice.toLocaleString('id-ID')}</div>
+                            </div>
+                            <button onclick="goToCheckout('${key}')" class="btn-install-ext">
+                                <i class="fa-solid fa-puzzle-piece"></i> Beli Lisensi
+                            </button>
                         </div>
-                        <button onclick="goToCheckout(\'${key}\')" class="btn-install">
-                            <i class="fa-solid fa-download"></i>
-                            Beli Lisensi
-                        </button>
-                    </div>
-                </div>`;
-                container.innerHTML += html;
+                    </div>`;
+
+                } else {
+                    // ===== APP CARD (existing design) =====
+                    const colorClass = iconColors[index % iconColors.length];
+                    const badgeClass = badgeTypes[index % badgeTypes.length];
+                    const minPrice = item.price ? Math.min(...Object.values(item.price)) : 0;
+                    const badgeHtml = badgeClass ? `<span class="card-badge ${badgeClass}">${badgeClass === 'badge-popular' ? '🔥 Popular' : badgeClass === 'badge-new' ? '✨ Baru' : '⚡ Hot'}</span>` : '';
+
+                    container.innerHTML += `
+                    <div class="app-card" style="animation-delay: ${index * 0.07}s;" data-type="app">
+                        ${badgeHtml}
+                        <div class="app-card-header">
+                            <div class="app-icon ${colorClass}">
+                                <i class="fa-solid ${item.icon || 'fa-box'}"></i>
+                            </div>
+                            <div class="app-meta">
+                                <div class="app-name">${item.name}</div>
+                                <div class="app-developer">Primadev Digital Technology</div>
+                                <div class="app-rating">
+                                    <span class="stars">★★★★★</span>
+                                    <span class="rating-text">4.9 (500+ ulasan)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="app-package">${item.package || 'com.primadev.app'}</div>
+                        <div class="app-description">${item.description || 'Aplikasi premium resmi dari Primadev Digital Technology dengan fitur lengkap dan dukungan penuh.'}</div>
+                        <div class="app-card-screenshots">
+                            <div class="screenshot-pill"></div>
+                            <div class="screenshot-pill"></div>
+                            <div class="screenshot-pill"></div>
+                            <div class="screenshot-pill"></div>
+                        </div>
+                        <div class="app-card-footer">
+                            <div class="price-tag">
+                                <span class="price-label">Mulai dari</span>
+                                <span class="price-amount">Rp ${minPrice.toLocaleString('id-ID')}</span>
+                                <span class="price-period">/bulan</span>
+                            </div>
+                            <button onclick="goToCheckout('${key}')" class="btn-install">
+                                <i class="fa-solid fa-download"></i>
+                                Beli Lisensi
+                            </button>
+                        </div>
+                    </div>`;
+                }
             });
 
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', function () {
-                filterCatalog(this.value);
-            });
+            // Attach search listener once
+            const searchEl = document.getElementById('searchInput');
+            if (searchEl && !searchEl._listenerAttached) {
+                searchEl.addEventListener('input', function () { filterCatalog(this.value); });
+                searchEl._listenerAttached = true;
+            }
+
+            // Empty state
+            if (container.innerHTML.trim() === '') {
+                const label = filter === 'extension' ? 'Browser Extension' : 'Aplikasi';
+                container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+                    <i class="fa-solid fa-box-open" style="font-size:2.5rem;color:var(--text-tertiary);display:block;margin-bottom:16px;"></i>
+                    <p style="color:var(--text-secondary);">Belum ada ${label} tersedia saat ini.</p>
+                </div>`;
+            }
+        }
+
+        // ===== TAB SWITCHING =====
+        function switchCatalogTab(btn, filter) {
+            document.querySelectorAll('.catalog-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            currentCatalogFilter = filter;
+            renderCatalog(filter);
         }
 
         function filterCatalog(query) {
-            const cards = document.querySelectorAll('.app-card');
+            const cards = document.querySelectorAll('.app-card, .ext-card');
             const q = query.toLowerCase().trim();
             cards.forEach(card => {
-                const name = card.querySelector('.app-name')?.textContent.toLowerCase() || '';
+                const name = card.querySelector('.app-name, [style*="font-weight:700"]')?.textContent.toLowerCase() || '';
                 const pkg = card.querySelector('.app-package')?.textContent.toLowerCase() || '';
-                const desc = card.querySelector('.app-description')?.textContent.toLowerCase() || '';
+                const desc = card.querySelector('.app-description, p')?.textContent.toLowerCase() || '';
                 card.style.display = (!q || name.includes(q) || pkg.includes(q) || desc.includes(q)) ? '' : 'none';
             });
         }

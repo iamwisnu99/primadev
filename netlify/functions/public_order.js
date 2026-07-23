@@ -1,12 +1,7 @@
 const admin = require('firebase-admin');
 const fetch = require('node-fetch');
 
-// =====================================================================
-// KONFIGURASI — XENDIT ONLY
-// Midtrans telah dihapus. Semua pembayaran diproses via Xendit.
-// =====================================================================
 const XENDIT_PUBLIC_KEY = process.env.XENDIT_PUBLIC_KEY || '';
-
 const { getPremiumTemplate, getRenewalTemplate } = require('./email_template');
 
 console.log("[INIT] Xendit-Only Mode Aktif");
@@ -17,9 +12,6 @@ if (!process.env.XENDIT_SECRET_KEY) {
     console.error("FATAL: XENDIT_SECRET_KEY belum dikonfigurasi di .env atau Netlify Dashboard!");
 }
 
-// =====================================================================
-// INISIALISASI FIREBASE
-// =====================================================================
 if (!admin.apps.length) {
     let serviceAccount = null;
     try {
@@ -382,7 +374,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
             throw new Error('Nomor HP wajib diisi untuk pembayaran OVO.');
         }
 
-        // Format ke +62xxx
         let formattedPhone = buyerPhone.trim().replace(/\s|-/g, '');
         if (formattedPhone.startsWith('0')) {
             formattedPhone = '+62' + formattedPhone.substring(1);
@@ -528,7 +519,6 @@ exports.handler = async (event, context) => {
                 catalog: PRICING_DB,
                 xenditPublicKey: XENDIT_PUBLIC_KEY,
                 gateway: 'xendit'
-                // [SECURITY] Tidak ada secret key atau isProduction yang diekspos
             })
         };
     }
@@ -553,7 +543,6 @@ exports.handler = async (event, context) => {
         if (action === 'create_transaction') {
             let { appId, duration, buyerName, buyerEmail, buyerPhone, paymentMethod } = body;
 
-            // [SECURITY] Validasi input ketat
             if (!appId || typeof appId !== 'string' || appId.length > 64) {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: "appId tidak valid" }) };
             }
@@ -576,7 +565,6 @@ exports.handler = async (event, context) => {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: "Produk tidak tersedia" }) };
             }
 
-            // [SECURITY] Harga SELALU dari server
             const price = Math.floor(product.price[duration]);
             if (!price || price <= 0) {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: "Harga produk tidak valid" }) };
@@ -630,7 +618,6 @@ exports.handler = async (event, context) => {
         if (action === 'renew_transaction') {
             const { licenseKey, duration, buyerName, buyerEmail, buyerPhone, paymentMethod } = body;
 
-            // [SECURITY] amount dari client DIABAIKAN — selalu dari server
             if (!licenseKey || !duration || !buyerName || !buyerEmail || !paymentMethod) {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: 'Data tidak lengkap untuk renewal' }) };
             }
@@ -641,7 +628,6 @@ exports.handler = async (event, context) => {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: 'Durasi tidak valid' }) };
             }
 
-            // Verifikasi lisensi ada di Firebase
             if (!db) {
                 return { statusCode: 500, headers, body: JSON.stringify({ error: 'Database tidak terhubung' }) };
             }
@@ -651,14 +637,13 @@ exports.handler = async (event, context) => {
             }
             const licenseData = licSnap.val();
 
-            // [SECURITY] Harga dari PRICING_DB server, bukan dari client
             const appId = licenseData.appId;
             const product = PRICING_DB[appId];
             let amount = 0;
             if (product && product.price && product.price[duration]) {
                 amount = Math.floor(product.price[duration]);
             } else {
-                amount = duration === 'yearly' ? 860000 : 80000; // fallback default
+                amount = duration === 'yearly' ? 860000 : 80000;
             }
 
             const orderId = `RENEW-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -719,15 +704,10 @@ exports.handler = async (event, context) => {
             }
             const trxData = trxSnap.val();
 
-            // Jika webhook sudah memproses dan membuat lisensi — return success langsung
             if (trxData.status === 'success') {
                 return { statusCode: 200, headers, body: JSON.stringify({ status: 'success', message: "Already processed" }) };
             }
 
-            // Xendit mungkin mengirim status-status berikut via webhook sebelum diproses jadi 'success':
-            // - eWallet: 'SUCCEEDED', 'PAID', 'COMPLETED'
-            // - VA: 'PAID', 'settlement'
-            // - QRIS: 'COMPLETED'
             const PAID_STATUSES = ['PAID', 'SUCCEEDED', 'COMPLETED', 'settlement', 'capture'];
             const isPaid = PAID_STATUSES.includes(trxData.status);
 
@@ -736,7 +716,6 @@ exports.handler = async (event, context) => {
                 return { statusCode: 200, headers, body: JSON.stringify({ status: 'pending', isSuccess: false }) };
             }
 
-            // Status sudah paid tapi webhook belum sempat proses — proses di sini sebagai fallback
             console.log(`[BACKEND] verify_payment FALLBACK: webhook belum proses, proses sekarang. Status: ${trxData.status}`);
 
             // --- PERPANJANGAN (RENEWAL) ---
@@ -784,7 +763,6 @@ exports.handler = async (event, context) => {
             }
 
             // --- PEMBELIAN BARU ---
-            // [SECURITY] Semua data dari trxData (Firebase), BUKAN dari body client
             const appId = trxData.appId || '';
             const duration = trxData.duration || 'monthly';
             const product = PRICING_DB[appId] || { name: 'Aplikasi', price: {} };
@@ -820,6 +798,71 @@ exports.handler = async (event, context) => {
             return { statusCode: 200, headers, body: JSON.stringify({ status: 'success', key }) };
         }
 
+        // ==============================================================
+        // ACTION: validate_extension_license
+        // Dipanggil oleh browser extension saat user mengisi form aktivasi.
+        // Memvalidasi: licenseKey ada? name cocok? email cocok? aktif? belum expired?
+        // ==============================================================
+        if (action === 'validate_extension_license') {
+            const { licenseKey, name, email } = body;
+
+            if (!licenseKey || !name || !email) {
+                return { statusCode: 400, headers, body: JSON.stringify({ valid: false, error: 'Data tidak lengkap. Isi Nama, Email, dan License Key.' }) };
+            }
+            if (typeof licenseKey !== 'string' || licenseKey.length > 64) {
+                return { statusCode: 400, headers, body: JSON.stringify({ valid: false, error: 'Format license key tidak valid.' }) };
+            }
+            if (!db) {
+                return { statusCode: 500, headers, body: JSON.stringify({ valid: false, error: 'Koneksi database gagal. Coba lagi.' }) };
+            }
+
+            // Lookup license di Firebase
+            const licSnap = await db.ref(`licenses/${licenseKey}`).once('value');
+            if (!licSnap.exists()) {
+                return { statusCode: 200, headers, body: JSON.stringify({ valid: false, error: 'License key tidak ditemukan.' }) };
+            }
+
+            const lic = licSnap.val();
+
+            // Validasi nama & email (case-insensitive, trim whitespace)
+            const nameMatch = (lic.name || '').toLowerCase().trim() === name.toLowerCase().trim();
+            const emailMatch = (lic.email || '').toLowerCase().trim() === email.toLowerCase().trim();
+
+            if (!nameMatch || !emailMatch) {
+                return { statusCode: 200, headers, body: JSON.stringify({ valid: false, error: 'Nama atau email tidak cocok dengan data pembelian.' }) };
+            }
+
+            // Cek status aktif
+            if (lic.status !== 'active') {
+                const statusMsg = lic.status === 'expired' ? 'Lisensi sudah kedaluwarsa.' : 'Lisensi tidak aktif atau dinonaktifkan.';
+                return { statusCode: 200, headers, body: JSON.stringify({ valid: false, error: statusMsg }) };
+            }
+
+            // Cek expiry date (jika bukan lifetime)
+            if (lic.expiryDate && lic.expiryDate !== 'Seumur Hidup') {
+                const expiry = new Date(lic.expiryDate);
+                if (!isNaN(expiry) && expiry < new Date()) {
+                    // Auto-update status ke expired di Firebase
+                    await db.ref(`licenses/${licenseKey}`).update({ status: 'expired' });
+                    return { statusCode: 200, headers, body: JSON.stringify({ valid: false, error: 'Lisensi Anda sudah kedaluwarsa. Silakan perpanjang.' }) };
+                }
+            }
+
+            // ✅ Semua validasi lulus
+            console.log(`[EXTENSION] License valid: ${licenseKey} untuk ${email}`);
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                    valid: true,
+                    appName: lic.appName || 'Primadev Extension',
+                    expiryDate: lic.expiryDate || 'Seumur Hidup',
+                    type: lic.type || 'extension',
+                    holderName: lic.name
+                })
+            };
+        }
+
         // Endpoint legacy diblokir
         if (!action) {
             console.warn("[SECURITY] Request tanpa action diblokir.");
@@ -827,6 +870,7 @@ exports.handler = async (event, context) => {
         }
 
         return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid action" }) };
+
 
     } catch (error) {
         console.error("Backend Error:", error);

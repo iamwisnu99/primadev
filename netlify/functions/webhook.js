@@ -1,13 +1,7 @@
 const admin = require('firebase-admin');
 const fetch = require('node-fetch');
-
-// =====================================================================
-// XENDIT-ONLY WEBHOOK
-// Midtrans telah dihapus. Hanya memproses notifikasi dari Xendit.
-// =====================================================================
 const { getPremiumTemplate, getRenewalTemplate } = require('./email_template');
 
-// Fallback produk lokal (jika Firebase tidak terbaca)
 let PRICING_DB;
 try { PRICING_DB = require('../../products.json'); } catch (e) { PRICING_DB = {}; }
 
@@ -113,7 +107,6 @@ const sendEmail = async (data, isRenewal = false) => {
 // =====================================================================
 exports.handler = async (event) => {
     try {
-        // Biarkan GET request tetap sukses (untuk health check Xendit)
         if (event.httpMethod === 'GET' || !event.body) {
             return { statusCode: 200, body: 'Webhook endpoint active (Xendit-only)' };
         }
@@ -121,11 +114,6 @@ exports.handler = async (event) => {
         const notification = JSON.parse(event.body);
         console.log("[WEBHOOK] Received notification:", JSON.stringify(notification));
 
-        // ----------------------------------------------------------------
-        // VERIFIKASI TOKEN XENDIT
-        // Xendit mengirim header 'x-callback-token' pada setiap notifikasi.
-        // Wajib diverifikasi agar tidak ada pihak lain yang bisa trigger webhook.
-        // ----------------------------------------------------------------
         const xCallbackToken = event.headers?.['x-callback-token']
             || event.headers?.['X-Callback-Token']
             || event.headers?.['x-callback-Token']
@@ -143,16 +131,6 @@ exports.handler = async (event) => {
         // ----------------------------------------------------------------
         // EKSTRAK ORDER ID & STATUS DARI PAYLOAD XENDIT
         //
-        // Xendit mengirim format berbeda tergantung jenis pembayaran:
-        //
-        // [Virtual Account]  → notification.external_id, notification.status
-        // [QRIS]             → notification.reference_id, notification.status
-        // [eWallet]          → notification.data.reference_id, notification.data.status
-        //                      (status di ROOT selalu kosong untuk eWallet!)
-        // [Retail/cStore]    → notification.external_id, notification.status
-        // ----------------------------------------------------------------
-
-        // Deteksi apakah ini payload eWallet (punya wrapper 'data')
         const isEwalletPayload = !!(notification.data && (notification.data.reference_id || notification.data.status));
 
         let orderId = null;
@@ -182,10 +160,9 @@ exports.handler = async (event) => {
         }
 
         // --- Ekstrak status ---
-        // PENTING: Untuk eWallet, status ada di notification.data.status, BUKAN notification.status
         const rawStatus = (
-            (isEwalletPayload ? notification.data?.status : null) // eWallet → cek data.status duluan
-            || notification.status                                 // VA, QRIS, Retail
+            (isEwalletPayload ? notification.data?.status : null)
+            || notification.status
             || ''
         ).toUpperCase();
 
@@ -194,7 +171,6 @@ exports.handler = async (event) => {
         // Normalisasi status Xendit ke status internal
         if (
             rawStatus === 'SUCCEEDED' || rawStatus === 'COMPLETED' || rawStatus === 'PAID' ||
-            // VA yang sudah dibayar: tidak punya 'status', tapi ada bank_code + account_number
             (!rawStatus && notification.bank_code && notification.account_number)
 
         ) {
@@ -206,7 +182,6 @@ exports.handler = async (event) => {
         }
 
         // Label metode pembayaran
-        // (eWallet: data nested; VA & Store: root level)
         const channelCode = notification.data?.channel_code || notification.channel_code || '';
         if (notification.bank_code) {
             paymentType = `Xendit VA (${notification.bank_code})`;
@@ -224,23 +199,19 @@ exports.handler = async (event) => {
         // PROSES JIKA PEMBAYARAN BERHASIL
         // ----------------------------------------------------------------
         if (transactionStatus === 'settlement') {
-            // Ambil data transaksi dari Firebase
             const trxSnap = await db.ref(`transactions/${orderId}`).once('value');
             if (!trxSnap.exists()) {
                 console.error(`[WEBHOOK] ❌ Transaksi ${orderId} tidak ditemukan di Firebase!`);
-                // Return 200 agar Xendit tidak retry terus-menerus
                 return { statusCode: 200, body: 'Transaction not found in DB but acknowledged' };
             }
 
             const trxData = trxSnap.val();
 
-            // Guard: Jangan proses dua kali
             if (trxData.status === 'success') {
                 console.log(`[WEBHOOK] ⏩ Order ${orderId} sudah diproses sebelumnya.`);
                 return { statusCode: 200, body: 'Already processed' };
             }
 
-            // Update status transaksi di Firebase → success
             await db.ref(`transactions/${orderId}`).update({
                 status: 'success',
                 payment_type: paymentType,
@@ -273,7 +244,6 @@ exports.handler = async (event) => {
                 let currentExpiry = currentData.expiryDate ? new Date(currentData.expiryDate) : null;
                 if (currentExpiry && isNaN(currentExpiry.getTime())) currentExpiry = null;
 
-                // Perpanjang dari tanggal expiry saat ini (jika belum kadaluarsa) atau dari hari ini
                 let baseDate = (currentExpiry && currentExpiry > now) ? currentExpiry : now;
                 let newExpiry = new Date(baseDate);
                 if (duration === 'yearly') newExpiry.setFullYear(newExpiry.getFullYear() + 1);
@@ -300,9 +270,9 @@ exports.handler = async (event) => {
 
                 console.log(`[WEBHOOK] ✅ Lisensi ${targetKey} berhasil diperpanjang.`);
 
-            // ----------------------------------------------------------
-            // PEMBELIAN BARU: Buat lisensi baru
-            // ----------------------------------------------------------
+                // ----------------------------------------------------------
+                // PEMBELIAN BARU: Buat lisensi baru
+                // ----------------------------------------------------------
             } else {
                 console.log("[WEBHOOK] 🆕 Membuat lisensi baru...");
 
@@ -347,9 +317,9 @@ exports.handler = async (event) => {
 
             return { statusCode: 200, body: 'OK - Processed' };
 
-        // ----------------------------------------------------------------
-        // PROSES JIKA PEMBAYARAN GAGAL / DIBATALKAN
-        // ----------------------------------------------------------------
+            // ----------------------------------------------------------------
+            // PROSES JIKA PEMBAYARAN GAGAL / DIBATALKAN
+            // ----------------------------------------------------------------
         } else if (transactionStatus === 'cancel') {
             if (orderId) {
                 await db.ref(`transactions/${orderId}`).update({ status: 'failed' });
@@ -358,7 +328,6 @@ exports.handler = async (event) => {
             return { statusCode: 200, body: 'OK - Failed status recorded' };
         }
 
-        // Status lain (pending, dll.) — tidak perlu tindakan
         return { statusCode: 200, body: 'OK - Pending or other status' };
 
     } catch (err) {

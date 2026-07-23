@@ -20,8 +20,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* --- TEMA: BRIGHT GLASSMORPHISM (PREMIUM) --- */
-        /* --- TEMA: BRIGHT GLASSMORPHISM (PREMIUM) --- */
         html,
         body {
             height: 100%;
@@ -381,12 +379,10 @@
             userData = { name, email, phone };
             currentChatId = Date.now() + "_" + Math.floor(Math.random() * 1000);
 
-            // Simpan ke storage dulu agar jika error tetap bisa re-connect
             localStorage.setItem('prima_chat_id', currentChatId);
             localStorage.setItem('prima_user_data', JSON.stringify(userData));
 
             try {
-                // 1. Simpan Info User (Ini trigger ke CS Panel)
                 await set(ref(db, `live_chats/${currentChatId}/info`), {
                     ...userData,
                     status: 'active',
@@ -394,15 +390,10 @@
                     unread: 1
                 });
 
-                // 2. Note: Jangan push 'system' message dari client ke DB 
-                // karena sering diblokir Firebase Rules (Permission Denied).
-                // Kita akan tampilkan sapaan lewat UI saja atau biarkan CS menyapa.
-
                 showChatRoom();
                 initRealtimeListeners();
             } catch (err) {
                 console.error("Start Chat Error:", err);
-                // Jika error tapi ID sudah terbuat, kita tetap coba masuk ke room
                 showChatRoom();
                 initRealtimeListeners();
             }
@@ -414,7 +405,7 @@
             if (!text) return;
 
             const originalText = text;
-            input.value = ''; // Clear input dulu biar cepet
+            input.value = '';
 
             try {
                 await push(ref(db, `live_chats/${currentChatId}/messages`), {
@@ -422,7 +413,6 @@
                 });
                 update(ref(db, `live_chats/${currentChatId}/info`), { last_active: Date.now(), unread_cs: true });
 
-                // Matikan typing indicator
                 set(ref(db, `live_chats/${currentChatId}/typing/user`), false);
                 scrollToBottom();
             } catch (err) {
@@ -472,7 +462,6 @@
             // --- LISTEN IF CS CLOSES THE CHAT ---
             onValue(ref(db, `live_chats/${currentChatId}/info/status`), (snap) => {
                 if (snap.val() === 'closed') {
-                    // Disable Input Area
                     const inputArea = document.querySelector('.chat-input-area');
                     if (inputArea) {
                         inputArea.innerHTML = `<div class="w-100 text-center py-2 text-muted small fw-bold"><i class="fa-solid fa-lock me-2"></i> Percakapan telah berakhir.</div>`;
@@ -480,7 +469,6 @@
                     document.getElementById('statusText').innerText = 'Closed';
                     document.getElementById('statusText').className = 'text-muted small fw-bold';
 
-                    // Show message in chat area if not already there
                     const messagesArea = document.getElementById('messagesArea');
                     if (!document.getElementById('end-msg')) {
                         const div = document.createElement('div');
@@ -518,7 +506,6 @@
         }
 
         function showChatRoom() {
-            // FIX: Ensure elements are correctly targeted
             const login = document.getElementById('loginState');
             const chat = document.getElementById('chatState');
 
@@ -541,7 +528,6 @@
                 confirmButtonColor: '#ef4444'
             }).then(async (r) => {
                 if (r.isConfirmed) {
-                    // Update status in FB first so CS knows
                     try {
                         await update(ref(db, `live_chats/${currentChatId}/info`), { status: 'closed' });
                     } catch (e) { }
@@ -553,8 +539,8 @@
 
         function playSound(type = 'msg') {
             const url = type === 'new'
-                ? "https://cdn.freesound.org/previews/171/171697_2437358-lq.mp3" // Notif antrian baru
-                : "https://cdn.freesound.org/previews/536/536108_11566838-lq.mp3"; // Notif chat baru
+                ? "https://cdn.freesound.org/previews/171/171697_2437358-lq.mp3"
+                : "https://cdn.freesound.org/previews/536/536108_11566838-lq.mp3";
             new Audio(url).play().catch(() => { });
         }
     </script>

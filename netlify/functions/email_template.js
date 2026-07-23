@@ -1,11 +1,10 @@
 // File: netlify/functions/email_template.js
 
 const getPremiumTemplate = (data) => {
-    // URL Website kamu (Ganti kalau beda domain)
     const BASE_URL = "https://apps-primadev.netlify.app";
     const LOGO_URL = "https://i.imgur.com/BZ1xLO3.png";
-    const HOME_URL = "https://apps-primadev.netlify.app/home";
-    const LEGAL_URL = "https://apps-primadev.netlify.app/legal#privacy";
+    const HOME_URL = "https://apps-primadev.netlify.app";
+    const LEGAL_URL = "https://apps-primadev.netlify.app/app/legal/syarat-ketentuan";
 
     return `
     <!DOCTYPE html>

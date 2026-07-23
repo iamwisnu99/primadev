@@ -56,14 +56,14 @@
           },
           "contactPoint": {
             "@type": "ContactPoint",
-            "telephone": "+6283863867266",
+            "telephone": "+6283829520561",
             "contactType": "Customer Support",
-            "email": "wisnu.bussines99@gmail.com",
+            "email": "admin.primadev@gmail.com",
             "availableLanguage": ["Indonesian", "English"]
           },
           "sameAs": [
             "https://www.instagram.com/primadev.id",
-            "https://wa.me/6283863867266?text=Halo%2C%20apa%20benar%20ini%20dari%20PT.%20Primadev%20Digital%20Technology"
+            "https://wa.me/6283829520561?text=Halo%2C%20apa%20benar%20ini%20dari%20PT.%20Primadev%20Digital%20Technology"
           ]
         },
         {
@@ -991,10 +991,9 @@
 
                     Object.keys(catalog).forEach((key, index) => {
                         const item = catalog[key];
-                        // Use original card structure but dynamic data
                         const isWA = item.name.toLowerCase().includes('wa') || item.name.toLowerCase().includes('whatsapp');
-                        const colorHex = isWA ? '#10b981' : '#1865ca'; // Brand Blue
-                        const colorDark = isWA ? '#059669' : '#1456a8'; // Dark Blue
+                        const colorHex = isWA ? '#10b981' : '#1865ca';
+                        const colorDark = isWA ? '#059669' : '#1456a8';
                         const colorRgb = isWA ? '16, 185, 129' : '24, 101, 202';
 
                         const html = `

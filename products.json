@@ -1,5 +1,7 @@
 {
   "struk-spbu": {
+    "type": "app",
+    "platform": "android",
     "name": "Aplikasi Struk SPBU",
     "description": "Cetak struk BBM dengan mudah, akurat, dan mendukung semua jenis printer thermal.",
     "icon": "fa-receipt",
@@ -12,6 +14,8 @@
     }
   },
   "wa-blaster": {
+    "type": "app",
+    "platform": "desktop",
     "name": "WA Blaster Pro",
     "description": "Kirim pesan massal ke ribuan kontak tanpa takut blokir. Cocok untuk marketing.",
     "icon": "fa-whatsapp",

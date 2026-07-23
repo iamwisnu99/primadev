@@ -1,5 +1,4 @@
 export const handler = async (event, context) => {
-    // Return only the public Firebase configuration
     const config = {
         apiKey: process.env.FIREBASE_API_KEY,
         authDomain: process.env.FIREBASE_AUTH_DOMAIN,

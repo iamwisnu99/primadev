@@ -49,7 +49,6 @@
         }
 
         /* ===== SIDEBAR ===== */
-        /* ===== SIDEBAR (Bright & Modern SaaS Theme) ===== */
         .sidebar {
             position: fixed;
             top: 0;
@@ -1249,8 +1248,6 @@
             }
 
             /* hide subtitle on mobile to save space */
-
-            /* Overview bottom grid → stack */
             .overview-bottom-grid {
                 grid-template-columns: 1fr;
                 gap: 14px;
@@ -1364,7 +1361,6 @@
                 gap: 8px;
             }
 
-            /* Keep 3-col for license stats but reduce text size */
             .stats-grid-3 {
                 grid-template-columns: repeat(3, 1fr);
                 gap: 8px;
@@ -1413,6 +1409,9 @@
             <div class="nav-section-label">Produk</div>
             <a class="nav-item" data-tab="apps" onclick="switchTab('apps')">
                 <i class="fa-solid fa-cubes"></i> App Manager
+            </a>
+            <a class="nav-item" data-tab="extensions" onclick="switchTab('extensions')">
+                <i class="fa-solid fa-puzzle-piece"></i> Extension Manager
             </a>
             <div class="nav-section-label">Pengaturan</div>
             <a class="nav-item" data-tab="settings" onclick="switchTab('settings')">
@@ -1643,6 +1642,60 @@
                     <i class="fa-solid fa-cubes"></i>
                     <h4>Belum Ada Aplikasi</h4>
                     <p>Tambahkan aplikasi pertama Anda.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== EXTENSIONS TAB ===== -->
+        <div class="section" id="tab-extensions">
+            <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="stat-card">
+                    <div class="stat-card-icon" style="background:#f3e8ff;color:#9333ea;"><i class="fa-solid fa-puzzle-piece"></i></div>
+                    <div class="stat-card-label">Total Extension</div>
+                    <div class="stat-card-value" id="statExtensions">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-icon" style="background:#fef3c7;color:#d97706;"><i class="fa-brands fa-chrome"></i></div>
+                    <div class="stat-card-label">Browser Support</div>
+                    <div class="stat-card-value" style="font-size:1.1rem;">Multi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-icon ic-green"><i class="fa-solid fa-shield-check"></i></div>
+                    <div class="stat-card-label">Validasi Lisensi</div>
+                    <div class="stat-card-value" style="font-size:1.1rem;">Aktif</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="toolbar">
+                    <div class="search-wrap">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" class="search-input" id="extSearchInput" placeholder="Cari nama extension..." oninput="filterExtensions(this.value)">
+                    </div>
+                    <button class="btn btn-primary" style="margin-left:auto; background: linear-gradient(135deg,#7c3aed,#6d28d9);" onclick="openCreateExtModal()">
+                        <i class="fa-solid fa-plus"></i> Tambah Extension
+                    </button>
+                </div>
+                <div class="table-wrap">
+                    <table id="extTable">
+                        <thead>
+                            <tr>
+                                <th>Extension</th>
+                                <th>Ext ID</th>
+                                <th>Browser</th>
+                                <th>Monthly</th>
+                                <th>Yearly</th>
+                                <th>Lifetime</th>
+                                <th class="text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="extTableBody"></tbody>
+                    </table>
+                </div>
+                <div id="extEmpty" class="empty-state" style="display:none;">
+                    <i class="fa-solid fa-puzzle-piece"></i>
+                    <h4>Belum Ada Extension</h4>
+                    <p>Tambahkan browser extension pertama Anda.</p>
                 </div>
             </div>
         </div>
@@ -1968,7 +2021,90 @@
         </div>
     </div>
 
-    <!-- PWA Toast -->
+    <!-- EXTENSION MODAL -->
+    <div class="modal-overlay" id="extModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title" id="extModalTitle">
+                    <i class="fa-solid fa-puzzle-piece" style="color:#7c3aed;margin-right:8px;"></i>Tambah Extension
+                </div>
+                <button class="modal-close" onclick="closeModal('extModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="extForm" onsubmit="handleExtSubmit(event)">
+                    <input type="hidden" id="extFormId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Extension ID <span style="color:var(--text-3);font-weight:400;">(contoh: wa-blaster-ext)</span></label>
+                            <input type="text" class="form-input" id="extId" required placeholder="wa-blaster-ext">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nama Extension</label>
+                            <input type="text" class="form-input" id="extName" required placeholder="WA Blaster Extension">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea class="form-input" id="extDescription" rows="2" placeholder="Deskripsi singkat extension"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Icon (FontAwesome class)</label>
+                            <input type="text" class="form-input" id="extIcon" placeholder="fa-puzzle-piece">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Store URL (Chrome Web Store)</label>
+                            <input type="url" class="form-input" id="extStoreUrl" placeholder="https://chromewebstore.google.com/...">
+                        </div>
+                    </div>
+
+                    <!-- Browser Platform Selector -->
+                    <div class="form-group">
+                        <label class="form-label">Kompatibel Browser</label>
+                        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;">
+                            <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.2s;font-size:0.87rem;font-weight:600;" id="lbl-chrome">
+                                <input type="checkbox" id="platChrome" value="chrome" onchange="updatePlatformLabel()" style="accent-color:#7c3aed;">
+                                <i class="fa-brands fa-chrome" style="color:#4285F4;font-size:1.1rem;"></i> Chrome
+                            </label>
+                            <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.2s;font-size:0.87rem;font-weight:600;" id="lbl-edge">
+                                <input type="checkbox" id="platEdge" value="edge" onchange="updatePlatformLabel()" style="accent-color:#7c3aed;">
+                                <i class="fa-brands fa-edge" style="color:#0078D4;font-size:1.1rem;"></i> Edge
+                            </label>
+                            <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.2s;font-size:0.87rem;font-weight:600;" id="lbl-firefox">
+                                <input type="checkbox" id="platFirefox" value="firefox" onchange="updatePlatformLabel()" style="accent-color:#7c3aed;">
+                                <i class="fa-brands fa-firefox-browser" style="color:#FF7139;font-size:1.1rem;"></i> Firefox
+                            </label>
+                        </div>
+                        <div style="font-size:0.75rem;color:var(--text-3);margin-top:6px;">Pilih minimal satu browser. Semua yang dipilih = All Browser.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Harga (IDR)</label>
+                        <div class="form-row" style="grid-template-columns:1fr 1fr 1fr;">
+                            <div>
+                                <input type="number" class="form-input" id="extPriceMonthly" placeholder="Monthly">
+                                <div style="font-size:0.72rem;color:var(--text-3);margin-top:4px;">Monthly</div>
+                            </div>
+                            <div>
+                                <input type="number" class="form-input" id="extPriceYearly" placeholder="Yearly">
+                                <div style="font-size:0.72rem;color:var(--text-3);margin-top:4px;">Yearly</div>
+                            </div>
+                            <div>
+                                <input type="number" class="form-input" id="extPriceLifetime" placeholder="Lifetime">
+                                <div style="font-size:0.72rem;color:var(--text-3);margin-top:4px;">Lifetime</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width:100%;justify-content:center;padding:13px;background:linear-gradient(135deg,#7c3aed,#6d28d9);" id="extSubmitBtn">
+                        <i class="fa-solid fa-floppy-disk"></i> Simpan Extension
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <div id="pwaToast"
         style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,0.1);display:none;align-items:center;gap:14px;z-index:9000;min-width:320px;max-width:90vw;">
         <img src="https://i.imgur.com/kT6aLBx.png" style="width:44px;height:44px;border-radius:10px;">
@@ -2076,6 +2212,7 @@
                 populateFilterDropdown();
                 populateAppDropdown();
                 renderAppTable();
+                renderExtTable();
                 updateStats();
             });
         };
@@ -2099,6 +2236,11 @@
             ['statActive', 'statActive2'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = active; });
             ['statIssues', 'statIssues2'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = issues; });
             ['statApps', 'statApps2'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = apps; });
+
+            // Extensions count
+            const extCount = Object.keys(productsData).filter(k => productsData[k]?.type === 'extension').length;
+            const extEl = document.getElementById('statExtensions');
+            if (extEl) extEl.textContent = extCount;
 
             const badge = document.getElementById('sidebarBadge');
             if (badge) badge.textContent = total;
@@ -2279,13 +2421,14 @@
         window.changePage = (dir) => { currentPage += dir; renderTable(); };
         window.changeRows = () => { itemsPerPage = parseInt(document.getElementById('rowsPerPage').value); currentPage = 1; renderTable(); };
 
-        // ===== RENDER APPS =====
+        // ===== RENDER APPS (type: 'app' only) =====
         window.renderAppTable = () => {
             const tbody = document.getElementById('appTableBody');
             const empty = document.getElementById('appEmpty');
             if (!tbody) return;
 
-            const keys = Object.keys(productsData);
+            // Filter: only type === 'app' OR no type (legacy)
+            const keys = Object.keys(productsData).filter(k => !productsData[k].type || productsData[k].type === 'app');
             if (keys.length === 0) {
                 tbody.innerHTML = '';
                 if (empty) empty.style.display = 'block';
@@ -2489,6 +2632,168 @@
                 });
         };
 
+        // ===== CRUD - EXTENSIONS =====
+        window.renderExtTable = () => {
+            const tbody = document.getElementById('extTableBody');
+            const empty = document.getElementById('extEmpty');
+            if (!tbody) return;
+
+            const keys = Object.keys(productsData).filter(k => productsData[k]?.type === 'extension');
+            if (keys.length === 0) {
+                tbody.innerHTML = '';
+                if (empty) empty.style.display = 'block';
+                return;
+            }
+            if (empty) empty.style.display = 'none';
+
+            const browserIcons = {
+                chrome: '<i class="fa-brands fa-chrome" style="color:#4285F4;" title="Chrome"></i>',
+                edge: '<i class="fa-brands fa-edge" style="color:#0078D4;" title="Edge"></i>',
+                firefox: '<i class="fa-brands fa-firefox-browser" style="color:#FF7139;" title="Firefox"></i>'
+            };
+
+            tbody.innerHTML = keys.map(key => {
+                const e = productsData[key];
+                const fmt = (p) => p ? 'Rp ' + Number(p).toLocaleString('id-ID') : '—';
+                const platforms = Array.isArray(e.platform) ? e.platform : [e.platform || 'chrome'];
+                const allBrowsers = ['chrome','edge','firefox'].every(b => platforms.includes(b));
+                const platformHtml = allBrowsers
+                    ? '<span style="font-size:0.78rem;font-weight:600;color:#7c3aed;background:#f3e8ff;padding:3px 8px;border-radius:5px;">All Browser</span>'
+                    : platforms.map(p => browserIcons[p] || p).join(' ');
+
+                return `<tr>
+                <td data-label="Extension">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:36px;height:36px;border-radius:8px;background:#f3e8ff;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:1rem;">
+                            <i class="fa-solid ${e.icon || 'fa-puzzle-piece'}"></i>
+                        </div>
+                        <span style="font-weight:600;">${e.name}</span>
+                    </div>
+                </td>
+                <td data-label="Ext ID"><span style="font-family:monospace;font-size:0.8rem;background:#f1f5f9;padding:3px 8px;border-radius:5px;">${key}</span></td>
+                <td data-label="Browser" style="white-space:nowrap;">${platformHtml}</td>
+                <td data-label="Monthly" style="font-weight:600;">${fmt(e.price?.monthly)}</td>
+                <td data-label="Yearly">${fmt(e.price?.yearly)}</td>
+                <td data-label="Lifetime">${fmt(e.price?.lifetime)}</td>
+                <td data-label="Aksi" style="text-align:right;">
+                    <button class="action-btn btn-edit" onclick="openEditExtModal('${key}')"><i class="fa-solid fa-pen"></i></button>
+                    <button class="action-btn btn-delete" onclick="deleteExtFunc('${key}')"><i class="fa-solid fa-trash-can"></i></button>
+                </td>
+            </tr>`;
+            }).join('');
+        };
+
+        window.filterExtensions = (q) => {
+            q = q.toLowerCase();
+            document.querySelectorAll('#extTableBody tr').forEach(tr => {
+                tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        };
+
+        window.updatePlatformLabel = () => {
+            const selected = ['platChrome','platEdge','platFirefox']
+                .filter(id => document.getElementById(id)?.checked)
+                .map(id => document.getElementById(id).value);
+            // Visual highlight
+            ['lbl-chrome','lbl-edge','lbl-firefox'].forEach(id => {
+                const lbl = document.getElementById(id);
+                if (!lbl) return;
+                const isChecked = lbl.querySelector('input')?.checked;
+                lbl.style.borderColor = isChecked ? '#7c3aed' : 'var(--border)';
+                lbl.style.background = isChecked ? '#f5f3ff' : '';
+            });
+        };
+
+        window.openCreateExtModal = () => {
+            document.getElementById('extForm').reset();
+            document.getElementById('extFormId').value = '';
+            document.getElementById('extId').readOnly = false;
+            document.getElementById('extModalTitle').innerHTML = '<i class="fa-solid fa-plus" style="color:#7c3aed;margin-right:8px;"></i>Tambah Extension';
+            // Reset checkboxes
+            ['platChrome','platEdge','platFirefox'].forEach(id => { document.getElementById(id).checked = false; });
+            ['lbl-chrome','lbl-edge','lbl-firefox'].forEach(id => {
+                const lbl = document.getElementById(id); if (lbl) { lbl.style.borderColor = ''; lbl.style.background = ''; }
+            });
+            showModal('extModal');
+        };
+
+        window.openEditExtModal = (key) => {
+            const e = productsData[key];
+            if (!e) return;
+            document.getElementById('extFormId').value = key;
+            document.getElementById('extId').value = key;
+            document.getElementById('extId').readOnly = true;
+            document.getElementById('extName').value = e.name || '';
+            document.getElementById('extDescription').value = e.description || '';
+            document.getElementById('extIcon').value = e.icon || 'fa-puzzle-piece';
+            document.getElementById('extStoreUrl').value = e.storeUrl || '';
+            document.getElementById('extPriceMonthly').value = e.price?.monthly || '';
+            document.getElementById('extPriceYearly').value = e.price?.yearly || '';
+            document.getElementById('extPriceLifetime').value = e.price?.lifetime || '';
+
+            const platforms = Array.isArray(e.platform) ? e.platform : [e.platform || 'chrome'];
+            document.getElementById('platChrome').checked = platforms.includes('chrome');
+            document.getElementById('platEdge').checked = platforms.includes('edge');
+            document.getElementById('platFirefox').checked = platforms.includes('firefox');
+            updatePlatformLabel();
+
+            document.getElementById('extModalTitle').innerHTML = '<i class="fa-solid fa-pen" style="color:#7c3aed;margin-right:8px;"></i>Edit Extension';
+            showModal('extModal');
+        };
+
+        window.handleExtSubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('extSubmitBtn');
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+            try {
+                const id = document.getElementById('extId').value.trim();
+                if (!id) throw new Error('Extension ID wajib diisi');
+
+                const platforms = ['platChrome','platEdge','platFirefox']
+                    .filter(pid => document.getElementById(pid)?.checked)
+                    .map(pid => document.getElementById(pid).value);
+
+                if (platforms.length === 0) throw new Error('Pilih minimal satu browser yang didukung.');
+
+                const monthly = parseInt(document.getElementById('extPriceMonthly').value) || 0;
+                const yearly = parseInt(document.getElementById('extPriceYearly').value) || 0;
+                const lifetime = parseInt(document.getElementById('extPriceLifetime').value) || 0;
+                if (!monthly && !yearly && !lifetime) throw new Error('Isi minimal satu harga.');
+
+                const data = {
+                    type: 'extension',
+                    platform: platforms,
+                    name: document.getElementById('extName').value.trim(),
+                    description: document.getElementById('extDescription').value.trim() || 'Official Browser Extension',
+                    icon: document.getElementById('extIcon').value.trim() || 'fa-puzzle-piece',
+                    storeUrl: document.getElementById('extStoreUrl').value.trim() || '',
+                    price: { monthly, yearly, lifetime },
+                    updatedAt: Date.now()
+                };
+
+                await set(ref(db, 'products/' + id), data);
+                closeModal('extModal');
+                Swal.fire({ icon: 'success', title: 'Extension Tersimpan!', timer: 1500, showConfirmButton: false });
+            } catch (err) {
+                Swal.fire('Gagal', err.message, 'error');
+            } finally {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+            }
+        };
+
+        window.deleteExtFunc = (id) => {
+            Swal.fire({ title: 'Hapus Extension?', text: 'Data extension akan hilang permanen.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Hapus!' })
+                .then(async (r) => {
+                    if (r.isConfirmed) {
+                        try { await remove(ref(db, 'products/' + id)); Swal.fire({ icon: 'success', title: 'Terhapus!', timer: 1500, showConfirmButton: false }); }
+                        catch (err) { Swal.fire('Gagal', err.message, 'error'); }
+                    }
+                });
+        };
+
         // ===== PRICE HELPER =====
         window.updatePriceAndExpiry = () => {
             const appId = document.getElementById('createAppId').value;
@@ -2626,7 +2931,7 @@
             document.getElementById('tab-' + tab)?.classList.add('active');
             document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
 
-            const titles = { overview: 'Overview <span>/ Dashboard</span>', licenses: 'License Manager <span>/ Kelola Lisensi</span>', apps: 'App Manager <span>/ Kelola Produk</span>', settings: 'Payment Gateway <span>/ Pengaturan Gateway</span>' };
+            const titles = { overview: 'Overview <span>/ Dashboard</span>', licenses: 'License Manager <span>/ Kelola Lisensi</span>', apps: 'App Manager <span>/ Kelola Produk</span>', extensions: 'Extension Manager <span>/ Kelola Browser Extension</span>', settings: 'Payment Gateway <span>/ Pengaturan Gateway</span>' };
             document.getElementById('topbarTitle').innerHTML = titles[tab] || tab;
 
             closeSidebar();
