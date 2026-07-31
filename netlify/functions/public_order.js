@@ -4,13 +4,12 @@ const fetch = require('node-fetch');
 const XENDIT_PUBLIC_KEY = process.env.XENDIT_PUBLIC_KEY || '';
 const { getPremiumTemplate, getRenewalTemplate } = require('./email_template');
 
-console.log("[INIT] Xendit-Only Mode Aktif");
-console.log("[INIT] - XENDIT_SECRET_KEY set:", !!process.env.XENDIT_SECRET_KEY);
-console.log("[INIT] - XENDIT_PUBLIC_KEY set:", !!XENDIT_PUBLIC_KEY);
-
-if (!process.env.XENDIT_SECRET_KEY) {
-    console.error("FATAL: XENDIT_SECRET_KEY belum dikonfigurasi di .env atau Netlify Dashboard!");
-}
+console.log("[INIT] Mode gateway ganda aktif: Xendit + Midtrans");
+console.log("[INIT] Status XENDIT_SECRET_KEY:", !!process.env.XENDIT_SECRET_KEY);
+console.log("[INIT] Status XENDIT_PUBLIC_KEY:", !!XENDIT_PUBLIC_KEY);
+console.log("[INIT] Status MIDTRANS_SERVER_KEY:", !!process.env.MIDTRANS_SERVER_KEY);
+console.log("[INIT] Status MIDTRANS_CLIENT_KEY:", !!process.env.MIDTRANS_CLIENT_KEY);
+console.log("[INIT] Mode Midtrans:", process.env.MIDTRANS_IS_PRODUCTION === 'true' ? 'PRODUCTION' : 'SANDBOX (default)');
 
 if (!admin.apps.length) {
     let serviceAccount = null;
@@ -33,11 +32,11 @@ if (!admin.apps.length) {
                 const localKey = '../../strukmaker-3327d110-firebase-adminsdk-fbsvc-28cd459e84.json';
                 serviceAccount = require(localKey);
             } catch (e) {
-                console.log("[INIT] File JSON lokal tidak ditemukan.");
+                console.log("[INIT] File konfigurasi Firebase lokal tidak ditemukan.");
             }
         }
     } catch (err) {
-        console.error("[INIT ERROR] Gagal memproses kredensial:", err.message);
+        console.error("[INIT] Gagal memproses kredensial Firebase:", err.message);
     }
 
     const dbUrl = process.env.FIREBASE_DATABASE_URL || "https://strukmaker-3327d110-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -47,12 +46,12 @@ if (!admin.apps.length) {
                 credential: admin.credential.cert(serviceAccount),
                 databaseURL: dbUrl
             });
-            console.log("✅ Firebase Admin initialized successfully");
+            console.log("[INIT] Firebase Admin berhasil diinisialisasi.");
         } catch (initErr) {
-            console.error("❌ Firebase Admin initialization failed:", initErr.message);
+            console.error("[INIT] Inisialisasi Firebase Admin gagal:", initErr.message);
         }
     } else {
-        console.error("❌ Missing or invalid serviceAccount credentials");
+        console.error("[INIT] Kredensial Firebase tidak tersedia atau tidak valid.");
     }
 }
 
@@ -106,7 +105,7 @@ const sendEmail = async (data, isRenewal = false) => {
     try {
         await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(emailPayload) });
     } catch (e) {
-        console.error("[EMAIL ERROR]", e);
+        console.error("[EMAIL] Gagal mengirim email:", e);
     }
 };
 
@@ -128,7 +127,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         'api-version': '2022-07-31'
     };
 
-    console.log(`[XENDIT] Executing charge | OrderID: ${orderId} | Method: ${paymentMethod} | Amount: ${grossAmount}`);
+    console.log(`[XENDIT] Memproses charge | OrderID: ${orderId} | Metode: ${paymentMethod} | Jumlah: ${grossAmount}`);
 
     // Helper: format pesan error Xendit
     const formatXenditError = (data, defaultMsg) => {
@@ -140,9 +139,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         return errMsg;
     };
 
-    // ------------------------------------------------------------------
-    // 1. VIRTUAL ACCOUNT (BCA, BNI, BRI, Permata, Mandiri, CIMB)
-    // ------------------------------------------------------------------
+    // 1. VIRTUAL ACCOUNT
     if (['bca', 'bni', 'bri', 'permata', 'mandiri', 'cimb'].includes(paymentMethod)) {
         const bankCode = paymentMethod.toUpperCase();
         const expirationDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
@@ -164,7 +161,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         });
         const data = await res.json();
         if (!res.ok) {
-            console.error(`[XENDIT VA ERROR] Response:`, JSON.stringify(data));
+            console.error(`[XENDIT] Gagal membuat Virtual Account | Respons:`, JSON.stringify(data));
             throw new Error(formatXenditError(data, "Gagal membuat Virtual Account Xendit."));
         }
 
@@ -178,9 +175,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // ------------------------------------------------------------------
     // 2. QRIS
-    // ------------------------------------------------------------------
     if (paymentMethod === 'qris') {
         const qrisBody = {
             reference_id: orderId,
@@ -196,7 +191,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         });
         const data = await res.json();
         if (!res.ok) {
-            console.error(`[XENDIT QRIS ERROR] Response:`, JSON.stringify(data));
+            console.error(`[XENDIT] Gagal membuat QRIS | Respons:`, JSON.stringify(data));
             throw new Error(formatXenditError(data, "Gagal membuat QRIS Xendit."));
         }
 
@@ -213,9 +208,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // ------------------------------------------------------------------
-    // 3. E-WALLET: GoPay (Redirect Flow)
-    // ------------------------------------------------------------------
+    // 3. E-WALLET: GoPay
     if (paymentMethod === 'gopay') {
         const ewalletBody = {
             reference_id: orderId,
@@ -224,8 +217,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
             checkout_method: 'ONE_TIME_PAYMENT',
             channel_code: 'GOPAY',
             channel_properties: {
-                // Redirect kembali ke waiting-payment dengan orderId agar
-                // animasi sukses ditampilkan sebelum masuk ke /thankyou
                 success_redirect_url: `${successRedirectUrl.replace('/app/thankyou', '/app/waiting-payment')}?orderId=${orderId}&paid=true`,
                 failure_redirect_url: failedRedirectUrl,
                 cancel_redirect_url: failedRedirectUrl
@@ -241,11 +232,11 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         });
         const data = await res.json();
         if (!res.ok) {
-            console.error(`[XENDIT GOPAY ERROR] Response:`, JSON.stringify(data));
+            console.error(`[XENDIT] Gagal membuat pembayaran GoPay | Respons:`, JSON.stringify(data));
             throw new Error(formatXenditError(data, 'Gagal membuat pembayaran GoPay Xendit.'));
         }
 
-        console.log('[XENDIT GOPAY] Actions:', JSON.stringify(data.actions));
+        console.log('[XENDIT] GoPay actions diterima:', JSON.stringify(data.actions));
         const mobileUrl = data.actions?.mobile_deeplink_checkout_url || data.actions?.mobile_web_checkout_url || '';
         const desktopUrl = data.actions?.desktop_web_checkout_url || '';
         const qrUrl = data.actions?.qr_checkout_url || '';
@@ -267,9 +258,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // ------------------------------------------------------------------
-    // 4. E-WALLET: ShopeePay (Redirect Flow)
-    // ------------------------------------------------------------------
+    // 4. E-WALLET: ShopeePay
     if (paymentMethod === 'shopeepay') {
         const ewalletBody = {
             reference_id: orderId,
@@ -293,11 +282,11 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         });
         const data = await res.json();
         if (!res.ok) {
-            console.error(`[XENDIT SHOPEEPAY ERROR] Response:`, JSON.stringify(data));
+            console.error(`[XENDIT] Gagal membuat pembayaran ShopeePay | Respons:`, JSON.stringify(data));
             throw new Error(formatXenditError(data, 'Gagal membuat pembayaran ShopeePay Xendit.'));
         }
 
-        console.log('[XENDIT SHOPEEPAY] Actions:', JSON.stringify(data.actions));
+        console.log('[XENDIT] ShopeePay actions diterima:', JSON.stringify(data.actions));
         const mobileUrl = data.actions?.mobile_deeplink_checkout_url || data.actions?.mobile_web_checkout_url || '';
         const desktopUrl = data.actions?.desktop_web_checkout_url || '';
         const qrUrl = data.actions?.qr_checkout_url || '';
@@ -319,9 +308,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // ------------------------------------------------------------------
-    // 5. E-WALLET: DANA (Redirect Flow)
-    // ------------------------------------------------------------------
+    // 5. E-WALLET: DANA
     if (paymentMethod === 'dana') {
         const ewalletBody = {
             reference_id: orderId,
@@ -345,11 +332,11 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         });
         const data = await res.json();
         if (!res.ok) {
-            console.error(`[XENDIT DANA ERROR] Response:`, JSON.stringify(data));
+            console.error(`[XENDIT] Gagal membuat pembayaran DANA | Respons:`, JSON.stringify(data));
             throw new Error(formatXenditError(data, 'Gagal membuat pembayaran DANA Xendit.'));
         }
 
-        console.log('[XENDIT DANA] Actions:', JSON.stringify(data.actions));
+        console.log('[XENDIT] DANA actions diterima:', JSON.stringify(data.actions));
         const mobileUrl = data.actions?.mobile_deeplink_checkout_url || data.actions?.mobile_web_checkout_url || '';
         const desktopUrl = data.actions?.desktop_web_checkout_url || '';
 
@@ -366,9 +353,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // ------------------------------------------------------------------
-    // 6. E-WALLET: OVO (Push Notification — wajib nomor HP)
-    // ------------------------------------------------------------------
+    // 6. E-WALLET: OVO
     if (paymentMethod === 'ovo') {
         if (!buyerPhone || buyerPhone.trim() === '') {
             throw new Error('Nomor HP wajib diisi untuk pembayaran OVO.');
@@ -399,7 +384,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         });
         const data = await res.json();
         if (!res.ok) {
-            console.error(`[XENDIT OVO ERROR] Response:`, JSON.stringify(data));
+            console.error(`[XENDIT] Gagal membuat pembayaran OVO | Respons:`, JSON.stringify(data));
             throw new Error(formatXenditError(data, 'Gagal membuat pembayaran OVO Xendit.'));
         }
 
@@ -415,9 +400,7 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // ------------------------------------------------------------------
-    // 7. GERAI RETAIL: Indomaret & Alfamart
-    // ------------------------------------------------------------------
+    // 7. GERAI RETAIL
     if (paymentMethod === 'indomaret' || paymentMethod === 'alfamart') {
         const cstoreBody = {
             external_id: orderId,
@@ -448,14 +431,261 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    throw new Error(`Metode pembayaran "${paymentMethod}" belum didukung.`);
+    throw new Error(`Metode pembayaran "${paymentMethod}" belum didukung oleh Xendit.`);
+};
+
+// =====================================================================
+// HELPER: BACA ACTIVE GATEWAY DARI FIREBASE SETTINGS
+// =====================================================================
+const getActiveGateway = async (db) => {
+    if (!db) return 'xendit';
+    try {
+        const snap = await db.ref('settings/payment_gateway/active_gateway').once('value');
+        const val = snap.val();
+        return (val === 'midtrans' || val === 'xendit') ? val : 'xendit';
+    } catch (err) {
+        console.error('[GATEWAY] Gagal membaca pengaturan gateway dari Firebase, menggunakan xendit sebagai fallback:', err.message);
+        return 'xendit';
+    }
+};
+
+// =====================================================================
+// MIDTRANS CORE API CHARGE ADAPTER
+// =====================================================================
+const executeMidtransCharge = async (payload, serverKey, isProduction, finishUrl) => {
+    if (!serverKey) {
+        throw new Error('MIDTRANS_SERVER_KEY belum dikonfigurasi di file .env server.');
+    }
+
+    const { orderId, grossAmount, buyerName, buyerEmail, buyerPhone, paymentMethod, productName, appId } = payload;
+
+    const baseUrl = isProduction
+        ? 'https://api.midtrans.com/v2/charge'
+        : 'https://api.sandbox.midtrans.com/v2/charge';
+
+    const authHeader = 'Basic ' + Buffer.from(serverKey + ':').toString('base64');
+    const reqHeaders = {
+        'Authorization': authHeader,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    };
+
+    console.log(`[MIDTRANS] Memproses charge | OrderID: ${orderId} | Metode: ${paymentMethod} | Jumlah: ${grossAmount} | Lingkungan: ${isProduction ? 'PRODUCTION' : 'SANDBOX'}`);
+
+    const transactionDetails = {
+        order_id: orderId,
+        gross_amount: Number(grossAmount)
+    };
+
+    const nameParts = (buyerName || 'Pelanggan').split(' ');
+    const customerDetails = {
+        first_name: nameParts[0] || 'Pelanggan',
+        last_name: nameParts.slice(1).join(' ') || '',
+        email: buyerEmail || 'customer@primadev.com',
+        phone: buyerPhone || ''
+    };
+
+    const itemDetails = [{
+        id: appId || 'primadev-license',
+        price: Number(grossAmount),
+        quantity: 1,
+        name: (productName || 'Lisensi Primadev').substring(0, 50)
+    }];
+
+    const formatMidtransError = (data, defaultMsg) => {
+        return data.status_message ||
+            (Array.isArray(data.error_messages) ? data.error_messages.join(', ') : null) ||
+            defaultMsg;
+    };
+
+    const chargeAndCheck = async (body, errContext) => {
+        const res = await fetch(baseUrl, { method: 'POST', headers: reqHeaders, body: JSON.stringify(body) });
+        const data = await res.json();
+        const isOk = ['200', '201'].includes(String(data.status_code));
+        if (!isOk) {
+            console.error(`[MIDTRANS] Gagal memproses ${errContext} | Respons:`, JSON.stringify(data));
+            throw new Error(formatMidtransError(data, `Gagal membuat ${errContext} via Midtrans.`));
+        }
+        return data;
+    };
+
+    if (['bca', 'bni', 'bri', 'permata'].includes(paymentMethod)) {
+        const data = await chargeAndCheck({
+            payment_type: 'bank_transfer',
+            transaction_details: transactionDetails,
+            customer_details: customerDetails,
+            item_details: itemDetails,
+            bank_transfer: { bank: paymentMethod }
+        }, `VA ${paymentMethod.toUpperCase()}`);
+
+        const vaNumber = data.va_numbers?.[0]?.va_number || data.permata_va_number || '';
+        return {
+            order_id: orderId, gross_amount: grossAmount,
+            payment_type: 'bank_transfer',
+            va_numbers: [{ bank: paymentMethod, va_number: vaNumber }],
+            transaction_status: 'pending', gateway: 'midtrans'
+        };
+    }
+
+    if (paymentMethod === 'mandiri') {
+        const data = await chargeAndCheck({
+            payment_type: 'echannel',
+            transaction_details: transactionDetails,
+            customer_details: customerDetails,
+            item_details: itemDetails,
+            echannel: {
+                bill_info1: 'Pembayaran Lisensi',
+                bill_info2: (productName || 'Primadev').substring(0, 20)
+            }
+        }, 'VA Mandiri');
+
+        return {
+            order_id: orderId, gross_amount: grossAmount,
+            payment_type: 'bank_transfer',
+            va_numbers: [{ bank: 'mandiri', va_number: data.bill_key || '' }],
+            biller_code: data.biller_code || '',
+            transaction_status: 'pending', gateway: 'midtrans'
+        };
+    }
+
+    if (paymentMethod === 'qris') {
+        const data = await chargeAndCheck({
+            payment_type: 'qris',
+            transaction_details: transactionDetails,
+            customer_details: customerDetails,
+            item_details: itemDetails,
+            qris: { acquirer: 'gopay' }
+        }, 'QRIS');
+
+        const qrString = data.qr_string || '';
+        const qrDisplayUrl = qrString
+            ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrString)}`
+            : '';
+
+        return {
+            order_id: orderId, gross_amount: grossAmount,
+            payment_type: 'qris',
+            actions: [{ name: 'generate-qr-code', url: qrDisplayUrl }],
+            qr_string: qrString,
+            transaction_status: 'pending', gateway: 'midtrans'
+        };
+    }
+
+    if (paymentMethod === 'gopay') {
+        const data = await chargeAndCheck({
+            payment_type: 'gopay',
+            transaction_details: transactionDetails,
+            customer_details: customerDetails,
+            item_details: itemDetails,
+            gopay: { enable_callback: true, callback_url: finishUrl }
+        }, 'GoPay');
+
+        const actions = data.actions || [];
+        const qrAction = actions.find(a => a.name === 'generate-qr-code');
+        const deeplinkAction = actions.find(a => a.name === 'deeplink-redirect');
+        const mobileUrl = deeplinkAction?.url || '';
+        const qrUrl = qrAction?.url || '';
+
+        return {
+            order_id: orderId, gross_amount: grossAmount,
+            payment_type: 'gopay', is_redirect_required: true,
+            mobile_url: mobileUrl, desktop_url: '', qr_url: qrUrl,
+            actions: [
+                ...(mobileUrl ? [{ name: 'deeplink-redirect', url: mobileUrl }] : []),
+                ...(qrUrl ? [{ name: 'generate-qr-code', url: qrUrl }] : [])
+            ],
+            transaction_status: 'pending', gateway: 'midtrans'
+        };
+    }
+
+    if (paymentMethod === 'shopeepay') {
+        const data = await chargeAndCheck({
+            payment_type: 'shopeepay',
+            transaction_details: transactionDetails,
+            customer_details: customerDetails,
+            item_details: itemDetails,
+            shopeepay: { callback_url: finishUrl }
+        }, 'ShopeePay');
+
+        const deeplinkAction = (data.actions || []).find(a => a.name === 'deeplink-redirect');
+        const mobileUrl = deeplinkAction?.url || '';
+
+        return {
+            order_id: orderId, gross_amount: grossAmount,
+            payment_type: 'shopeepay', is_redirect_required: true,
+            mobile_url: mobileUrl, desktop_url: '', qr_url: '',
+            actions: mobileUrl ? [{ name: 'deeplink-redirect', url: mobileUrl }] : [],
+            transaction_status: 'pending', gateway: 'midtrans'
+        };
+    }
+
+    if (paymentMethod === 'dana') {
+        const data = await chargeAndCheck({
+            payment_type: 'dana',
+            transaction_details: transactionDetails,
+            customer_details: customerDetails,
+            item_details: itemDetails,
+            dana: { callback_url: finishUrl }
+        }, 'DANA');
+
+        const deeplinkAction = (data.actions || []).find(a => a.name === 'deeplink-redirect');
+        const mobileUrl = deeplinkAction?.url || '';
+
+        return {
+            order_id: orderId, gross_amount: grossAmount,
+            payment_type: 'dana', is_redirect_required: true,
+            mobile_url: mobileUrl, desktop_url: '',
+            actions: mobileUrl ? [{ name: 'deeplink-redirect', url: mobileUrl }] : [],
+            transaction_status: 'pending', gateway: 'midtrans'
+        };
+    }
+
+    if (paymentMethod === 'ovo') {
+        if (!buyerPhone) throw new Error('Nomor HP wajib diisi untuk pembayaran OVO.');
+        let formattedPhone = buyerPhone.trim().replace(/\s|-/g, '');
+        if (formattedPhone.startsWith('0')) formattedPhone = '+62' + formattedPhone.substring(1);
+        else if (!formattedPhone.startsWith('+')) formattedPhone = '+62' + formattedPhone;
+
+        await chargeAndCheck({
+            payment_type: 'ovo',
+            transaction_details: transactionDetails,
+            customer_details: { ...customerDetails, phone: formattedPhone },
+            item_details: itemDetails
+        }, 'OVO');
+
+        return {
+            order_id: orderId, gross_amount: grossAmount,
+            payment_type: 'ovo', is_redirect_required: false,
+            mobile_number: formattedPhone, actions: [],
+            transaction_status: 'pending', gateway: 'midtrans'
+        };
+    }
+
+    if (paymentMethod === 'indomaret' || paymentMethod === 'alfamart') {
+        const storeName = paymentMethod === 'indomaret' ? 'Indomaret' : 'Alfamart';
+        const data = await chargeAndCheck({
+            payment_type: 'cstore',
+            transaction_details: transactionDetails,
+            customer_details: customerDetails,
+            item_details: itemDetails,
+            cstore: { store: storeName, message: 'Pembayaran Lisensi Primadev' }
+        }, storeName);
+
+        return {
+            order_id: orderId, gross_amount: grossAmount,
+            payment_type: 'cstore', store: paymentMethod,
+            payment_code: data.payment_code || '',
+            transaction_status: 'pending', gateway: 'midtrans'
+        };
+    }
+
+    throw new Error(`Metode pembayaran "${paymentMethod}" belum didukung oleh Midtrans.`);
 };
 
 // =====================================================================
 // MAIN HANDLER
 // =====================================================================
 exports.handler = async (event, context) => {
-    // CORS — dibatasi ke domain resmi
     const allowedOrigins = [
         'https://apps-primadev.netlify.app',
         'https://primadev.netlify.app',
@@ -476,7 +706,6 @@ exports.handler = async (event, context) => {
     const db = getDb();
     let PRICING_DB = {};
 
-    // Hitung URL webhook & redirect secara dinamis
     const host = event.headers.host || event.headers.Host || 'apps-primadev.netlify.app';
     const proto = event.headers['x-forwarded-proto'] || 'https';
     const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
@@ -494,28 +723,29 @@ exports.handler = async (event, context) => {
             const prodSnap = await db.ref('products').once('value');
             if (prodSnap.exists()) PRICING_DB = prodSnap.val();
         } catch (e) {
-            console.error("Failed to load products from Firebase:", e.message);
+            console.error("[BACKEND] Gagal memuat produk dari Firebase:", e.message);
         }
     }
 
     if (Object.keys(PRICING_DB).length === 0) {
         try {
             PRICING_DB = require('../../products.json');
-            console.log("✅ Using fallback local products.json");
+            console.log("[BACKEND] Menggunakan fallback products.json dari lokal.");
         } catch (e) {
-            console.error("❌ Failed to load local products.json fallback:", e.message);
+            console.error("[BACKEND] Gagal memuat fallback products.json:", e.message);
         }
     }
 
-    // GET — Katalog & config publik
     if (event.httpMethod === 'GET') {
+        const activeGw = await getActiveGateway(db);
         return {
             statusCode: 200,
             headers,
             body: JSON.stringify({
                 catalog: PRICING_DB,
                 xenditPublicKey: XENDIT_PUBLIC_KEY,
-                gateway: 'xendit'
+                midtransClientKey: process.env.MIDTRANS_CLIENT_KEY || '',
+                activeGateway: activeGw
             })
         };
     }
@@ -532,7 +762,7 @@ exports.handler = async (event, context) => {
         const body = JSON.parse(event.body || '{}');
         const { action } = body;
 
-        console.log(`[BACKEND] Action: ${action || 'None'} | Method: ${event.httpMethod}`);
+        console.log(`[BACKEND] Permintaan masuk | Action: ${action || 'tidak ada'} | Metode: ${event.httpMethod}`);
 
         // ==============================================================
         // ACTION: create_transaction (Checkout / Pembelian Baru)
@@ -541,14 +771,20 @@ exports.handler = async (event, context) => {
             let { appId, duration, buyerName, buyerEmail, buyerPhone, paymentMethod } = body;
 
             if (!appId || typeof appId !== 'string' || appId.length > 64) {
-                return { statusCode: 400, headers, body: JSON.stringify({ error: "appId tidak valid" }) };
+                return { statusCode: 400, headers, body: JSON.stringify({ error: "Format appId tidak valid" }) };
             }
             if (!duration || !['monthly', 'yearly', 'lifetime'].includes(duration)) {
-                return { statusCode: 400, headers, body: JSON.stringify({ error: "Durasi tidak valid" }) };
+                return { statusCode: 400, headers, body: JSON.stringify({ error: "Durasi tidak valid. Harus: monthly, yearly, atau lifetime" }) };
             }
-            if (!paymentMethod || typeof paymentMethod !== 'string' || paymentMethod.length > 32) {
-                return { statusCode: 400, headers, body: JSON.stringify({ error: "Metode pembayaran tidak valid" }) };
+
+            // Whitelist metode pembayaran yang diizinkan — tolak metode tidak dikenal
+            const ALLOWED_METHODS = ['qris', 'bca', 'bni', 'bri', 'permata', 'mandiri', 'cimb', 'gopay', 'shopeepay', 'dana', 'ovo', 'indomaret', 'alfamart'];
+            if (!paymentMethod || typeof paymentMethod !== 'string' || !ALLOWED_METHODS.includes(paymentMethod.toLowerCase())) {
+                console.warn(`[BACKEND] Metode pembayaran ditolak: "${paymentMethod}"`);
+                return { statusCode: 400, headers, body: JSON.stringify({ error: "Metode pembayaran tidak dikenal" }) };
             }
+            paymentMethod = paymentMethod.toLowerCase();
+
             if (!buyerName || typeof buyerName !== 'string' || buyerName.length > 128) {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: "Nama pembeli tidak valid" }) };
             }
@@ -558,26 +794,44 @@ exports.handler = async (event, context) => {
             buyerPhone = (buyerPhone && typeof buyerPhone === 'string') ? buyerPhone.substring(0, 20) : "";
 
             const product = PRICING_DB[appId];
-            if (!product || !product.price[duration]) {
-                return { statusCode: 400, headers, body: JSON.stringify({ error: "Produk tidak tersedia" }) };
+            if (!product || !product.price || !product.price[duration]) {
+                return { statusCode: 400, headers, body: JSON.stringify({ error: "Produk atau paket harga tidak tersedia" }) };
             }
 
+            // Harga SELALU diambil dari database (Firebase/products.json) —
+            // tidak pernah dipercaya dari request client. Ini mencegah manipulasi harga.
             const price = Math.floor(product.price[duration]);
             if (!price || price <= 0) {
-                return { statusCode: 400, headers, body: JSON.stringify({ error: "Harga produk tidak valid" }) };
+                return { statusCode: 400, headers, body: JSON.stringify({ error: "Harga produk tidak valid di sistem" }) };
             }
 
             const orderId = `ORDER-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
+            // Baca active gateway dari Firebase settings
+            const activeGateway = await getActiveGateway(db);
+            console.log(`[BACKEND] Transaksi baru | Gateway: ${activeGateway} | OrderID: ${orderId} | Produk: ${appId} | Durasi: ${duration} | Jumlah: ${price}`);
+
             try {
-                const xenditResponse = await executeXenditCharge(
-                    { orderId, grossAmount: price, buyerName, buyerEmail, buyerPhone, paymentMethod },
-                    process.env.XENDIT_SECRET_KEY,
-                    dynamicWebhookUrl,
-                    successRedirectUrl,
-                    failedRedirectUrl
-                );
-                console.log("[BACKEND] Xendit Charge Success:", JSON.stringify(xenditResponse));
+                let chargeResponse;
+
+                if (activeGateway === 'midtrans') {
+                    chargeResponse = await executeMidtransCharge(
+                        { orderId, grossAmount: price, buyerName, buyerEmail, buyerPhone, paymentMethod, productName: product.name, appId },
+                        process.env.MIDTRANS_SERVER_KEY,
+                        process.env.MIDTRANS_IS_PRODUCTION === 'true',
+                        successRedirectUrl
+                    );
+                    console.log(`[BACKEND] Charge Midtrans berhasil | OrderID: ${orderId}`);
+                } else {
+                    chargeResponse = await executeXenditCharge(
+                        { orderId, grossAmount: price, buyerName, buyerEmail, buyerPhone, paymentMethod },
+                        process.env.XENDIT_SECRET_KEY,
+                        dynamicWebhookUrl,
+                        successRedirectUrl,
+                        failedRedirectUrl
+                    );
+                    console.log(`[BACKEND] Charge Xendit berhasil | OrderID: ${orderId}`);
+                }
 
                 if (db) {
                     await db.ref(`transactions/${orderId}`).set({
@@ -592,19 +846,19 @@ exports.handler = async (event, context) => {
                         duration,
                         orderType: 'NEW',
                         paymentMethod,
-                        gateway: 'xendit',
+                        gateway: activeGateway,   // 'xendit' | 'midtrans'
                         createdAt: Date.now()
                     });
                 }
 
-                return { statusCode: 200, headers, body: JSON.stringify(xenditResponse) };
+                return { statusCode: 200, headers, body: JSON.stringify(chargeResponse) };
 
-            } catch (xenditError) {
-                console.error("[BACKEND] Xendit Charge Failed:", xenditError.message);
+            } catch (chargeError) {
+                console.error(`[BACKEND] Charge ${activeGateway} gagal | OrderID: ${orderId} | Error: ${chargeError.message}`);
                 return {
                     statusCode: 400,
                     headers,
-                    body: JSON.stringify({ error: "Xendit Error: " + xenditError.message })
+                    body: JSON.stringify({ error: chargeError.message })
                 };
             }
         }
@@ -646,15 +900,31 @@ exports.handler = async (event, context) => {
             const orderId = `RENEW-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
             const appName = licenseData.appName || product?.name || 'Lisensi Primadev';
 
+            // Baca active gateway dari Firebase settings
+            const activeGatewayRenew = await getActiveGateway(db);
+            console.log(`[BACKEND] Perpanjangan lisensi | Gateway: ${activeGatewayRenew} | OrderID: ${orderId} | Kunci: ${licenseKey}`);
+
             try {
-                const xenditResponse = await executeXenditCharge(
-                    { orderId, grossAmount: amount, buyerName, buyerEmail, buyerPhone: buyerPhone || '', paymentMethod },
-                    process.env.XENDIT_SECRET_KEY,
-                    dynamicWebhookUrl,
-                    successRedirectUrl,
-                    failedRedirectUrl
-                );
-                console.log('[BACKEND] Renewal Xendit Charge Success:', orderId);
+                let chargeResponseRenew;
+
+                if (activeGatewayRenew === 'midtrans') {
+                    chargeResponseRenew = await executeMidtransCharge(
+                        { orderId, grossAmount: amount, buyerName, buyerEmail, buyerPhone: buyerPhone || '', paymentMethod, productName: appName, appId: licenseData?.appId || '' },
+                        process.env.MIDTRANS_SERVER_KEY,
+                        process.env.MIDTRANS_IS_PRODUCTION === 'true',
+                        successRedirectUrl
+                    );
+                    console.log(`[BACKEND] Charge Midtrans untuk perpanjangan berhasil | OrderID: ${orderId}`);
+                } else {
+                    chargeResponseRenew = await executeXenditCharge(
+                        { orderId, grossAmount: amount, buyerName, buyerEmail, buyerPhone: buyerPhone || '', paymentMethod },
+                        process.env.XENDIT_SECRET_KEY,
+                        dynamicWebhookUrl,
+                        successRedirectUrl,
+                        failedRedirectUrl
+                    );
+                    console.log(`[BACKEND] Charge Xendit untuk perpanjangan berhasil | OrderID: ${orderId}`);
+                }
 
                 if (db) {
                     await db.ref(`transactions/${orderId}`).set({
@@ -669,19 +939,19 @@ exports.handler = async (event, context) => {
                         orderType: 'RENEWAL',
                         targetLicenseKey: licenseKey,
                         paymentMethod,
-                        gateway: 'xendit',
+                        gateway: activeGatewayRenew,  // 'xendit' | 'midtrans'
                         createdAt: Date.now()
                     });
                 }
 
-                return { statusCode: 200, headers, body: JSON.stringify(xenditResponse) };
+                return { statusCode: 200, headers, body: JSON.stringify(chargeResponseRenew) };
 
-            } catch (xenditErr) {
-                console.error('[BACKEND] Renewal Xendit Charge Failed:', xenditErr.message);
+            } catch (renewErr) {
+                console.error(`[BACKEND] Charge ${activeGatewayRenew} untuk perpanjangan gagal | OrderID: ${orderId} | Error: ${renewErr.message}`);
                 return {
                     statusCode: 400,
                     headers,
-                    body: JSON.stringify({ error: "Xendit Error: " + xenditErr.message })
+                    body: JSON.stringify({ error: renewErr.message })
                 };
             }
         }
@@ -696,8 +966,8 @@ exports.handler = async (event, context) => {
 
             const trxSnap = await db.ref(`transactions/${orderId}`).once('value');
             if (!trxSnap.exists()) {
-                console.error(`[BACKEND] Data transaksi ${orderId} tidak ada di Firebase!`);
-                return { statusCode: 404, headers, body: JSON.stringify({ error: "Transaction data not found" }) };
+                console.error(`[BACKEND] Data transaksi tidak ditemukan di Firebase | OrderID: ${orderId}`);
+                return { statusCode: 404, headers, body: JSON.stringify({ error: "Data transaksi tidak ditemukan" }) };
             }
             const trxData = trxSnap.val();
 
@@ -709,11 +979,11 @@ exports.handler = async (event, context) => {
             const isPaid = PAID_STATUSES.includes(trxData.status);
 
             if (!isPaid) {
-                console.log(`[BACKEND] Polling verify: ${orderId} | Status saat ini: "${trxData.status}" → masih pending`);
+                console.log(`[BACKEND] Polling verifikasi | OrderID: ${orderId} | Status: "${trxData.status}" | Masih menunggu pembayaran`);
                 return { statusCode: 200, headers, body: JSON.stringify({ status: 'pending', isSuccess: false }) };
             }
 
-            console.log(`[BACKEND] verify_payment FALLBACK: webhook belum proses, proses sekarang. Status: ${trxData.status}`);
+            console.log(`[BACKEND] Fallback verifikasi | Webhook belum diproses | OrderID: ${orderId} | Status: ${trxData.status}`);
 
             // --- PERPANJANGAN (RENEWAL) ---
             if (trxData.orderType === 'RENEWAL') {
@@ -820,7 +1090,7 @@ exports.handler = async (event, context) => {
 
         // Endpoint legacy diblokir
         if (!action) {
-            console.warn("[SECURITY] Request tanpa action diblokir.");
+            console.warn("[BACKEND] Permintaan tanpa action diblokir oleh sistem keamanan.");
             return { statusCode: 400, headers, body: JSON.stringify({ error: "Endpoint tidak aktif." }) };
         }
 
@@ -828,7 +1098,7 @@ exports.handler = async (event, context) => {
 
 
     } catch (error) {
-        console.error("Backend Error:", error);
+        console.error("[BACKEND] Terjadi kesalahan server:", error);
         return { statusCode: 500, headers, body: JSON.stringify({ error: error.message || "Internal error" }) };
     }
 };
