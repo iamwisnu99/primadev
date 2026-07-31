@@ -1,8 +1,23 @@
 User-agent: *
 Allow: /
+Allow: /app/store
+Allow: /app/custom-order
+Allow: /app/renew
+Allow: /app/support
+Allow: /app/legal/
+
+# Halaman admin — wajib tersembunyi dari publik dan mesin pencari
 Disallow: /app/admin
 Disallow: /app/admin-dashboard
+Disallow: /app/cs-panel
+
+# Halaman transaksi — tidak relevan untuk mesin pencari
+Disallow: /app/checkout
 Disallow: /app/waiting-payment
 Disallow: /app/thankyou
+
+# File sistem Netlify
+Disallow: /netlify/
+Disallow: /.netlify/
 
 Sitemap: https://apps-primadev.netlify.app/sitemap.xml
