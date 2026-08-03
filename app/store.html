@@ -907,7 +907,7 @@
         .catalog-tab.active {
             background: #ffffff;
             color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .catalog-tab[data-filter="extension"].active {
@@ -915,7 +915,7 @@
         }
 
         .catalog-tab:hover:not(.active) {
-            background: rgba(255,255,255,0.6);
+            background: rgba(255, 255, 255, 0.6);
             color: var(--text-primary);
         }
 
@@ -935,14 +935,16 @@
         .ext-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
+            top: 0;
+            left: 0;
+            right: 0;
             height: 3px;
             background: linear-gradient(90deg, #7c3aed, #a855f7, #c084fc);
         }
 
         .ext-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 36px rgba(124,58,237,0.12), 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 12px 36px rgba(124, 58, 237, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
             border-color: #c4b5fd;
         }
 
@@ -957,7 +959,7 @@
             font-size: 1.4rem;
             color: #fff;
             flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(124,58,237,0.25);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
         }
 
         .browser-badges {
@@ -978,10 +980,29 @@
             border: 1px solid;
         }
 
-        .browser-badge.chrome { background:#e8f0fe; color:#1a56db; border-color:#c3d9ff; }
-        .browser-badge.edge   { background:#e3f2fd; color:#0078D4; border-color:#bde0fc; }
-        .browser-badge.firefox{ background:#fff3e0; color:#e65100; border-color:#ffe0b2; }
-        .browser-badge.all    { background:#f3e8ff; color:#7c3aed; border-color:#ddd6fe; }
+        .browser-badge.chrome {
+            background: #e8f0fe;
+            color: #1a56db;
+            border-color: #c3d9ff;
+        }
+
+        .browser-badge.edge {
+            background: #e3f2fd;
+            color: #0078D4;
+            border-color: #bde0fc;
+        }
+
+        .browser-badge.firefox {
+            background: #fff3e0;
+            color: #e65100;
+            border-color: #ffe0b2;
+        }
+
+        .browser-badge.all {
+            background: #f3e8ff;
+            color: #7c3aed;
+            border-color: #ddd6fe;
+        }
 
         .btn-install-ext {
             background: linear-gradient(135deg, #7c3aed, #6d28d9);
@@ -1003,9 +1024,8 @@
         .btn-install-ext:hover {
             background: linear-gradient(135deg, #6d28d9, #5b21b6);
             transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(124,58,237,0.35);
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
         }
-
     </style>
 </head>
 
@@ -1034,9 +1054,15 @@
     <!-- ===== HERO BANNER ===== -->
     <div class="store-banner">
         <div class="banner-inner">
-            <div class="banner-badge">
-                <i class="fa-solid fa-store"></i>
-                Official Software Store
+            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px;">
+                <div class="banner-badge" style="margin-bottom: 0;">
+                    <i class="fa-solid fa-store"></i>
+                    Official Software Store
+                </div>
+                <div class="banner-badge" style="margin-bottom: 0; background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4);">
+                    <i class="fa-solid fa-shield-check"></i>
+                    Perusahaan Terverifikasi (AHU-A104134.AH.01.30.Tahun 2026)
+                </div>
             </div>
             <h1 class="banner-title">Primadev Digital Store</h1>
             <p class="banner-subtitle">Lisensi software premium, aktivasi instan, bergaransi resmi dari Primadev.</p>
@@ -1085,11 +1111,7 @@
 
     <!-- ===== MAIN CONTENT ===== -->
     <main class="store-main">
-
-        <!-- CATALOG SECTION -->
         <div id="catalogSection">
-
-            <!-- TAB NAVIGATION -->
             <div class="catalog-tabs" id="catalogTabs">
                 <button class="catalog-tab active" data-filter="all" onclick="switchCatalogTab(this, 'all')">
                     <i class="fa-solid fa-th-large"></i> Semua
@@ -1103,7 +1125,6 @@
             </div>
 
             <div id="appsGrid" class="apps-grid">
-                <!-- Skeleton loaders -->
                 <div class="skeleton-card">
                     <div style="display:flex; gap:14px; margin-bottom:14px;">
                         <div class="skeleton" style="width:72px; height:72px; border-radius:16px; flex-shrink:0;"></div>
@@ -1167,8 +1188,11 @@
                 <a href="/app/support" class="footer-link">Dukungan</a>
                 <a href="mailto:admin.primadev@gmail.com" class="footer-link">Kontak</a>
             </div>
-            <p class="footer-copy">&copy; <span id="currentYear"></span> PT. Primadev Digital Technology | All Rights
-                Reserved.</p>
+            <p class="footer-copy" style="margin-bottom: 6px;">&copy; <span id="currentYear"></span> PT. Primadev Digital Technology | All Rights Reserved.</p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #16a34a; font-weight: 600;">
+                <i class="fas fa-shield-check"></i>
+                <span>Terdaftar & Diawasi oleh Kemenkumham RI (AHU-A104134.AH.01.30.Tahun 2026)</span>
+            </div>
             <script>document.getElementById('currentYear').textContent = new Date().getFullYear();</script>
         </div>
     </footer>
@@ -1195,15 +1219,12 @@
             });
         });
 
-        // ===== STATE =====
         let SERVER_CATALOG = {};
         let currentCatalogFilter = 'all';
 
-        // App icon color cycle
         const iconColors = ['app-icon-blue', 'app-icon-green', 'app-icon-purple', 'app-icon-orange', 'app-icon-teal', 'app-icon-pink'];
         const badgeTypes = ['badge-popular', 'badge-new', '', '', 'badge-hot', ''];
 
-        // ===== INIT STORE =====
         async function initStore() {
             try {
                 const response = await fetch('/.netlify/functions/public_order');
@@ -1211,7 +1232,6 @@
                 SERVER_CATALOG = data.catalog;
                 renderCatalog();
 
-                // Check URL param for tab
                 const urlParams = new URLSearchParams(window.location.search);
                 const tabParam = urlParams.get('tab');
                 if (tabParam === 'extension') {
@@ -1228,21 +1248,19 @@
             }
         }
 
-        // ===== BUILD BROWSER BADGES =====
         function buildBrowserBadges(platforms) {
             if (!platforms) return '';
             const list = Array.isArray(platforms) ? platforms : [platforms];
-            const isAll = ['chrome','edge','firefox'].every(b => list.includes(b));
+            const isAll = ['chrome', 'edge', 'firefox'].every(b => list.includes(b));
             if (isAll) return `<span class="browser-badge all"><i class="fa-solid fa-earth-asia"></i> All Browser</span>`;
             const icons = {
                 chrome: `<span class="browser-badge chrome"><i class="fa-brands fa-chrome"></i> Chrome</span>`,
-                edge:   `<span class="browser-badge edge"><i class="fa-brands fa-edge"></i> Edge</span>`,
-                firefox:`<span class="browser-badge firefox"><i class="fa-brands fa-firefox-browser"></i> Firefox</span>`,
+                edge: `<span class="browser-badge edge"><i class="fa-brands fa-edge"></i> Edge</span>`,
+                firefox: `<span class="browser-badge firefox"><i class="fa-brands fa-firefox-browser"></i> Firefox</span>`,
             };
             return list.map(p => icons[p] || `<span class="browser-badge all">${p}</span>`).join('');
         }
 
-        // ===== RENDER CATALOG =====
         function renderCatalog(filter = currentCatalogFilter) {
             const container = document.getElementById('appsGrid');
             container.innerHTML = '';
@@ -1251,12 +1269,8 @@
             keys.forEach((key, index) => {
                 const item = SERVER_CATALOG[key];
                 const itemType = item.type || 'app';
-
-                // Filter
                 if (filter !== 'all' && itemType !== filter) return;
-
                 if (itemType === 'extension') {
-                    // ===== EXTENSION CARD =====
                     const platforms = item.platform || ['chrome'];
                     const browserBadges = buildBrowserBadges(platforms);
                     const minPrice = item.price ? Math.min(...Object.values(item.price).filter(p => p > 0)) : 0;
@@ -1292,7 +1306,6 @@
                     </div>`;
 
                 } else {
-                    // ===== APP CARD (existing design) =====
                     const colorClass = iconColors[index % iconColors.length];
                     const badgeClass = badgeTypes[index % badgeTypes.length];
                     const minPrice = item.price ? Math.min(...Object.values(item.price)) : 0;
@@ -1337,14 +1350,12 @@
                 }
             });
 
-            // Attach search listener once
             const searchEl = document.getElementById('searchInput');
             if (searchEl && !searchEl._listenerAttached) {
                 searchEl.addEventListener('input', function () { filterCatalog(this.value); });
                 searchEl._listenerAttached = true;
             }
 
-            // Empty state
             if (container.innerHTML.trim() === '') {
                 const label = filter === 'extension' ? 'Browser Extension' : 'Aplikasi';
                 container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
@@ -1354,7 +1365,6 @@
             }
         }
 
-        // ===== TAB SWITCHING =====
         function switchCatalogTab(btn, filter) {
             document.querySelectorAll('.catalog-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
@@ -1373,18 +1383,14 @@
             });
         }
 
-        // ===== GO TO CHECKOUT =====
         function goToCheckout(id) {
             localStorage.setItem('checkout_product_id', id);
             window.location.href = '/app/checkout';
         }
-
-        // Bootstrap-like d-none helper
         const styleEl = document.createElement('style');
         styleEl.textContent = '.d-none { display: none !important; }';
         document.head.appendChild(styleEl);
 
-        // ===== SHOW HELP POPUP =====
         function showHelp() {
             Swal.fire({
                 title: 'Pusat Bantuan Primadev',

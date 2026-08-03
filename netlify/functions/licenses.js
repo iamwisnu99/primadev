@@ -2,7 +2,6 @@ const fetch = require('node-fetch');
 const admin = require('firebase-admin');
 const { getPremiumTemplate } = require('./email_template');
 
-// --- DATABASE PRODUK (Fallback agar harga tidak 0) ---
 let PRICING_DB;
 try {
   PRICING_DB = require('../../products.json');
@@ -16,7 +15,6 @@ try {
   };
 }
 
-// --- INIT FIREBASE ---
 if (!admin.apps.length) {
   let serviceAccount = null;
   try {
@@ -48,60 +46,53 @@ if (!admin.apps.length) {
 
 const db = admin.database();
 
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
 const sendEmail = async (data, contextMethod) => {
   if (contextMethod !== 'POST') return;
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn("[EMAIL] Kredensial Gmail tidak diset. Email tidak dikirim.");
+    return;
+  }
 
-  const url = 'https://api.emailjs.com/api/v1.0/email/send';
-  if (!process.env.EMAILJS_SERVICE_ID) return;
-
-  // Fallback ke template premium jika html_template kosong
   const messageHtml = data.html_template || getPremiumTemplate({
     name: data.name,
     key: data.key,
-    appName: data.appName || 'Aplikasi Struk SPBU',
+    appName: data.appName || 'Aplikasi',
     type: data.type || 'Standard',
     expiryDate: data.expiryDate,
     transactionId: data.transactionId || 'MANUAL-ADMIN'
   });
 
-  const payload = {
-    service_id: process.env.EMAILJS_SERVICE_ID,
-    template_id: process.env.EMAILJS_TEMPLATE_ID,
-    user_id: process.env.EMAILJS_PUBLIC_KEY,
-    accessToken: process.env.EMAILJS_PRIVATE_KEY,
-    template_params: {
-      to_email: data.email,
-      to_name: data.name,
-      license_key: data.key,
-      expiry_date: data.expiryDate,
-      type: data.type,
-      message_html: messageHtml
-    }
-  };
+  const subject = `Detail Lisensi: ${data.appName || 'Aplikasi'} (${data.type})`;
 
   try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    const info = await transporter.sendMail({
+      from: `"PT. Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
+      to: data.email,
+      subject: subject,
+      html: messageHtml
     });
-    if (!res.ok) {
-      console.error("EmailJS Error:", await res.text());
-    }
+    console.log("[EMAIL] Email terkirim:", info.messageId);
   } catch (err) {
-    console.error("Email Error:", err);
+    console.error("Email Error:", err.message);
   }
 };
 
 exports.handler = async (event, context) => {
-  // Header agar bisa diakses dari frontend (CORS)
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE'
   };
 
-  // Helper Respon
   const respond = (statusCode, body) => {
     return {
       statusCode,
@@ -110,7 +101,6 @@ exports.handler = async (event, context) => {
     };
   };
 
-  // Handle OPTIONS (Preflight Request)
   if (event.httpMethod === 'OPTIONS') {
     return respond(200, {});
   }
@@ -137,7 +127,6 @@ exports.handler = async (event, context) => {
       const body = JSON.parse(event.body || '{}');
       const { name, email, type, expiryDate, appName, sendEmailCheck, html_template, paymentMethod, transactionId, appId } = body;
 
-      // Gunakan key dari body jika ada (dari Admin Panel), jika tidak generate baru
       const generateKey = () => {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         const seg = () => Array(4).fill(0).map(() => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
@@ -149,7 +138,7 @@ exports.handler = async (event, context) => {
       const cleanType = (type || 'monthly').toLowerCase();
       let fixedPrice = 0;
       const product = PRICING_DB[appId] || PRICING_DB['struk-spbu'] || {};
-      
+
       if (product.price && product.price[cleanType]) {
         fixedPrice = product.price[cleanType];
       }

@@ -16,7 +16,7 @@ const getPremiumTemplate = (data) => {
         <style>
             body { margin: 0; padding: 0; background-color: #f1f5f9; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
             .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin-top: 20px; margin-bottom: 20px; }
-            .header { background: linear-gradient(135deg, #4d74f3ff 0%, #314fd4ff 100%); padding: 40px 20px; text-align: center; }
+            .header { padding: 40px 20px; text-align: center; }
             .content { padding: 40px 30px; color: #334155; line-height: 1.6; }
             .key-box { background-color: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 25px; text-align: center; margin: 30px 0; }
             .license-key { font-family: 'Courier New', monospace; font-size: 24px; font-weight: bold; color: #000000ff; letter-spacing: 2px; display: block; margin-bottom: 5px; }
@@ -31,8 +31,8 @@ const getPremiumTemplate = (data) => {
         <div class="container">
             <div class="header">
                 <img src="${LOGO_URL}" alt="Primadev" width="160" style="display: block; margin: 0 auto;">
-                <h2 style="color: #ffffff; margin: 20px 0 0 0; font-weight: 600;">Pembayaran Diterima!</h2>
-                <p style="color: #e0e7ff; margin: 5px 0 0 0; font-size: 14px;">Terima kasih telah bergabung dengan Primadev.</p>
+                <h2 style="color: #334155; margin: 20px 0 0 0; font-weight: 600;">Pembayaran Diterima!</h2>
+                <p style="color: #64748b; margin: 5px 0 0 0; font-size: 14px;">Terima kasih telah bergabung dengan Primadev.</p>
             </div>
 
             <div class="content">
@@ -105,7 +105,7 @@ const getRenewalTemplate = (data) => {
         <style>
             body { margin: 0; padding: 0; background-color: #f1f5f9; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
             .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin-top: 20px; }
-            .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px 20px; text-align: center; }
+            .header { padding: 40px 20px; text-align: center; }
             .content { padding: 40px 30px; color: #334155; line-height: 1.6; }
             .status-badge { background-color: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 50px; font-weight: bold; font-size: 12px; display: inline-block; margin-bottom: 20px; text-transform: uppercase; }
             .details-card { background-color: #f8fafc; border-radius: 12px; padding: 25px; margin: 20px 0; border: 1px solid #e2e8f0; }
@@ -116,7 +116,7 @@ const getRenewalTemplate = (data) => {
         <div class="container">
             <div class="header">
                 <img src="${LOGO_URL}" alt="Primadev" width="140" style="display: block; margin: 0 auto;">
-                <h2 style="color: #ffffff; margin: 20px 0 0 0;">Perpanjangan Berhasil!</h2>
+                <h2 style="color: #334155; margin: 20px 0 0 0;">Perpanjangan Berhasil!</h2>
             </div>
             <div class="content">
                 <div class="status-badge">Payment Confirmed</div>

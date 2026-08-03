@@ -6,596 +6,560 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dukungan & Bantuan - PT Primadev Digital Technology</title>
     <meta name="description"
-        content="Pusat dukungan dan bantuan resmi PT Primadev Digital Technology. Cek status lisensi, laporkan masalah, atau hubungi tim support kami yang siap membantu 24/7.">
-    <meta name="keywords" content="support primadev, bantuan lisensi, cek lisensi, customer service primadev, hubungi primadev">
-    <meta name="author" content="PT Primadev Digital Technology">
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-    <meta name="googlebot" content="index, follow">
-    <link rel="canonical" href="https://apps-primadev.netlify.app/app/support" />
-
-    <!-- OpenGraph / Social Media Meta Tags -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Dukungan & Bantuan — PT Primadev Digital Technology" />
-    <meta property="og:description" content="Pusat dukungan resmi Primadev. Cek status lisensi, laporkan masalah, dan hubungi tim support kami." />
-    <meta property="og:url" content="https://apps-primadev.netlify.app/app/support" />
-    <meta property="og:site_name" content="PT Primadev Digital Technology" />
-    <meta property="og:image" content="https://apps-primadev.netlify.app/public/logo.png" />
-    <meta property="og:locale" content="id_ID" />
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Dukungan & Bantuan — PT Primadev Digital Technology" />
-    <meta name="twitter:description" content="Pusat dukungan resmi Primadev. Cek status lisensi dan hubungi tim support kami." />
-
-    <!-- JSON-LD: WebPage + BreadcrumbList -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebPage",
-          "@id": "https://apps-primadev.netlify.app/app/support#webpage",
-          "url": "https://apps-primadev.netlify.app/app/support",
-          "name": "Dukungan & Bantuan — PT Primadev Digital Technology",
-          "description": "Pusat dukungan dan bantuan resmi PT Primadev Digital Technology. Cek status lisensi, laporkan masalah, atau hubungi tim support kami.",
-          "isPartOf": { "@id": "https://apps-primadev.netlify.app/#website" },
-          "publisher": { "@id": "https://apps-primadev.netlify.app/#organization" },
-          "inLanguage": "id-ID",
-          "breadcrumb": {
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              { "@type": "ListItem", "position": 1, "name": "Beranda", "item": "https://apps-primadev.netlify.app/" },
-              { "@type": "ListItem", "position": 2, "name": "Dukungan & Bantuan", "item": "https://apps-primadev.netlify.app/app/support" }
-            ]
-          }
-        },
-        {
-          "@type": "ContactPage",
-          "url": "https://apps-primadev.netlify.app/app/support",
-          "name": "Dukungan Pelanggan PT Primadev Digital Technology",
-          "description": "Hubungi tim support PT Primadev Digital Technology untuk bantuan teknis, cek status lisensi, dan pertanyaan layanan.",
-          "publisher": { "@id": "https://apps-primadev.netlify.app/#organization" }
-        }
-      ]
-    }
-    </script>
-
+        content="Pusat dukungan dan bantuan resmi PT Primadev Digital Technology. Hubungi tim support kami melalui WhatsApp atau Email.">
+    <meta name="robots" content="index, follow">
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
-    <link rel="shortcut icon" href="/public/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="Primadev" />
-    <link rel="manifest" href="/public/site.webmanifest" />
-
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --dark-bg: #0f172a;
+            --slate-text: #334155;
+            --light-bg: #ffffff;
         }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f0f9ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            color: #334155;
-            padding: 20px;
+        * {
             box-sizing: border-box;
         }
 
-        .ambient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background:
-                radial-gradient(at 10% 10%, rgba(200, 220, 255, 0.8) 0, transparent 50%),
-                radial-gradient(at 90% 90%, rgba(255, 220, 240, 0.8) 0, transparent 50%),
-                radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.8) 0, transparent 50%);
-            filter: blur(60px);
-            z-index: -1;
-            animation: moveBg 15s infinite alternate;
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            background-color: var(--light-bg);
+            color: var(--slate-text);
+        }
+
+        /* Entrance Animation */
+        body {
+            opacity: 0;
+            transition: opacity 0.4s ease-out;
+        }
+
+        body.page-ready {
+            opacity: 1;
+        }
+
+        .fullscreen-wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* --- Left Pane: Brand & Value Proposition --- */
+        .brand-pane {
+            flex: 1;
+            background-color: #0d6efd;
+            /* Blue tone from custom-order */
+            color: #ffffff;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-pane::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
             pointer-events: none;
         }
 
-        @keyframes moveBg {
-            0% {
-                transform: scale(1);
-            }
-
-            100% {
-                transform: scale(1.1);
-            }
+        .brand-pane::after {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        .glass-panel {
-            width: 100%;
-            max-width: 1000px;
-            height: clamp(500px, 85vh, 800px);
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+        .brand-logo {
             display: flex;
-            overflow: hidden;
-            transition: all 0.3s ease;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #fff;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
-        .sidebar {
-            width: 320px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.4);
-            border-right: 1px solid rgba(255, 255, 255, 0.5);
+        .brand-logo img {
+            height: 36px;
+            filter: brightness(0) invert(1);
+        }
+
+        .brand-logo span {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 2;
+            margin: auto 0;
+            max-width: 480px;
+        }
+
+        .brand-title {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .brand-desc {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 40px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 20px;
         }
 
-        .main-content {
-            flex: 1;
-            position: relative;
+        .feature-item {
             display: flex;
-            flex-direction: column;
-            min-width: 0;
-            /* Prevent flex overflow */
+            align-items: flex-start;
+            gap: 16px;
         }
 
-        /* FORM STYLES */
-        .custom-input {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(203, 213, 225, 0.5);
-            color: #334155;
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
             border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-text h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 4px;
+        }
+
+        .feature-text p {
+            font-size: 0.95rem;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.4;
+        }
+
+        .brand-footer {
+            position: relative;
+            z-index: 2;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* --- Right Pane: Support Form --- */
+        .form-pane {
+            flex: 1.2;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: var(--light-bg);
+            max-width: 700px;
+        }
+
+        .top-nav {
+            position: absolute;
+            top: 40px;
+            right: 50px;
+        }
+
+        .btn-close-form {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            border-radius: 100px;
+            background: #f1f5f9;
             transition: all 0.2s;
         }
 
-        .custom-input:focus {
-            background: #ffffff;
-            border-color: #4f46e5;
-            color: #1e293b;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        .btn-close-form:hover {
+            background: #e2e8f0;
+            color: #0f172a;
         }
 
-        /* CHAT ROOM STYLES */
-        .chat-room {
-            display: none;
-            flex-direction: column;
-            height: 100%;
+        .form-container {
+            margin: auto 0;
+            max-width: 480px;
+            width: 100%;
         }
 
-        .chat-header {
-            padding: 15px 25px;
-            background: rgba(255, 255, 255, 0.5);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .form-header {
+            margin-bottom: 30px;
         }
 
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            scroll-behavior: smooth;
+        .form-header h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
         }
 
-        .message-bubble {
-            max-width: 85%;
-            padding: 12px 18px;
-            border-radius: 18px;
-            font-size: 0.95rem;
-            line-height: 1.5;
+        .form-header p {
+            color: #64748b;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* --- Form Styles --- */
+        .form-group-custom {
+            margin-bottom: 20px;
+        }
+
+        .form-label-custom {
+            display: block;
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
             position: relative;
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            flex-direction: column;
-        }
-
-        @keyframes popIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .msg-user {
-            align-self: flex-end;
-            background: #4f46e5;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .msg-cs {
-            align-self: flex-start;
-            background: white;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            color: #1e293b;
-            border-bottom-left-radius: 4px;
-        }
-
-        .msg-meta {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            gap: 5px;
-            font-size: 0.7rem;
-            margin-top: 4px;
-            opacity: 0.8;
         }
 
-        .tick-read {
-            color: #4ade80;
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            color: #94a3b8;
+            font-size: 1rem;
+            pointer-events: none;
         }
 
-        .chat-input-area {
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.8);
-            border-top: 1px solid rgba(255, 255, 255, 0.5);
+        .form-control-custom {
+            width: 100%;
+            padding: 13px 16px 13px 46px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            background-color: #f8fafc;
+            font-size: 0.95rem;
+            color: #0f172a;
+            transition: all 0.25s;
+            font-family: inherit;
+        }
+
+        .form-control-custom:focus {
+            background-color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .textarea-custom {
+            padding-left: 16px;
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .actions-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .btn-action {
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
             gap: 10px;
-            z-index: 10;
+            transition: all 0.25s;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
         }
 
-        /* MOBILE RESPONSIVENESS REFINEMENT */
-        @media (max-width: 992px) {
-            .glass-panel {
-                width: 100%;
-                height: 100vh;
-                height: 100dvh;
-                border-radius: 0;
-                max-width: none;
-                border: none;
+        .btn-wa-action {
+            background-color: #25d366;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.25);
+        }
+
+        .btn-wa-action:hover {
+            background-color: #128c7e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+        }
+
+        .btn-email-action {
+            background-color: #ffffff;
+            color: #334155;
+            border: 1.5px solid #cbd5e1;
+        }
+
+        .btn-email-action:hover {
+            background-color: #f8fafc;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 991px) {
+            html, body {
+                height: 100%;
+            }
+            body {
+                flex-direction: column;
+                min-height: 100dvh;
+            }
+            .fullscreen-wrapper {
+                flex-direction: column;
+                flex: 1 1 auto;
+                background-color: #ffffff;
             }
 
-            .sidebar {
+            .brand-pane {
+                padding: 40px 24px;
+                flex: none;
+            }
+
+            .brand-content {
+                padding: 20px 0;
+            }
+
+            .brand-footer {
                 display: none;
             }
 
-            #loginState {
-                padding: 30px !important;
+            .form-pane {
+                padding: 40px 24px 60px;
+                flex: 1;
+                max-width: 100%;
             }
 
-            .chat-messages {
-                padding: 15px;
+            .top-nav {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 24px;
             }
 
-            .message-bubble {
-                max-width: 90%;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .chat-header {
-                padding: 10px 15px;
+            .form-container {
+                margin-top: 0;
             }
 
-            .chat-input-area {
-                padding: 10px 15px;
+            .actions-group {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 
 <body>
+    <div class="fullscreen-wrapper">
+        <div class="brand-pane">
+            <a href="/" class="brand-logo">
+                <img src="/public/logo.png" alt="Logo Primadev">
+            </a>
 
-    <div class="ambient-bg"></div>
+            <div class="brand-content">
+                <h1 class="brand-title">Pusat Bantuan & Dukungan</h1>
+                <p class="brand-desc">
+                    Tim Customer Service kami siap membantu Anda menyelesaikan kendala teknis, memberikan konsultasi
+                    produk, serta melayani pertanyaan terkait layanan Primadev.
+                </p>
 
-    <div class="glass-panel">
-        <div class="sidebar">
-            <div>
-                <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev" height="40" class="mb-4"
-                    style="filter: brightness(0.2);">
-                <h3 class="fw-bold mb-3 text-dark">Live Support</h3>
-                <p class="text-muted">Hubungkan diri Anda dengan tim ahli kami secara realtime.</p>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fa-solid fa-headset"></i></div>
+                        <div class="feature-text">
+                            <h4>Dukungan Profesional</h4>
+                            <p>Ditangani langsung oleh tim ahli yang mengerti kebutuhan bisnis Anda.</p>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <div class="feature-text">
+                            <h4>Respon Cepat</h4>
+                            <p>Kami mengutamakan kecepatan untuk memastikan operasional Anda tidak terganggu.</p>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="feature-text">
+                            <h4>Solusi Tepat</h4>
+                            <p>Memberikan pemecahan masalah teknis yang efektif dan permanen.</p>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            <div class="mt-auto">
-                <a href="https://apps-primadev.netlify.app/"
-                    class="text-muted text-decoration-none hover-text-primary d-flex align-items-center fw-bold">
-                    <i class="fa-solid fa-arrow-left me-2"></i> Kembali ke Website
-                </a>
+
+            <div class="brand-footer" style="color: #ffffff; text-align: left; opacity: 1;">
+                <div>&copy; <span id="currentYearSupport">2026</span> PT. Primadev Digital Technology</div>
+                <div style="margin-top: 4px;">SK Kemenkumham RI (AHU-A104134.AH.01.30.Tahun 2026)</div>
             </div>
+            <script>document.getElementById('currentYearSupport').textContent = new Date().getFullYear();</script>
         </div>
 
-        <div class="main-content">
-
-            <div id="loginState" class="p-5 h-100 d-flex flex-column justify-content-center">
-                <div class="mb-5 text-center">
-                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block mb-3 text-primary"><i
-                            class="fa-solid fa-headset fs-2"></i></div>
-                    <h2 class="fw-bold text-dark">Mulai Sesi Chat</h2>
-                    <p class="text-muted">Privasi Anda terjaga. Isi data untuk melanjutkan.</p>
-                </div>
-                <form id="startChatForm" onsubmit="startChat(event)"
-                    style="max-width: 400px; margin: 0 auto; width: 100%;">
-                    <input type="text" id="userName" class="form-control custom-input" placeholder="Nama Lengkap"
-                        required>
-                    <input type="email" id="userEmail" class="form-control custom-input" placeholder="Email Terdaftar"
-                        required>
-                    <input type="tel" id="userPhone" class="form-control custom-input" placeholder="Nomor WhatsApp"
-                        required>
-                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-4 fw-bold shadow-sm"
-                        style="background: #4f46e5; border:none; transition: 0.2s;">
-                        Hubungkan Sekarang <i class="fa-solid fa-arrow-right ms-2"></i>
-                    </button>
-                </form>
+        <!-- Right Pane: Support Form -->
+        <div class="form-pane">
+            <div class="top-nav">
+                <a href="/" class="btn-close-form" id="backLink">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+                </a>
             </div>
 
-            <div id="chatState" class="chat-room">
-                <div class="chat-header">
-                    <div class="d-flex align-items-center">
-                        <div class="position-relative">
-                            <img src="https://ui-avatars.com/api/?name=CS+Prima&background=4f46e5&color=fff"
-                                class="rounded-circle me-3 shadow-sm" width="45">
-                            <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle"
-                                style="width:12px; height:12px;"></span>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-0 text-dark">Customer Service</h6>
-                            <small id="statusText" class="text-success fw-bold">Online</small>
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Hubungi Tim Support</h2>
+                    <p>Lengkapi form di bawah dan pilih metode pengiriman pesan. Pesan otomatis tersusun rapi untuk
+                        WhatsApp atau Email.</p>
+                </div>
+
+                <form id="supportForm">
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Nama Lengkap <span class="text-danger">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user input-icon"></i>
+                            <input type="text" id="suppName" class="form-control-custom"
+                                placeholder="Contoh: Budi Santoso" required>
                         </div>
                     </div>
-                    <button onclick="endChat()"
-                        class="btn btn-sm btn-light border text-danger fw-bold rounded-pill px-3 shadow-sm">Akhiri</button>
-                </div>
 
-                <div id="messagesArea" class="chat-messages"></div>
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Email <span class="text-danger">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope input-icon"></i>
+                            <input type="email" id="suppEmail" class="form-control-custom"
+                                placeholder="Contoh: budi@email.com" required>
+                        </div>
+                    </div>
 
-                <div class="chat-input-area">
-                    <input type="text" id="messageInput" class="form-control custom-input mb-0 rounded-pill bg-white"
-                        placeholder="Ketik pesan Anda di sini..."
-                        style="border:none; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: 50px;">
-                    <button onclick="sendMessage()"
-                        class="btn btn-primary rounded-circle shadow-sm d-flex align-items-center justify-content-center"
-                        style="width: 50px; height: 50px; background: #4f46e5; border:none;">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </div>
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">No. WhatsApp</label>
+                        <div class="input-wrapper">
+                            <i class="fa-brands fa-whatsapp input-icon"></i>
+                            <input type="tel" id="suppPhone" class="form-control-custom"
+                                placeholder="Contoh: 08123456789 (Opsional)">
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Keluhan / Saran / Feedback <span
+                                class="text-danger">*</span></label>
+                        <textarea id="suppMessage" class="form-control-custom textarea-custom"
+                            placeholder="Jelaskan kendala atau pesan Anda secara detail..." required></textarea>
+                    </div>
+
+                    <div class="actions-group">
+                        <button type="button" class="btn-action btn-wa-action" onclick="submitSupport('wa')">
+                            <i class="fa-brands fa-whatsapp" style="font-size: 1.5rem;"></i>
+                            Kirim via WhatsApp
+                        </button>
+
+                        <button type="button" class="btn-action btn-email-action" onclick="submitSupport('email')">
+                            <i class="fa-regular fa-envelope" style="font-size: 1.5rem; color: #64748b;"></i>
+                            Kirim via Email
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getDatabase, ref, push, set, onChildAdded, onChildChanged, update, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+    <script>
+        // Entrance Animation
+        document.addEventListener('DOMContentLoaded', () => {
+            requestAnimationFrame(() => {
+                document.body.classList.add('page-ready');
+            });
+        });
 
-        // --- GET CONFIG DYNAMICALLY ---
-        let firebaseConfig;
-        try {
-            const configRes = await fetch('/.netlify/functions/get-config');
-            if (!configRes.ok) throw new Error('Failed to load config');
-            firebaseConfig = await configRes.json();
-        } catch (err) {
-            console.error("Firebase Config Error:", err);
-            Swal.fire('Error', 'Gagal memuat konfigurasi system. Coba refresh halaman.', 'error');
+        // Smooth Exit
+        const backLink = document.getElementById('backLink');
+        if (backLink) {
+            backLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                const dest = this.getAttribute('href');
+                document.body.style.opacity = '0';
+                setTimeout(() => window.location.href = dest, 350);
+            });
         }
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
+        function validateForm() {
+            const name = document.getElementById('suppName').value.trim();
+            const email = document.getElementById('suppEmail').value.trim();
+            const message = document.getElementById('suppMessage').value.trim();
+            const phone = document.getElementById('suppPhone').value.trim();
 
-        // SinIn Anonymously to bypass "auth != null" rules
-        try {
-            await signInAnonymously(auth);
-            console.log("Authenticated as Anonymous User");
-        } catch (error) {
-            console.error("Auth Error:", error);
-        }
-
-        let currentChatId = localStorage.getItem('prima_chat_id');
-        let userData = JSON.parse(localStorage.getItem('prima_user_data'));
-        let typingTimeout;
-        const pageLoadTime = Date.now();
-
-        if (currentChatId && userData) {
-            showChatRoom();
-            initRealtimeListeners();
-        }
-
-        window.startChat = async (e) => {
-            e.preventDefault();
-
-            const name = document.getElementById('userName').value;
-            const email = document.getElementById('userEmail').value;
-            const phone = document.getElementById('userPhone').value;
-
-            if (!firebaseConfig) {
-                Swal.fire('Error', 'Config belum dimuat, tunggu sebentar.', 'error');
-                return;
-            }
-
-            userData = { name, email, phone };
-            currentChatId = Date.now() + "_" + Math.floor(Math.random() * 1000);
-
-            localStorage.setItem('prima_chat_id', currentChatId);
-            localStorage.setItem('prima_user_data', JSON.stringify(userData));
-
-            try {
-                await set(ref(db, `live_chats/${currentChatId}/info`), {
-                    ...userData,
-                    status: 'active',
-                    last_active: Date.now(),
-                    unread: 1
+            if (!name || !email || !message) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Formulir Belum Lengkap',
+                    text: 'Mohon isi Nama, Email, dan Pesan (Keluhan/Saran) terlebih dahulu.',
+                    confirmButtonColor: '#2563eb',
+                    customClass: { popup: 'rounded-4' }
                 });
-
-                showChatRoom();
-                initRealtimeListeners();
-            } catch (err) {
-                console.error("Start Chat Error:", err);
-                showChatRoom();
-                initRealtimeListeners();
-            }
-        };
-
-        window.sendMessage = async () => {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const originalText = text;
-            input.value = '';
-
-            try {
-                await push(ref(db, `live_chats/${currentChatId}/messages`), {
-                    sender: 'user', name: userData.name, text: text, timestamp: Date.now(), read: false
-                });
-                update(ref(db, `live_chats/${currentChatId}/info`), { last_active: Date.now(), unread_cs: true });
-
-                set(ref(db, `live_chats/${currentChatId}/typing/user`), false);
-                scrollToBottom();
-            } catch (err) {
-                console.error("Send Error:", err);
-                input.value = originalText;
-                Swal.fire('Gagal Kirim', 'Gagal mengirim pesan ke server. Pastikan Anda terhubung ke internet.', 'error');
-            }
-        };
-
-        function initRealtimeListeners() {
-            const messagesRef = ref(db, `live_chats/${currentChatId}/messages`);
-            document.getElementById('messagesArea').innerHTML = '';
-
-            onChildAdded(messagesRef, (snapshot) => {
-                const msg = snapshot.val();
-                const key = snapshot.key;
-                renderMessage(key, msg);
-                if (msg.sender === 'agent' && !msg.read) update(ref(db, `live_chats/${currentChatId}/messages/${key}`), { read: true });
-            });
-
-            onChildChanged(messagesRef, (snap) => {
-                if (snap.val().read) {
-                    const t = document.getElementById(`tick-${snap.key}`);
-                    if (t) { t.innerHTML = '<i class="fa-solid fa-check-double"></i>'; t.classList.add('tick-read'); }
-                }
-            });
-
-            onValue(ref(db, `live_chats/${currentChatId}/typing/agent`), (snap) => {
-                const st = document.getElementById('statusText');
-                if (snap.val()) {
-                    st.innerHTML = '<i class="fa-solid fa-pencil fa-fade"></i> Mengetik...';
-                    st.className = 'text-warning small fw-bold';
-                } else {
-                    st.innerText = 'Online';
-                    st.className = 'text-success fw-bold small';
-                }
-            });
-
-            const inputField = document.getElementById('messageInput');
-            inputField.addEventListener('input', () => {
-                set(ref(db, `live_chats/${currentChatId}/typing/user`), true);
-                clearTimeout(typingTimeout);
-                typingTimeout = setTimeout(() => set(ref(db, `live_chats/${currentChatId}/typing/user`), false), 2000);
-            });
-            inputField.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.sendMessage(); });
-
-            // --- LISTEN IF CS CLOSES THE CHAT ---
-            onValue(ref(db, `live_chats/${currentChatId}/info/status`), (snap) => {
-                if (snap.val() === 'closed') {
-                    const inputArea = document.querySelector('.chat-input-area');
-                    if (inputArea) {
-                        inputArea.innerHTML = `<div class="w-100 text-center py-2 text-muted small fw-bold"><i class="fa-solid fa-lock me-2"></i> Percakapan telah berakhir.</div>`;
-                    }
-                    document.getElementById('statusText').innerText = 'Closed';
-                    document.getElementById('statusText').className = 'text-muted small fw-bold';
-
-                    const messagesArea = document.getElementById('messagesArea');
-                    if (!document.getElementById('end-msg')) {
-                        const div = document.createElement('div');
-                        div.id = 'end-msg';
-                        div.className = 'text-center small text-muted my-3 opacity-75';
-                        div.innerHTML = '<hr class="mb-2">Sesi chat ini telah diselesaikan oleh Customer Service.';
-                        messagesArea.appendChild(div);
-                        scrollToBottom();
-                    }
-                }
-            });
-        }
-
-        function renderMessage(key, msg) {
-            const div = document.createElement('div');
-            const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            if (msg.sender === 'user') {
-                const tick = msg.read ? '<i class="fa-solid fa-check-double"></i>' : '<i class="fa-solid fa-check"></i>';
-                const cls = msg.read ? 'tick-read' : '';
-                div.className = 'message-bubble msg-user';
-                div.innerHTML = `<span>${msg.text}</span><div class="msg-meta"><span>${time}</span><span id="tick-${key}" class="${cls} ms-1">${tick}</span></div>`;
-            } else if (msg.sender === 'agent') {
-                div.className = 'message-bubble msg-cs';
-                div.innerHTML = `<strong class="text-primary small mb-1">${msg.name}</strong><span>${msg.text}</span><div class="msg-meta"><span>${time}</span></div>`;
-                if (msg.timestamp > pageLoadTime) playSound('msg');
-            } else {
-                div.className = 'text-center small text-muted my-2 bg-white bg-opacity-50 py-1 rounded-pill mx-auto px-3 shadow-sm';
-                div.style.width = 'fit-content';
-                div.innerText = msg.text;
+                return null;
             }
 
-            document.getElementById('messagesArea').appendChild(div);
-            scrollToBottom();
+            return { name, email, phone, message };
         }
 
-        function showChatRoom() {
-            const login = document.getElementById('loginState');
-            const chat = document.getElementById('chatState');
+        function submitSupport(method) {
+            const data = validateForm();
+            if (!data) return;
 
-            if (login && chat) {
-                login.style.setProperty('display', 'none', 'important');
-                chat.style.setProperty('display', 'flex', 'important');
+            const phoneText = data.phone ? `\n- No. WA: ${data.phone}` : '';
+
+            if (method === 'wa') {
+                const waNumber = "6283829520561"; // Same number as custom-order
+                const formattedMessage = `Halo Tim Support Primadev,\n\nSaya ingin menyampaikan Keluhan/Saran/Feedback dengan rincian sebagai berikut:\n\n*Data Pengirim:*\n- Nama: ${data.name}\n- Email: ${data.email}${phoneText}\n\n*Pesan:*\n${data.message}`;
+                const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(formattedMessage)}`;
+                window.open(waUrl, '_blank');
+            } else if (method === 'email') {
+                const formattedBody = `Halo Tim Support Primadev,\n\nSaya ingin menyampaikan Keluhan/Saran/Feedback dengan rincian sebagai berikut:\n\nData Pengirim:\n- Nama: ${data.name}\n- Email: ${data.email}${phoneText}\n\nPesan:\n${data.message}`;
+                const emailUrl = `mailto:support.primadev@gmail.com?subject=Tiket Support: ${encodeURIComponent(data.name)}&body=${encodeURIComponent(formattedBody)}`;
+                window.location.href = emailUrl;
             }
-        }
-
-        function scrollToBottom() {
-            setTimeout(() => document.getElementById('messagesArea').scrollTop = document.getElementById('messagesArea').scrollHeight, 100);
-        }
-
-        window.endChat = () => {
-            Swal.fire({
-                title: 'Akhiri Chat?',
-                text: 'Sesi chat akan ditutup secara permanen.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444'
-            }).then(async (r) => {
-                if (r.isConfirmed) {
-                    try {
-                        await update(ref(db, `live_chats/${currentChatId}/info`), { status: 'closed' });
-                    } catch (e) { }
-                    localStorage.clear();
-                    location.reload();
-                }
-            });
-        };
-
-        function playSound(type = 'msg') {
-            const url = type === 'new'
-                ? "https://cdn.freesound.org/previews/171/171697_2437358-lq.mp3"
-                : "https://cdn.freesound.org/previews/536/536108_11566838-lq.mp3";
-            new Audio(url).play().catch(() => { });
         }
     </script>
 </body>

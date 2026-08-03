@@ -60,9 +60,6 @@ const getDb = () => {
     return null;
 };
 
-// =====================================================================
-// HELPER: GENERATE LICENSE KEY
-// =====================================================================
 const generateRandomKey = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     return `PRIMA-${Array.from({ length: 3 }, () =>
@@ -70,12 +67,20 @@ const generateRandomKey = () => {
     ).join('-')}`;
 };
 
-// =====================================================================
-// HELPER: KIRIM EMAIL
-// =====================================================================
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
 const sendEmail = async (data, isRenewal = false) => {
-    const url = 'https://api.emailjs.com/api/v1.0/email/send';
-    if (!process.env.EMAILJS_SERVICE_ID) return;
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.warn("[EMAIL] Kredensial Gmail tidak diset. Email tidak dikirim.");
+        return;
+    }
 
     const templateData = {
         name: data.name,
@@ -87,32 +92,21 @@ const sendEmail = async (data, isRenewal = false) => {
     };
 
     const messageHtml = isRenewal ? getRenewalTemplate(templateData) : getPremiumTemplate(templateData);
+    const subject = isRenewal ? `Perpanjangan Lisensi ${data.appName}` : `Pesanan Selesai: Lisensi ${data.appName} (${data.type})`;
 
-    const emailPayload = {
-        service_id: process.env.EMAILJS_SERVICE_ID,
-        template_id: process.env.EMAILJS_TEMPLATE_ID,
-        user_id: process.env.EMAILJS_PUBLIC_KEY,
-        accessToken: process.env.EMAILJS_PRIVATE_KEY,
-        template_params: {
-            to_email: data.email,
-            to_name: data.name,
-            license_key: data.key,
-            expiry_date: data.expiryDate,
-            type: isRenewal ? `Perpanjangan ${data.appName}` : `${data.appName} (${data.type})`,
-            message_html: messageHtml
-        }
-    };
     try {
-        await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(emailPayload) });
+        const info = await transporter.sendMail({
+            from: `"PT. Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
+            to: data.email,
+            subject: subject,
+            html: messageHtml
+        });
+        console.log("[EMAIL] Email terkirim:", info.messageId);
     } catch (e) {
-        console.error("[EMAIL] Gagal mengirim email:", e);
+        console.error("[EMAIL] Gagal mengirim email:", e.message);
     }
 };
 
-// =====================================================================
-// XENDIT CHARGE ADAPTER
-// Semua metode pembayaran diproses di sini via Xendit API langsung.
-// =====================================================================
 const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, successRedirectUrl, failedRedirectUrl) => {
     if (!xenditSecretKey) {
         throw new Error("XENDIT_SECRET_KEY belum dikonfigurasi di file .env server.");
@@ -129,7 +123,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
 
     console.log(`[XENDIT] Memproses charge | OrderID: ${orderId} | Metode: ${paymentMethod} | Jumlah: ${grossAmount}`);
 
-    // Helper: format pesan error Xendit
     const formatXenditError = (data, defaultMsg) => {
         let errMsg = data.message || data.error_code || defaultMsg;
         if (Array.isArray(data.errors) && data.errors.length > 0) {
@@ -434,9 +427,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
     throw new Error(`Metode pembayaran "${paymentMethod}" belum didukung oleh Xendit.`);
 };
 
-// =====================================================================
-// HELPER: BACA ACTIVE GATEWAY DARI FIREBASE SETTINGS
-// =====================================================================
 const getActiveGateway = async (db) => {
     if (!db) return 'xendit';
     try {
@@ -449,9 +439,6 @@ const getActiveGateway = async (db) => {
     }
 };
 
-// =====================================================================
-// MIDTRANS CORE API CHARGE ADAPTER
-// =====================================================================
 const executeMidtransCharge = async (payload, serverKey, isProduction, finishUrl) => {
     if (!serverKey) {
         throw new Error('MIDTRANS_SERVER_KEY belum dikonfigurasi di file .env server.');
@@ -682,9 +669,6 @@ const executeMidtransCharge = async (payload, serverKey, isProduction, finishUrl
     throw new Error(`Metode pembayaran "${paymentMethod}" belum didukung oleh Midtrans.`);
 };
 
-// =====================================================================
-// MAIN HANDLER
-// =====================================================================
 exports.handler = async (event, context) => {
     const allowedOrigins = [
         'https://apps-primadev.netlify.app',
@@ -764,9 +748,6 @@ exports.handler = async (event, context) => {
 
         console.log(`[BACKEND] Permintaan masuk | Action: ${action || 'tidak ada'} | Metode: ${event.httpMethod}`);
 
-        // ==============================================================
-        // ACTION: create_transaction (Checkout / Pembelian Baru)
-        // ==============================================================
         if (action === 'create_transaction') {
             let { appId, duration, buyerName, buyerEmail, buyerPhone, paymentMethod } = body;
 
@@ -777,7 +758,6 @@ exports.handler = async (event, context) => {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: "Durasi tidak valid. Harus: monthly, yearly, atau lifetime" }) };
             }
 
-            // Whitelist metode pembayaran yang diizinkan — tolak metode tidak dikenal
             const ALLOWED_METHODS = ['qris', 'bca', 'bni', 'bri', 'permata', 'mandiri', 'cimb', 'gopay', 'shopeepay', 'dana', 'ovo', 'indomaret', 'alfamart'];
             if (!paymentMethod || typeof paymentMethod !== 'string' || !ALLOWED_METHODS.includes(paymentMethod.toLowerCase())) {
                 console.warn(`[BACKEND] Metode pembayaran ditolak: "${paymentMethod}"`);
@@ -798,8 +778,6 @@ exports.handler = async (event, context) => {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: "Produk atau paket harga tidak tersedia" }) };
             }
 
-            // Harga SELALU diambil dari database (Firebase/products.json) —
-            // tidak pernah dipercaya dari request client. Ini mencegah manipulasi harga.
             const price = Math.floor(product.price[duration]);
             if (!price || price <= 0) {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: "Harga produk tidak valid di sistem" }) };
@@ -807,7 +785,6 @@ exports.handler = async (event, context) => {
 
             const orderId = `ORDER-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-            // Baca active gateway dari Firebase settings
             const activeGateway = await getActiveGateway(db);
             console.log(`[BACKEND] Transaksi baru | Gateway: ${activeGateway} | OrderID: ${orderId} | Produk: ${appId} | Durasi: ${duration} | Jumlah: ${price}`);
 
@@ -846,7 +823,7 @@ exports.handler = async (event, context) => {
                         duration,
                         orderType: 'NEW',
                         paymentMethod,
-                        gateway: activeGateway,   // 'xendit' | 'midtrans'
+                        gateway: activeGateway,
                         createdAt: Date.now()
                     });
                 }
@@ -863,9 +840,6 @@ exports.handler = async (event, context) => {
             }
         }
 
-        // ==============================================================
-        // ACTION: renew_transaction (Perpanjangan Lisensi)
-        // ==============================================================
         if (action === 'renew_transaction') {
             const { licenseKey, duration, buyerName, buyerEmail, buyerPhone, paymentMethod } = body;
 
@@ -900,7 +874,6 @@ exports.handler = async (event, context) => {
             const orderId = `RENEW-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
             const appName = licenseData.appName || product?.name || 'Lisensi Primadev';
 
-            // Baca active gateway dari Firebase settings
             const activeGatewayRenew = await getActiveGateway(db);
             console.log(`[BACKEND] Perpanjangan lisensi | Gateway: ${activeGatewayRenew} | OrderID: ${orderId} | Kunci: ${licenseKey}`);
 
@@ -939,7 +912,7 @@ exports.handler = async (event, context) => {
                         orderType: 'RENEWAL',
                         targetLicenseKey: licenseKey,
                         paymentMethod,
-                        gateway: activeGatewayRenew,  // 'xendit' | 'midtrans'
+                        gateway: activeGatewayRenew,
                         createdAt: Date.now()
                     });
                 }
@@ -956,9 +929,6 @@ exports.handler = async (event, context) => {
             }
         }
 
-        // ==============================================================
-        // ACTION: verify_payment (Polling dari frontend)
-        // ==============================================================
         if (action === 'verify_payment') {
             const { orderId } = body;
             if (!orderId) return { statusCode: 400, headers, body: JSON.stringify({ error: "Missing orderId" }) };
@@ -979,13 +949,46 @@ exports.handler = async (event, context) => {
             const isPaid = PAID_STATUSES.includes(trxData.status);
 
             if (!isPaid) {
-                console.log(`[BACKEND] Polling verifikasi | OrderID: ${orderId} | Status: "${trxData.status}" | Masih menunggu pembayaran`);
-                return { statusCode: 200, headers, body: JSON.stringify({ status: 'pending', isSuccess: false }) };
+                console.log(`[BACKEND] Polling verifikasi | OrderID: ${orderId} | Status Lokal: "${trxData.status}" | Memeriksa Gateway...`);
+                let gatewayStatus = null;
+                try {
+                    if (trxData.gateway === 'midtrans') {
+                        const isProd = process.env.MIDTRANS_IS_PRODUCTION === 'true';
+                        const baseUrl = isProd ? 'https://api.midtrans.com/v2' : 'https://api.sandbox.midtrans.com/v2';
+                        const serverKey = process.env.MIDTRANS_SERVER_KEY || '';
+                        if (serverKey) {
+                            const res = await fetch(`${baseUrl}/${orderId}/status`, {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Basic ${Buffer.from(serverKey + ':').toString('base64')}`
+                                }
+                            });
+                            if (res.ok) {
+                                const mData = await res.json();
+                                const ts = (mData.transaction_status || '').toLowerCase();
+                                const fs = (mData.fraud_status || '').toLowerCase();
+                                if (fs !== 'deny' && (ts === 'capture' || ts === 'settlement')) {
+                                    gatewayStatus = 'success';
+                                    console.log(`[BACKEND] Active polling mendeteksi pembayaran Midtrans berhasil! OrderID: ${orderId}`);
+                                }
+                            }
+                        }
+                    } else if (trxData.gateway === 'xendit') {
+                        // TODO: Implement Xendit active polling if needed. For now just fallback.
+                        // We would need to know the specific Xendit endpoint to check based on payment method.
+                    }
+                } catch (e) {
+                    console.error("[ACTIVE POLLING] Error:", e.message);
+                }
+
+                if (gatewayStatus !== 'success') {
+                    return { statusCode: 200, headers, body: JSON.stringify({ status: 'pending', isSuccess: false }) };
+                }
             }
 
             console.log(`[BACKEND] Fallback verifikasi | Webhook belum diproses | OrderID: ${orderId} | Status: ${trxData.status}`);
 
-            // --- PERPANJANGAN (RENEWAL) ---
             if (trxData.orderType === 'RENEWAL') {
                 const targetKey = trxData.targetLicenseKey;
                 if (!targetKey) {
@@ -1029,7 +1032,6 @@ exports.handler = async (event, context) => {
                 return { statusCode: 200, headers, body: JSON.stringify({ status: 'success', key: targetKey }) };
             }
 
-            // --- PEMBELIAN BARU ---
             const appId = trxData.appId || '';
             const duration = trxData.duration || 'monthly';
             const product = PRICING_DB[appId] || { name: 'Aplikasi', price: {} };
@@ -1065,13 +1067,6 @@ exports.handler = async (event, context) => {
             return { statusCode: 200, headers, body: JSON.stringify({ status: 'success', key }) };
         }
 
-        // ==============================================================
-        // ==============================================================
-        // ACTION: validate_extension_license
-        // ⚠️  DIPINDAHKAN ke file terpisah untuk arsitektur yang lebih bersih.
-        // Gunakan endpoint: POST /.netlify/functions/validate-license
-        // Lihat: netlify/functions/validate-license.js
-        // ==============================================================
         if (action === 'validate_extension_license') {
             return {
                 statusCode: 301,
@@ -1088,7 +1083,6 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Endpoint legacy diblokir
         if (!action) {
             console.warn("[BACKEND] Permintaan tanpa action diblokir oleh sistem keamanan.");
             return { statusCode: 400, headers, body: JSON.stringify({ error: "Endpoint tidak aktif." }) };

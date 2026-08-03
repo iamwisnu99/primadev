@@ -406,8 +406,17 @@
 
         /* --- Responsive Design --- */
         @media (max-width: 991px) {
+            html, body {
+                height: 100%;
+            }
+            body {
+                flex-direction: column;
+                min-height: 100dvh;
+            }
             .fullscreen-wrapper {
                 flex-direction: column;
+                flex: 1 1 auto;
+                background-color: #ffffff;
             }
 
             .brand-pane {
@@ -425,7 +434,7 @@
 
             .form-pane {
                 padding: 40px 24px 60px;
-                flex: none;
+                flex: 1;
             }
 
             .top-nav {
@@ -484,9 +493,11 @@
                 </ul>
             </div>
 
-            <div class="brand-footer">
-                &copy; 2026 PT. Primadev Digital Technology. All Rights Reserved.
+            <div class="brand-footer" style="color: #ffffff; text-align: left; opacity: 1;">
+                <div>&copy; <span id="currentYearCustom">2026</span> PT. Primadev Digital Technology</div>
+                <div style="margin-top: 4px;">SK Kemenkumham RI (AHU-A104134.AH.01.30.Tahun 2026)</div>
             </div>
+            <script>document.getElementById('currentYearCustom').textContent = new Date().getFullYear();</script>
         </div>
 
         <!-- Right Pane: Professional Fullscreen Form -->

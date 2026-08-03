@@ -14,6 +14,7 @@
         "npm:@supabase/supabase-js@^2.93.3",
         "npm:firebase-admin@^12.7.0",
         "npm:node-fetch@^2.7.0",
+        "npm:nodemailer@^9.0.3",
         "npm:pdfkit@~0.12.3"
       ]
     }

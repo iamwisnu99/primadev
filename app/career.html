@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karir - Bergabung Bersama Primadev</title>
+    <meta name="theme-color" content="#ffffff">
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <link rel="stylesheet" href="/public/css/career.css">
+</head>
+
+<body>
+
+    <div class="layout-container">
+        <!-- Left Showcase -->
+        <div class="brand-showcase">
+            <div class="brand-content">
+                <div class="logo-container">
+                    <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev Logo">
+                </div>
+
+                <div class="brand-text">
+                    <h1>Membangun Inovasi Digital Tanpa Batas</h1>
+                    <p>Jadilah bagian dari tim visioner yang menciptakan solusi perangkat lunak terdepan untuk membantu
+                        ratusan bisnis di Indonesia tumbuh lebih cepat.</p>
+                </div>
+
+                <div class="features">
+                    <div class="feature-item">
+                        <i class="fas fa-rocket"></i> Lingkungan Kerja Inovatif
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-laptop-code"></i> Teknologi Modern & Up-to-date
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-users"></i> Kolaborasi Tim yang Solid
+                    </div>
+                </div>
+            </div>
+
+            <div style="position: relative; z-index: 2; font-size: 0.9rem; color: #ffffff;">
+                <div>&copy; <span id="currentYearCareer">2026</span> PT. Primadev Digital Technology</div>
+                <div style="margin-top: 4px;">SK Kemenkumham RI (AHU-A104134.AH.01.30.Tahun 2026)</div>
+            </div>
+            <script src="/public/js/career.js"></script>
+        </div>
+
+        <!-- Right Form -->
+        <div class="form-section">
+            <a href="/" class="back-link" id="backLink"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+
+            <div class="form-header">
+                <h2>Kirim Lamaran</h2>
+                <p>Silakan lengkapi formulir di bawah ini dengan data diri Anda.</p>
+            </div>
+
+            <div class="wizard-progress">
+                <div class="step-indicator active" id="ind-step1">
+                    <div class="step-circle">1</div>
+                    Data Diri
+                </div>
+                <div class="step-indicator" id="ind-step2">
+                    <div class="step-circle">2</div>
+                    Keahlian
+                </div>
+                <div class="step-indicator" id="ind-step3">
+                    <div class="step-circle">3</div>
+                    Dokumen
+                </div>
+            </div>
+
+            <form id="careerForm">
+                <!-- STEP 1 -->
+                <div class="step-content active" id="step1">
+                    <div class="form-group">
+                        <label for="name">Nama Lengkap <span>*</span></label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Contoh: BUDI SANTOSO"
+                            style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Alamat Email <span>*</span></label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="nama@email.com"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="whatsapp">No. WhatsApp <span class="optional">(Bila Ada)</span></label>
+                        <div class="input-group">
+                            <div class="custom-select-container" id="waCustomSelect">
+                                <div class="custom-select-trigger" id="waSelectTrigger">
+                                    <span id="waSelectedCode">+62</span>
+                                    <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: #94a3b8;"></i>
+                                </div>
+                                <div class="custom-select-dropdown" id="waSelectDropdown">
+                                    <div class="custom-select-search">
+                                        <input type="text" id="waSearchInput" placeholder="Cari kode atau negara..."
+                                            autocomplete="off">
+                                    </div>
+                                    <ul class="custom-select-list" id="waSelectList">
+                                    </ul>
+                                </div>
+                            </div>
+                            <input type="hidden" id="countryCode" value="62">
+                            <input type="tel" id="whatsapp" name="whatsapp" class="form-control"
+                                placeholder="81234567890" style="border-radius: 0 12px 12px 0;">
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <div style="flex: 1; visibility: hidden;"></div>
+                        <button type="button" class="btn-next" onclick="nextStep(1)">
+                            Lanjut ke Tahap 2 <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="step-content" id="step2">
+                    <div class="form-group">
+                        <label for="keahlian">Deskripsikan Keahlian Anda <span>*</span></label>
+                        <textarea id="keahlian" name="keahlian" class="form-control" rows="4"
+                            placeholder="Ceritakan keahlian, pengalaman, atau tools yang Anda kuasai..."
+                            required></textarea>
+                        <span class="input-hint">Jelaskan secara singkat agar kami lebih mengenal potensi Anda.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="portfolio">Portofolio Bisnis / Pribadi <span class="optional">(Opsional -
+                                DISARANKAN)</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">https://</span>
+                            <input type="text" id="portfolio" name="portfolio" class="form-control"
+                                placeholder="link-portofolio-anda.com">
+                        </div>
+                        <span class="input-hint"><i class="fas fa-info-circle me-1"></i> Sertakan link portofolio
+                            (Drive/Website) untuk nilai tambah.</span>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn-prev" onclick="prevStep(2)">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </button>
+                        <button type="button" class="btn-next" onclick="nextStep(2)">
+                            Lanjut ke Tahap 3 <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3 -->
+                <div class="step-content" id="step3">
+                    <div class="form-group">
+                        <label>Upload Dokumen Pendukung <span class="optional">(Opsional - NILAI TAMBAH)</span></label>
+                        <div class="file-upload-wrapper" id="uploadWrapper">
+                            <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+                            <div class="file-upload-text" id="fileNameDisplay">Pilih file untuk diunggah</div>
+                            <div class="file-upload-hint">Upload CV, Surat Lamaran, atau Sertifikat (Format: PDF | Maks:
+                                3MB)</div>
+                            <input type="file" id="dokumenFile" accept=".pdf,.doc,.docx"
+                                onchange="handleFileSelect(event)">
+                        </div>
+                    </div>
+
+                    <div class="cf-turnstile" style="margin: 10px 0;" data-sitekey="0x4AAAAAAEFPhchiX7_LTna_"></div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="kejujuranCheck" required>
+                        <label for="kejujuranCheck">Saya menyatakan bahwa seluruh data yang saya isikan di formulir ini
+                            adalah benar dan dapat dipertanggungjawabkan.</label>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn-prev" onclick="prevStep(3)">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </button>
+                        <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                            <span id="btnText">Ajukan Lamaran</span>
+                            <div class="spinner" id="spinner"></div>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('careerForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+
+        const countriesList = [
+            { iso: 'ID', code: '+62' }, { iso: 'US', code: '+1' }, { iso: 'GB', code: '+44' }, { iso: 'SG', code: '+65' },
+            { iso: 'MY', code: '+60' }, { iso: 'AU', code: '+61' }, { iso: 'CA', code: '+1' }, { iso: 'JP', code: '+81' },
+            { iso: 'KR', code: '+82' }, { iso: 'CN', code: '+86' }, { iso: 'IN', code: '+91' }, { iso: 'AE', code: '+971' },
+            { iso: 'SA', code: '+966' }, { iso: 'DE', code: '+49' }, { iso: 'FR', code: '+33' }, { iso: 'NL', code: '+31' },
+            { iso: 'RU', code: '+7' }, { iso: 'BR', code: '+55' }, { iso: 'MX', code: '+52' }, { iso: 'ZA', code: '+27' },
+            { iso: 'EG', code: '+20' }, { iso: 'TH', code: '+66' }, { iso: 'PH', code: '+63' }, { iso: 'VN', code: '+84' },
+            { iso: 'PK', code: '+92' }, { iso: 'BD', code: '+880' }, { iso: 'ES', code: '+34' }, { iso: 'IT', code: '+39' },
+            { iso: 'CH', code: '+41' }, { iso: 'SE', code: '+46' }, { iso: 'NO', code: '+47' }, { iso: 'FI', code: '+358' },
+            { iso: 'DK', code: '+45' }, { iso: 'TR', code: '+90' }, { iso: 'IR', code: '+98' }, { iso: 'IQ', code: '+964' },
+            { iso: 'IL', code: '+972' }, { iso: 'AR', code: '+54' }, { iso: 'CO', code: '+57' }, { iso: 'CL', code: '+56' },
+            { iso: 'PE', code: '+51' }, { iso: 'VE', code: '+58' }, { iso: 'NG', code: '+234' }, { iso: 'KE', code: '+254' },
+            { iso: 'TZ', code: '+255' }, { iso: 'UG', code: '+256' }, { iso: 'GH', code: '+233' }, { iso: 'DZ', code: '+213' },
+            { iso: 'MA', code: '+212' }, { iso: 'NZ', code: '+64' }, { iso: 'QA', code: '+974' }, { iso: 'KW', code: '+965' },
+            { iso: 'OM', code: '+968' }, { iso: 'BH', code: '+973' }, { iso: 'JO', code: '+962' }, { iso: 'LB', code: '+961' },
+            { iso: 'PT', code: '+351' }, { iso: 'GR', code: '+30' }, { iso: 'AT', code: '+43' }, { iso: 'BE', code: '+32' },
+            { iso: 'IE', code: '+353' }, { iso: 'PL', code: '+48' }, { iso: 'CZ', code: '+420' }, { iso: 'HU', code: '+36' },
+            { iso: 'RO', code: '+40' }, { iso: 'UA', code: '+380' }, { iso: 'BY', code: '+375' }, { iso: 'KZ', code: '+7' },
+            { iso: 'TW', code: '+886' }, { iso: 'HK', code: '+852' }, { iso: 'MO', code: '+853' }, { iso: 'LK', code: '+94' },
+            { iso: 'NP', code: '+977' }, { iso: 'MM', code: '+95' }, { iso: 'KH', code: '+855' }, { iso: 'LA', code: '+856' },
+            { iso: 'AF', code: '+93' }, { iso: 'CU', code: '+53' }, { iso: 'DO', code: '+1' }, { iso: 'PR', code: '+1' },
+            { iso: 'JM', code: '+1' }, { iso: 'CR', code: '+506' }, { iso: 'PA', code: '+507' }, { iso: 'UY', code: '+598' },
+            { iso: 'PY', code: '+595' }, { iso: 'BO', code: '+591' }, { iso: 'EC', code: '+593' }, { iso: 'SY', code: '+963' },
+            { iso: 'YE', code: '+967' }, { iso: 'SD', code: '+249' }, { iso: 'ET', code: '+251' }, { iso: 'ZW', code: '+263' },
+            { iso: 'ZM', code: '+260' }, { iso: 'MZ', code: '+258' }, { iso: 'AO', code: '+244' }, { iso: 'CM', code: '+237' },
+            { iso: 'CI', code: '+225' }, { iso: 'SN', code: '+221' }, { iso: 'ML', code: '+223' }, { iso: 'CD', code: '+243' }
+        ];
+
+        const waCustomSelect = document.getElementById('waCustomSelect');
+        const waSelectTrigger = document.getElementById('waSelectTrigger');
+        const waSelectDropdown = document.getElementById('waSelectDropdown');
+        const waSearchInput = document.getElementById('waSearchInput');
+        const waSelectList = document.getElementById('waSelectList');
+        const waSelectedCode = document.getElementById('waSelectedCode');
+        const hiddenCountryCode = document.getElementById('countryCode');
+
+        function renderCountries(list) {
+            waSelectList.innerHTML = '';
+            list.forEach(c => {
+                const li = document.createElement('li');
+                li.className = 'custom-select-option';
+                if (c.code.replace('+', '') === hiddenCountryCode.value && c.iso === 'ID') {
+                    li.classList.add('selected');
+                }
+                li.innerHTML = `<strong>${c.code}</strong> <span style="margin-left: 8px; color: #64748b;">- ${c.iso}</span>`;
+
+                li.addEventListener('click', () => {
+                    waSelectedCode.textContent = c.code;
+                    hiddenCountryCode.value = c.code.replace('+', '');
+                    waSelectDropdown.classList.remove('open');
+
+                    document.querySelectorAll('.custom-select-option').forEach(el => el.classList.remove('selected'));
+                    li.classList.add('selected');
+                });
+                waSelectList.appendChild(li);
+            });
+        }
+        renderCountries(countriesList);
+
+        waSelectTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!waSelectDropdown.classList.contains('open')) {
+                waSelectDropdown.classList.add('open');
+                waSearchInput.value = '';
+                renderCountries(countriesList);
+                setTimeout(() => waSearchInput.focus(), 50);
+            } else {
+                waSelectDropdown.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!waCustomSelect.contains(e.target)) {
+                waSelectDropdown.classList.remove('open');
+            }
+        });
+
+        waSearchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = countriesList.filter(c => c.code.toLowerCase().includes(query) || c.iso.toLowerCase().includes(query));
+            renderCountries(filtered);
+        });
+
+        let selectedFile = null;
+        let supabaseClient = null;
+
+        async function initSupabase() {
+            try {
+                const res = await fetch('/.netlify/functions/get-config');
+                const config = await res.json();
+                if (config.SUPABASE_URL && config.SUPABASE_ANON_KEY) {
+                    supabaseClient = supabase.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
+                } else {
+                    console.error('Supabase config missing in .env');
+                }
+            } catch (err) {
+                console.error('Failed to fetch config', err);
+            }
+        }
+        initSupabase();
+
+        function showStep(stepNum) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + stepNum).classList.add('active');
+
+            document.querySelectorAll('.step-indicator').forEach((el, idx) => {
+                const stepIndex = idx + 1;
+                if (stepIndex === stepNum) {
+                    el.classList.add('active');
+                    el.classList.remove('completed');
+                } else if (stepIndex < stepNum) {
+                    el.classList.add('completed');
+                    el.classList.remove('active');
+                } else {
+                    el.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        function nextStep(currentStep) {
+            if (currentStep === 1) {
+                const name = document.getElementById('name');
+                const email = document.getElementById('email');
+                if (!name.checkValidity()) {
+                    name.reportValidity();
+                    return;
+                }
+                if (!email.checkValidity()) {
+                    email.reportValidity();
+                    return;
+                }
+                showStep(2);
+            } else if (currentStep === 2) {
+                const keahlian = document.getElementById('keahlian');
+                if (!keahlian.checkValidity()) {
+                    keahlian.reportValidity();
+                    return;
+                }
+                showStep(3);
+            }
+        }
+
+        function prevStep(currentStep) {
+            showStep(currentStep - 1);
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Maksimum ukuran file (3MB)
+                if (file.size > 3 * 1024 * 1024) {
+                    Swal.fire('Terlalu Besar', 'Maksimal ukuran file adalah 3MB', 'error');
+                    event.target.value = '';
+                    return;
+                }
+                selectedFile = file;
+                document.getElementById('fileNameDisplay').textContent = file.name;
+                document.getElementById('uploadWrapper').style.borderColor = 'var(--primary)';
+            } else {
+                selectedFile = null;
+                document.getElementById('fileNameDisplay').textContent = 'Pilih file untuk diunggah';
+                document.getElementById('uploadWrapper').style.borderColor = 'var(--border)';
+            }
+        }
+
+        document.getElementById('kejujuranCheck').addEventListener('change', function () {
+            submitBtn.disabled = !this.checked;
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const keahlian = document.getElementById('keahlian').value.trim();
+
+            const countryCode = document.getElementById('countryCode').value;
+            const waNumber = document.getElementById('whatsapp').value.trim();
+            const whatsapp = waNumber ? `+${countryCode}${waNumber.replace(/^0+/, '')}` : '';
+
+            let portfolioRaw = document.getElementById('portfolio').value.trim();
+            const portfolio = portfolioRaw ? `https://${portfolioRaw.replace(/^https?:\/\//i, '')}` : '';
+
+            const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value;
+
+            submitBtn.disabled = true;
+            btnText.textContent = 'Memproses...';
+            spinner.style.display = 'block';
+
+            try {
+                let dokumenUrl = '';
+
+                // Upload ke Supabase jika ada file
+                if (selectedFile && supabaseClient) {
+                    btnText.textContent = 'Mengunggah Dokumen...';
+                    const fileExt = selectedFile.name.split('.').pop();
+                    const fileName = `${Date.now()}_${name.replace(/[^a-zA-Z0-9]/g, '')}.${fileExt}`;
+
+                    const { data, error } = await supabaseClient
+                        .storage
+                        .from('career-docs')
+                        .upload(fileName, selectedFile, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+
+                    if (error) {
+                        throw new Error('Gagal mengunggah dokumen: ' + error.message);
+                    }
+
+                    const { data: publicUrlData } = supabaseClient
+                        .storage
+                        .from('career-docs')
+                        .getPublicUrl(fileName);
+
+                    dokumenUrl = publicUrlData.publicUrl;
+                }
+
+                btnText.textContent = 'Mengirim Data...';
+                const response = await fetch('/.netlify/functions/employees', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name, email, whatsapp, portfolio, keahlian, dokumenUrl, turnstileResponse
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    window.location.href = '/app/career-success';
+                } else {
+                    Swal.fire('Oops...', result.error || 'Terjadi kesalahan saat mengirim pengajuan.', 'error');
+                    submitBtn.disabled = false;
+                    btnText.textContent = 'Ajukan Lamaran';
+                    spinner.style.display = 'none';
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire('Oops...', error.message || 'Koneksi ke server gagal. Periksa jaringan Anda.', 'error');
+                submitBtn.disabled = false;
+                btnText.textContent = 'Ajukan Lamaran';
+                spinner.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            requestAnimationFrame(() => {
+                document.body.classList.add('page-ready');
+            });
+
+            const backLink = document.getElementById('backLink');
+            if (backLink) {
+                backLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const dest = this.getAttribute('href');
+                    document.body.style.transition = 'opacity 0.35s ease';
+                    document.body.style.opacity = '0';
+
+                    setTimeout(() => {
+                        window.location.href = dest;
+                    }, 360);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

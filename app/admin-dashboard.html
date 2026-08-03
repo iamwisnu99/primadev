@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Primadev Digital Technology</title>
-    <!-- Dashboard admin — wajib tersembunyi dari mesin pencari -->
+
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
     <meta name="googlebot" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
@@ -15,1373 +15,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
 
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #eff6ff;
-            --sidebar-bg: #ffffff;
-            --sidebar-hover: #f8fafc;
-            --sidebar-active: #eff6ff;
-            --sidebar-active-border: #2563eb;
-            --bg: #f1f5f9;
-            --surface: #ffffff;
-            --border: #e2e8f0;
-            --text: #0f172a;
-            --text-2: #475569;
-            --text-3: #94a3b8;
-            --radius: 12px;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.04);
-            --sidebar-w: 260px;
-            --topbar-h: 68px;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: var(--sidebar-w);
-            background: var(--sidebar-bg);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            z-index: 200;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 4px 0 24px rgba(148, 163, 184, 0.06);
-        }
-
-        .sidebar-logo {
-            padding: 24px 16px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid var(--border);
-            background: #ffffff;
-            text-align: center;
-        }
-
-        .sidebar-logo img {
-            height: 40px;
-            margin-bottom: 8px;
-        }
-
-        .sidebar-company-title {
-            font-size: 0.74rem;
-            font-weight: 700;
-            color: #334155;
-            letter-spacing: 0.01em;
-            line-height: 1.3;
-        }
-
-        .sidebar-nav {
-            padding: 20px 14px;
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .nav-section-label {
-            font-size: 0.68rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #94a3b8;
-            padding: 12px 10px 6px;
-            margin-top: 4px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 11px 14px;
-            border-radius: 10px;
-            cursor: pointer;
-            color: #475569;
-            font-size: 0.88rem;
-            font-weight: 500;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            text-decoration: none;
-            position: relative;
-            border: 1px solid transparent;
-        }
-
-        .nav-item i {
-            width: 20px;
-            text-align: center;
-            font-size: 1rem;
-            color: #64748b;
-            transition: color 0.2s ease;
-        }
-
-        .nav-item:hover {
-            background: var(--sidebar-hover);
-            color: #0f172a;
-            transform: translateX(3px);
-        }
-
-        .nav-item:hover i {
-            color: #2563eb;
-        }
-
-        .nav-item.active {
-            background: var(--primary-light);
-            color: var(--primary);
-            font-weight: 700;
-            border-color: rgba(37, 99, 235, 0.15);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.06);
-        }
-
-        .nav-item.active i {
-            color: var(--primary);
-        }
-
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 20%;
-            bottom: 20%;
-            width: 3.5px;
-            background: var(--primary);
-            border-radius: 0 4px 4px 0;
-        }
-
-        .nav-item .badge {
-            margin-left: auto;
-            background: var(--primary-light);
-            color: var(--primary);
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 100px;
-            border: 1px solid rgba(37, 99, 235, 0.2);
-        }
-
-        .nav-item.active .badge {
-            background: var(--primary);
-            color: #ffffff;
-            border-color: var(--primary);
-        }
-
-        .sidebar-footer {
-            padding: 16px 14px;
-            border-top: 1px solid var(--border);
-            background: #fafbfc;
-        }
-
-        .admin-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-        }
-
-        .admin-avatar {
-            width: 38px;
-            height: 38px;
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-        }
-
-        .admin-avatar img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-        }
-
-        .admin-name {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #0f172a;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .admin-email {
-            font-size: 0.72rem;
-            color: #64748b;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .btn-logout {
-            width: 100%;
-            padding: 10px;
-            background: #fef2f2;
-            color: #ef4444;
-            border: 1px solid #fecaca;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .btn-logout:hover {
-            background: #fee2e2;
-            color: #dc2626;
-            border-color: #f87171;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);
-        }
-
-        /* ===== TOPBAR ===== */
-        .topbar {
-            position: fixed;
-            top: 0;
-            left: var(--sidebar-w);
-            right: 0;
-            height: var(--topbar-h);
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            padding: 0 28px;
-            gap: 16px;
-            z-index: 100;
-        }
-
-        .topbar-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--text);
-            flex: 1;
-        }
-
-        .topbar-title span {
-            color: var(--text-2);
-            font-weight: 400;
-            font-size: 0.9rem;
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .topbar-clock {
-            font-size: 0.82rem;
-            color: var(--text-2);
-            background: var(--bg);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-variant-numeric: tabular-nums;
-            font-weight: 500;
-            border: 1px solid var(--border);
-        }
-
-        .topbar-btn {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text-2);
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-
-        .topbar-btn:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-            border-color: #bfdbfe;
-        }
-
-        /* Hamburger for mobile */
-        .hamburger {
-            display: none;
-            width: 36px;
-            height: 36px;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text-2);
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-
-        /* ===== MAIN CONTENT ===== */
-        .main {
-            margin-left: var(--sidebar-w);
-            margin-top: var(--topbar-h);
-            padding: 32px 28px;
-            min-height: calc(100vh - var(--topbar-h));
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-            animation: fadeInUp 0.35s ease;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ===== STAT CARDS ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 28px;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px 22px;
-            box-shadow: var(--shadow);
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            opacity: 0.07;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        }
-
-        .stat-card-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            margin-bottom: 14px;
-        }
-
-        .stat-card-label {
-            font-size: 0.73rem;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--text-2);
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .stat-card-value {
-            font-size: 1.9rem;
-            font-weight: 800;
-            color: var(--text);
-            letter-spacing: -0.5px;
-            line-height: 1;
-        }
-
-        .stat-card-sub {
-            font-size: 0.75rem;
-            color: var(--text-3);
-            margin-top: 6px;
-        }
-
-        .ic-blue {
-            background: #eff6ff;
-            color: #2563eb;
-        }
-
-        .ic-green {
-            background: #f0fdf4;
-            color: #16a34a;
-        }
-
-        .ic-red {
-            background: #fef2f2;
-            color: #dc2626;
-        }
-
-        .ic-purple {
-            background: #f5f3ff;
-            color: #7c3aed;
-        }
-
-        /* ===== CARD ===== */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: 18px 22px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .card-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-title i {
-            color: var(--primary);
-        }
-
-        .card-body {
-            padding: 22px;
-        }
-
-        /* ===== TOOLBAR ===== */
-        .toolbar {
-            padding: 16px 22px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .search-wrap {
-            position: relative;
-            flex: 1;
-            min-width: 200px;
-            max-width: 340px;
-        }
-
-        .search-wrap i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-3);
-            font-size: 0.85rem;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 9px 14px 9px 36px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.88rem;
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: var(--primary);
-            background: #fff;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 9px 18px;
-            border-radius: 8px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-outline {
-            background: #fff;
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 0.8rem;
-        }
-
-        /* ===== TABLE ===== */
-        .table-wrap {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead th {
-            padding: 11px 16px;
-            background: #f8fafc;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            color: var(--text-2);
-            font-weight: 700;
-            white-space: nowrap;
-            border-bottom: 1px solid var(--border);
-            text-align: left;
-        }
-
-        tbody td {
-            padding: 14px 16px;
-            font-size: 0.88rem;
-            border-bottom: 1px solid #f1f5f9;
-            vertical-align: middle;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        tbody tr:hover td {
-            background: #fafbfc;
-        }
-
-        .key-badge {
-            font-family: monospace;
-            font-size: 0.82rem;
-            font-weight: 700;
-            background: #f1f5f9;
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 4px 10px;
-            border-radius: 6px;
-            letter-spacing: 0.5px;
-        }
-
-        .badge {
-            padding: 3px 10px;
-            border-radius: 100px;
-            font-size: 0.72rem;
-            font-weight: 700;
-        }
-
-        .badge-active {
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .badge-banned {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-expired {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-
-        .badge-monthly {
-            background: #f0fdf4;
-            color: #15803d;
-            border: 1px solid #bbf7d0;
-        }
-
-        .badge-yearly {
-            background: #eff6ff;
-            color: #1d4ed8;
-            border: 1px solid #bfdbfe;
-        }
-
-        .badge-lifetime {
-            background: #fffbeb;
-            color: #92400e;
-            border: 1px solid #fcd34d;
-        }
-
-        .action-btn {
-            width: 32px;
-            height: 32px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 7px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.2s;
-            margin-left: 4px;
-        }
-
-        .action-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .btn-invoice {
-            background: #eff6ff;
-            color: #2563eb;
-        }
-
-        .btn-edit {
-            background: #f0fdf4;
-            color: #16a34a;
-        }
-
-        .btn-delete {
-            background: #fef2f2;
-            color: #dc2626;
-        }
-
-        /* ===== PAGINATION ===== */
-        .pagination-bar {
-            padding: 14px 20px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            background: #fafafa;
-        }
-
-        .pagination-info {
-            font-size: 0.82rem;
-            color: var(--text-2);
-        }
-
-        .pagination-btns {
-            display: flex;
-            gap: 6px;
-        }
-
-        .page-btn {
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: #fff;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
-        }
-
-        .page-btn:hover:not(:disabled) {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .page-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* ===== EMPTY STATE ===== */
-        .empty-state {
-            padding: 60px 20px;
-            text-align: center;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            color: #cbd5e1;
-            margin-bottom: 16px;
-        }
-
-        .empty-state h4 {
-            font-weight: 700;
-            color: var(--text-2);
-            margin-bottom: 6px;
-        }
-
-        .empty-state p {
-            font-size: 0.85rem;
-            color: var(--text-3);
-        }
-
-        /* ===== ACTIVITY FEED ===== */
-        .activity-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            padding: 14px 0;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-dot {
-            width: 36px;
-            height: 36px;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-
-        .activity-title {
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .activity-sub {
-            font-size: 0.78rem;
-            color: var(--text-3);
-            margin-top: 2px;
-        }
-
-        /* ===== CUSTOM DROPDOWN ===== */
-        .custom-dropdown {
-            position: relative;
-        }
-
-        .dropdown-trigger {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 9px;
-            padding: 12px 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s;
-            min-height: 54px;
-            user-select: none;
-        }
-
-        .dropdown-trigger:hover {
-            border-color: var(--primary);
-        }
-
-        .custom-dropdown.open .dropdown-trigger {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
-        }
-
-        .dropdown-options {
-            position: absolute;
-            top: calc(100% + 6px);
-            left: 0;
-            right: 0;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            display: none;
-            padding: 6px;
-            max-height: 220px;
-            overflow-y: auto;
-        }
-
-        .custom-dropdown.open .dropdown-options {
-            display: block;
-        }
-
-        .opt-item {
-            padding: 9px 12px;
-            border-radius: 7px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: background 0.15s;
-            margin-bottom: 2px;
-            font-size: 0.87rem;
-        }
-
-        .opt-item:hover {
-            background: #f8fafc;
-        }
-
-        .opt-item.selected {
-            background: #eff6ff;
-        }
-
-        .opt-title {
-            font-weight: 600;
-            color: var(--text);
-            display: block;
-        }
-
-        .opt-desc {
-            font-size: 0.73rem;
-            color: var(--text-3);
-            display: block;
-        }
-
-        .opt-check {
-            color: var(--primary);
-            opacity: 0;
-        }
-
-        .opt-item.selected .opt-check {
-            opacity: 1;
-        }
-
-        .trigger-label {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text);
-        }
-
-        .trigger-sub {
-            font-size: 0.73rem;
-            color: var(--text-3);
-        }
-
-        .trigger-chevron {
-            color: var(--text-3);
-            transition: transform 0.2s;
-        }
-
-        .custom-dropdown.open .trigger-chevron {
-            transform: rotate(180deg);
-        }
-
-        /* ===== MODAL ===== */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.4);
-            z-index: 500;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            backdrop-filter: blur(2px);
-        }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
-        .modal-box {
-            background: #fff;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            animation: modalIn 0.25s ease;
-        }
-
-        @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: scale(0.96) translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .modal-header {
-            padding: 22px 24px 16px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .modal-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-        }
-
-        .modal-close {
-            width: 30px;
-            height: 30px;
-            border-radius: 7px;
-            border: none;
-            background: #f1f5f9;
-            color: var(--text-2);
-            cursor: pointer;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-close:hover {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .modal-body {
-            padding: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-2);
-            margin-bottom: 6px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 11px 14px;
-            border: 1.5px solid var(--border);
-            border-radius: 9px;
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: all 0.2s;
-            background: #fff;
-            color: var(--text);
-        }
-
-        .form-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
-        }
-
-        .form-input:disabled {
-            background: #f8fafc;
-            color: var(--text-3);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        .form-switch-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px;
-            background: #f8fafc;
-            border-radius: 9px;
-            border: 1px solid var(--border);
-            margin-bottom: 18px;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            inset: 0;
-            background: #cbd5e1;
-            border-radius: 100px;
-            transition: 0.3s;
-        }
-
-        .slider::before {
-            content: '';
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: #fff;
-            border-radius: 50%;
-            left: 3px;
-            bottom: 3px;
-            transition: 0.3s;
-        }
-
-        input:checked+.slider {
-            background: var(--primary);
-        }
-
-        input:checked+.slider::before {
-            transform: translateX(20px);
-        }
-
-        .key-display {
-            background: #f8fafc;
-            border: 2px dashed var(--border);
-            border-radius: 9px;
-            padding: 16px;
-            text-align: center;
-            margin-bottom: 18px;
-        }
-
-        .key-display code {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: 1px;
-        }
-
-        /* ===== LOADING ===== */
-        #loadingScreen {
-            position: fixed;
-            inset: 0;
-            background: #fff;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .spin {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #e2e8f0;
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        #loadingScreen p {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-2);
-        }
-
-        /* ===== OVERVIEW BOTTOM GRID ===== */
-        .overview-bottom-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        /* ===== STATS GRID 3-COL ===== */
-        .stats-grid-3 {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        /* ===== SIDEBAR MOBILE OVERLAY ===== */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 190;
-        }
-
-        /* ===== RESPONSIVE ===== */
-
-        /* Tablet */
-        @media (max-width: 1024px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .stats-grid-3 {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-
-            /* Sidebar */
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .sidebar-overlay.show {
-                display: block;
-            }
-
-            /* Layout */
-            .topbar {
-                left: 0;
-                padding: 0 16px;
-            }
-
-            .topbar-title span {
-                display: none;
-            }
-
-            /* hide breadcrumb on mobile */
-            .topbar-title {
-                font-size: 0.95rem;
-            }
-
-            .topbar-clock {
-                font-size: 0.75rem;
-                padding: 5px 10px;
-            }
-
-            .main {
-                margin-left: 0;
-                padding: 20px 14px;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            /* Stats grids → 2 col on mobile */
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-
-            .stats-grid-3 {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-            }
-
-            .stat-card {
-                padding: 14px 14px;
-            }
-
-            .stat-card-value {
-                font-size: 1.5rem;
-            }
-
-            .stat-card-icon {
-                width: 34px;
-                height: 34px;
-                font-size: 0.85rem;
-                margin-bottom: 10px;
-            }
-
-            .stat-card-sub {
-                display: none;
-            }
-
-            /* hide subtitle on mobile to save space */
-            .overview-bottom-grid {
-                grid-template-columns: 1fr;
-                gap: 14px;
-            }
-
-            /* Toolbar */
-            .toolbar {
-                gap: 8px;
-                padding: 12px 14px;
-            }
-
-            .search-wrap {
-                max-width: 100%;
-                min-width: 0;
-                flex: 1 1 100%;
-                order: 1;
-            }
-
-            .toolbar .custom-dropdown {
-                flex: 1 1 auto;
-                min-width: 0;
-                order: 2;
-            }
-
-            .toolbar .btn {
-                order: 3;
-                white-space: nowrap;
-            }
-
-            /* Table → card mode */
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            thead {
-                display: none;
-            }
-
-            .table-wrap {
-                padding: 12px;
-            }
-
-            tbody tr {
-                display: block;
-                background: #fff;
-                border: 1px solid var(--border);
-                border-radius: 10px;
-                margin-bottom: 12px;
-                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-            }
-
-            tbody td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border-bottom: 1px solid #f1f5f9;
-                padding: 10px 14px;
-                text-align: right;
-                font-size: 0.85rem;
-            }
-
-            tbody td::before {
-                content: attr(data-label);
-                font-weight: 700;
-                font-size: 0.7rem;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-                color: var(--text-2);
-                text-align: left;
-                flex-shrink: 0;
-                margin-right: 8px;
-            }
-
-            tbody td:last-child {
-                justify-content: center;
-                border-bottom: none;
-                padding: 12px 14px;
-                background: #fafafa;
-                border-radius: 0 0 10px 10px;
-            }
-
-            /* Key badge in card mode */
-            .key-badge {
-                font-size: 0.72rem;
-                letter-spacing: 0.3px;
-                word-break: break-all;
-            }
-
-            /* Pagination */
-            .pagination-bar {
-                padding: 12px 14px;
-                gap: 8px;
-            }
-
-            .pagination-info {
-                font-size: 0.78rem;
-            }
-
-            /* Card headers */
-            .card-header {
-                padding: 14px 16px;
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-        }
-
-        /* Small mobile */
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-
-            .stats-grid-3 {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-            }
-
-            .stats-grid-3 .stat-card-value {
-                font-size: 1.3rem;
-            }
-
-            .stats-grid-3 .stat-card-label {
-                font-size: 0.62rem;
-            }
-
-            .stats-grid-3 .stat-card {
-                padding: 12px 10px;
-            }
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+    <link rel="stylesheet" href="/public/css/admin.css">
 </head>
 
 <body>
@@ -1416,6 +52,26 @@
             <a class="nav-item" data-tab="extensions" onclick="switchTab('extensions')">
                 <i class="fa-solid fa-puzzle-piece"></i> Extension Manager
             </a>
+            <div class="nav-item-group">
+                <a class="nav-item" onclick="toggleSubmenu('submenu-karyawan')">
+                    <i class="fa-solid fa-users"></i> Karyawan <i class="fa-solid fa-chevron-down ms-auto"
+                        style="font-size: 0.7rem; width: auto; margin-left: auto;"></i>
+                </a>
+                <div class="nav-submenu" id="submenu-karyawan">
+                    <a class="nav-item" data-tab="emp-lamaran" onclick="showEmployeeTab('lamaran')">
+                        <i class="fa-solid fa-envelope-open-text"></i> Lamaran
+                    </a>
+                    <a class="nav-item" data-tab="emp-aktif" onclick="showEmployeeTab('aktif')">
+                        <i class="fa-solid fa-user-check"></i> Aktif
+                    </a>
+                    <a class="nav-item" data-tab="emp-resign" onclick="showEmployeeTab('resign')">
+                        <i class="fa-solid fa-user-minus"></i> Resign
+                    </a>
+                    <a class="nav-item" data-tab="signature" onclick="switchTab('signature')">
+                        <i class="fa-solid fa-signature"></i> Signature
+                    </a>
+                </div>
+            </div>
             <div class="nav-section-label">Pengaturan</div>
             <a class="nav-item" data-tab="settings" onclick="switchTab('settings')">
                 <i class="fa-solid fa-gear"></i> Payment Gateway
@@ -1653,12 +309,14 @@
         <div class="section" id="tab-extensions">
             <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
                 <div class="stat-card">
-                    <div class="stat-card-icon" style="background:#f3e8ff;color:#9333ea;"><i class="fa-solid fa-puzzle-piece"></i></div>
+                    <div class="stat-card-icon" style="background:#f3e8ff;color:#9333ea;"><i
+                            class="fa-solid fa-puzzle-piece"></i></div>
                     <div class="stat-card-label">Total Extension</div>
                     <div class="stat-card-value" id="statExtensions">—</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-card-icon" style="background:#fef3c7;color:#d97706;"><i class="fa-brands fa-chrome"></i></div>
+                    <div class="stat-card-icon" style="background:#fef3c7;color:#d97706;"><i
+                            class="fa-brands fa-chrome"></i></div>
                     <div class="stat-card-label">Browser Support</div>
                     <div class="stat-card-value" style="font-size:1.1rem;">Multi</div>
                 </div>
@@ -1673,9 +331,12 @@
                 <div class="toolbar">
                     <div class="search-wrap">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" class="search-input" id="extSearchInput" placeholder="Cari nama extension..." oninput="filterExtensions(this.value)">
+                        <input type="text" class="search-input" id="extSearchInput" placeholder="Cari nama extension..."
+                            oninput="filterExtensions(this.value)">
                     </div>
-                    <button class="btn btn-primary" style="margin-left:auto; background: linear-gradient(135deg,#7c3aed,#6d28d9);" onclick="openCreateExtModal()">
+                    <button class="btn btn-primary"
+                        style="margin-left:auto; background: linear-gradient(135deg,#7c3aed,#6d28d9);"
+                        onclick="openCreateExtModal()">
                         <i class="fa-solid fa-plus"></i> Tambah Extension
                     </button>
                 </div>
@@ -1703,17 +364,63 @@
             </div>
         </div>
 
+        <!-- ===== KARYAWAN / HRD TAB ===== -->
+        <div class="section" id="tab-employees">
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 28px;">
+                <div
+                    style="width: 44px; height: 44px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-users" style="color: #fff; font-size: 1.1rem;"></i>
+                </div>
+                <div>
+                    <h2 id="empTabTitle" style="font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0;">
+                        Data Karyawan & Lamaran</h2>
+                    <p id="empTabDesc" style="font-size: 0.85rem; color: var(--text-2); margin: 2px 0 0;">Kelola lamaran
+                        masuk dan data karyawan aktif.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="toolbar" style="justify-content: flex-end;">
+                    <input type="hidden" id="empStatusFilter" value="lamaran">
+                    <button class="btn btn-secondary" onclick="fetchEmployees()"><i class="fas fa-sync"></i> Refresh
+                        Data</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>NAMA / ID</th>
+                                <th>KONTAK</th>
+                                <th>INFO & DOKUMEN</th>
+                                <th>TANGGAL</th>
+                                <th>STATUS</th>
+                                <th class="text-right">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeesTableBody">
+                            <tr>
+                                <td colspan="6" class="text-center py-4">Memuat data karyawan...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- ===== SETTINGS / PAYMENT GATEWAY TAB ===== -->
         <div class="section" id="tab-settings">
 
             <!-- ===== HEADER ===== -->
             <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 28px;">
-                <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #1865ca, #4f46e5); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                <div
+                    style="width: 44px; height: 44px; background: linear-gradient(135deg, #1865ca, #4f46e5); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                     <i class="fa-solid fa-credit-card" style="color: #fff; font-size: 1.1rem;"></i>
                 </div>
                 <div>
-                    <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0;">Pengaturan Payment Gateway</h2>
-                    <p style="font-size: 0.85rem; color: var(--text-2); margin: 2px 0 0;">Pilih gateway aktif untuk memproses seluruh transaksi pembayaran lisensi.</p>
+                    <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0;">Pengaturan Payment
+                        Gateway</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-2); margin: 2px 0 0;">Pilih gateway aktif untuk
+                        memproses seluruh transaksi pembayaran lisensi.</p>
                 </div>
             </div>
 
@@ -1728,24 +435,29 @@
                         <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px;">
 
                             <!-- Xendit Option -->
-                            <label class="gateway-option" id="opt-xendit"
-                                onclick="selectGatewayOption('xendit')"
+                            <label class="gateway-option" id="opt-xendit" onclick="selectGatewayOption('xendit')"
                                 style="display: flex; align-items: flex-start; gap: 16px; padding: 18px 20px; border: 2px solid var(--border); border-radius: var(--radius); background: var(--surface); cursor: pointer; transition: all 0.2s;">
                                 <input type="radio" name="active_gateway_radio" value="xendit" checked
                                     style="width: 18px; height: 18px; accent-color: var(--primary); margin-top: 2px; flex-shrink: 0;">
                                 <div style="flex: 1;">
                                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                                        <span style="font-weight: 700; font-size: 1rem; color: var(--text);">Xendit</span>
-                                        <span id="badge-xendit" class="badge" style="background: #e0f2fe; color: #0284c7; font-size: 0.7rem;"></span>
+                                        <span
+                                            style="font-weight: 700; font-size: 1rem; color: var(--text);">Xendit</span>
+                                        <span id="badge-xendit" class="badge"
+                                            style="background: #e0f2fe; color: #0284c7; font-size: 0.7rem;"></span>
                                     </div>
-                                    <div style="font-size: 0.83rem; color: var(--text-2); margin-top: 5px; line-height: 1.5;">
-                                        Direct REST API. VA Bank, QRIS, GoPay, ShopeePay, DANA, OVO, Indomaret, Alfamart.
+                                    <div
+                                        style="font-size: 0.83rem; color: var(--text-2); margin-top: 5px; line-height: 1.5;">
+                                        Direct REST API. VA Bank, QRIS, GoPay, ShopeePay, DANA, OVO, Indomaret,
+                                        Alfamart.
                                     </div>
                                     <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
-                                        <span style="font-size: 0.72rem; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2);">
+                                        <span
+                                            style="font-size: 0.72rem; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2);">
                                             <i class="fa-solid fa-key fa-xs"></i> XENDIT_SECRET_KEY
                                         </span>
-                                        <span style="font-size: 0.72rem; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2);">
+                                        <span
+                                            style="font-size: 0.72rem; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2);">
                                             <i class="fa-solid fa-key fa-xs"></i> XENDIT_CALLBACK_TOKEN
                                         </span>
                                     </div>
@@ -1753,28 +465,37 @@
                             </label>
 
                             <!-- Midtrans Option -->
-                            <label class="gateway-option" id="opt-midtrans"
-                                onclick="selectGatewayOption('midtrans')"
+                            <label class="gateway-option" id="opt-midtrans" onclick="selectGatewayOption('midtrans')"
                                 style="display: flex; align-items: flex-start; gap: 16px; padding: 18px 20px; border: 2px solid var(--border); border-radius: var(--radius); background: var(--surface); cursor: pointer; transition: all 0.2s;">
                                 <input type="radio" name="active_gateway_radio" value="midtrans"
                                     style="width: 18px; height: 18px; accent-color: var(--primary); margin-top: 2px; flex-shrink: 0;">
                                 <div style="flex: 1;">
                                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                                        <span style="font-weight: 700; font-size: 1rem; color: var(--text);">Midtrans</span>
-                                        <span id="badge-midtrans" class="badge" style="background: #e0f2fe; color: #0284c7; font-size: 0.7rem;"></span>
-                                        <span class="badge" style="background: #fef9c3; color: #854d0e; font-size: 0.68rem;"><i class="fa-solid fa-triangle-exclamation fa-xs"></i> Konfigurasi Dashboard</span>
+                                        <span
+                                            style="font-weight: 700; font-size: 1rem; color: var(--text);">Midtrans</span>
+                                        <span id="badge-midtrans" class="badge"
+                                            style="background: #e0f2fe; color: #0284c7; font-size: 0.7rem;"></span>
+                                        <span class="badge"
+                                            style="background: #fef9c3; color: #854d0e; font-size: 0.68rem;"><i
+                                                class="fa-solid fa-triangle-exclamation fa-xs"></i> Konfigurasi
+                                            Dashboard</span>
                                     </div>
-                                    <div style="font-size: 0.83rem; color: var(--text-2); margin-top: 5px; line-height: 1.5;">
-                                        Core API (Custom UI). VA Bank, QRIS, GoPay, ShopeePay, DANA, OVO, Indomaret, Alfamart.
+                                    <div
+                                        style="font-size: 0.83rem; color: var(--text-2); margin-top: 5px; line-height: 1.5;">
+                                        Core API (Custom UI). VA Bank, QRIS, GoPay, ShopeePay, DANA, OVO, Indomaret,
+                                        Alfamart.
                                     </div>
                                     <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
-                                        <span style="font-size: 0.72rem; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2);">
+                                        <span
+                                            style="font-size: 0.72rem; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2);">
                                             <i class="fa-solid fa-key fa-xs"></i> MIDTRANS_SERVER_KEY
                                         </span>
-                                        <span style="font-size: 0.72rem; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2);">
+                                        <span
+                                            style="font-size: 0.72rem; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2);">
                                             <i class="fa-solid fa-key fa-xs"></i> MIDTRANS_CLIENT_KEY
                                         </span>
-                                        <span style="font-size: 0.72rem; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2);">
+                                        <span
+                                            style="font-size: 0.72rem; padding: 3px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2);">
                                             <i class="fa-solid fa-server fa-xs"></i> MIDTRANS_IS_PRODUCTION
                                         </span>
                                     </div>
@@ -1783,7 +504,8 @@
 
                         </div>
 
-                        <div style="display: flex; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 20px;">
+                        <div
+                            style="display: flex; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 20px;">
                             <button class="btn btn-primary" onclick="saveGatewaySettings()" id="btnSaveGateway">
                                 <i class="fa-solid fa-floppy-disk"></i> Simpan Pilihan Gateway
                             </button>
@@ -1794,57 +516,80 @@
                 <!-- ===== MIDTRANS SETUP GUIDE ===== -->
                 <div class="card" id="midtrans-setup-card" style="display: none;">
                     <div class="card-header">
-                        <div class="card-title"><i class="fa-solid fa-circle-info"></i> Panduan Konfigurasi Midtrans</div>
+                        <div class="card-title"><i class="fa-solid fa-circle-info"></i> Panduan Konfigurasi Midtrans
+                        </div>
                     </div>
                     <div class="card-body">
                         <div style="display: flex; flex-direction: column; gap: 16px;">
 
                             <!-- Step 1: Webhook URL -->
-                            <div style="padding: 16px; background: var(--bg); border-radius: 10px; border: 1px solid var(--border);">
-                                <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; color: var(--text); display: flex; align-items: center; gap: 8px;">
-                                    <span style="width: 22px; height: 22px; background: var(--primary); color: #fff; border-radius: 50%; font-size: 0.7rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</span>
+                            <div
+                                style="padding: 16px; background: var(--bg); border-radius: 10px; border: 1px solid var(--border);">
+                                <div
+                                    style="font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; color: var(--text); display: flex; align-items: center; gap: 8px;">
+                                    <span
+                                        style="width: 22px; height: 22px; background: var(--primary); color: #fff; border-radius: 50%; font-size: 0.7rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</span>
                                     Konfigurasi Notification URL di Midtrans Dashboard
                                 </div>
                                 <p style="font-size: 0.83rem; color: var(--text-2); margin-bottom: 10px;">
-                                    Buka <a href="https://dashboard.midtrans.com" target="_blank" style="color: var(--primary);">Midtrans Dashboard</a> → Settings → Configuration → <strong>Payment Notification URL</strong>, isi dengan URL di bawah ini:
+                                    Buka <a href="https://dashboard.midtrans.com" target="_blank"
+                                        style="color: var(--primary);">Midtrans Dashboard</a> → Settings → Configuration
+                                    → <strong>Payment Notification URL</strong>, isi dengan URL di bawah ini:
                                 </p>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <code id="midtransWebhookUrl"
                                         style="flex: 1; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: 0.82rem; color: var(--text); word-break: break-all;">
                                         https://apps-primadev.netlify.app/.netlify/functions/webhook
                                     </code>
-                                    <button class="btn btn-secondary" onclick="copyWebhookUrl()" style="flex-shrink: 0; padding: 8px 14px;">
+                                    <button class="btn btn-secondary" onclick="copyWebhookUrl()"
+                                        style="flex-shrink: 0; padding: 8px 14px;">
                                         <i class="fa-solid fa-copy"></i> Copy
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Step 2: Env Vars -->
-                            <div style="padding: 16px; background: var(--bg); border-radius: 10px; border: 1px solid var(--border);">
-                                <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; color: var(--text); display: flex; align-items: center; gap: 8px;">
-                                    <span style="width: 22px; height: 22px; background: var(--primary); color: #fff; border-radius: 50%; font-size: 0.7rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</span>
+                            <div
+                                style="padding: 16px; background: var(--bg); border-radius: 10px; border: 1px solid var(--border);">
+                                <div
+                                    style="font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; color: var(--text); display: flex; align-items: center; gap: 8px;">
+                                    <span
+                                        style="width: 22px; height: 22px; background: var(--primary); color: #fff; border-radius: 50%; font-size: 0.7rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</span>
                                     Tambahkan Environment Variables di Netlify
                                 </div>
                                 <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem;">
                                     <tr style="border-bottom: 1px solid var(--border);">
-                                        <td style="padding: 8px 6px; font-family: monospace; color: var(--primary); font-weight: 600;">MIDTRANS_SERVER_KEY</td>
-                                        <td style="padding: 8px 6px; color: var(--text-2);">Server Key dari Midtrans Dashboard (SB-Mid-server-... untuk sandbox)</td>
+                                        <td
+                                            style="padding: 8px 6px; font-family: monospace; color: var(--primary); font-weight: 600;">
+                                            MIDTRANS_SERVER_KEY</td>
+                                        <td style="padding: 8px 6px; color: var(--text-2);">Server Key dari Midtrans
+                                            Dashboard (SB-Mid-server-... untuk sandbox)</td>
                                     </tr>
                                     <tr style="border-bottom: 1px solid var(--border);">
-                                        <td style="padding: 8px 6px; font-family: monospace; color: var(--primary); font-weight: 600;">MIDTRANS_CLIENT_KEY</td>
-                                        <td style="padding: 8px 6px; color: var(--text-2);">Client Key dari Midtrans Dashboard (SB-Mid-client-... untuk sandbox)</td>
+                                        <td
+                                            style="padding: 8px 6px; font-family: monospace; color: var(--primary); font-weight: 600;">
+                                            MIDTRANS_CLIENT_KEY</td>
+                                        <td style="padding: 8px 6px; color: var(--text-2);">Client Key dari Midtrans
+                                            Dashboard (SB-Mid-client-... untuk sandbox)</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding: 8px 6px; font-family: monospace; color: var(--primary); font-weight: 600;">MIDTRANS_IS_PRODUCTION</td>
-                                        <td style="padding: 8px 6px; color: var(--text-2);"><code>false</code> untuk sandbox, <code>true</code> untuk production</td>
+                                        <td
+                                            style="padding: 8px 6px; font-family: monospace; color: var(--primary); font-weight: 600;">
+                                            MIDTRANS_IS_PRODUCTION</td>
+                                        <td style="padding: 8px 6px; color: var(--text-2);"><code>false</code> untuk
+                                            sandbox, <code>true</code> untuk production</td>
                                     </tr>
                                 </table>
                             </div>
 
                             <!-- Warning: Finish & Error URL -->
-                            <div style="padding: 14px 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; font-size: 0.82rem; color: #92400e; display: flex; gap: 10px;">
-                                <i class="fa-solid fa-triangle-exclamation" style="flex-shrink: 0; margin-top: 2px;"></i>
-                                <span>Untuk Finish/Error/Unfinish Redirect URL di Midtrans Dashboard, isi dengan URL store Anda (e.g. <code>https://apps-primadev.netlify.app/app/store</code>). Webhook notifikasi server tetap dikirim ke Notification URL di atas.</span>
+                            <div
+                                style="padding: 14px 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; font-size: 0.82rem; color: #92400e; display: flex; gap: 10px;">
+                                <i class="fa-solid fa-triangle-exclamation"
+                                    style="flex-shrink: 0; margin-top: 2px;"></i>
+                                <span>Untuk Finish/Error/Unfinish Redirect URL di Midtrans Dashboard, isi dengan URL
+                                    store Anda (e.g. <code>https://apps-primadev.netlify.app/app/store</code>). Webhook
+                                    notifikasi server tetap dikirim ke Notification URL di atas.</span>
                             </div>
 
                         </div>
@@ -1854,22 +599,30 @@
                 <!-- ===== XENDIT REMINDER (shown when Xendit is selected) ===== -->
                 <div class="card" id="xendit-reminder-card">
                     <div class="card-header">
-                        <div class="card-title"><i class="fa-solid fa-circle-info"></i> Pengingat Konfigurasi Xendit</div>
+                        <div class="card-title"><i class="fa-solid fa-circle-info"></i> Pengingat Konfigurasi Xendit
+                        </div>
                     </div>
                     <div class="card-body">
-                        <div style="font-size: 0.85rem; color: var(--text-2); display: flex; flex-direction: column; gap: 10px;">
+                        <div
+                            style="font-size: 0.85rem; color: var(--text-2); display: flex; flex-direction: column; gap: 10px;">
                             <div style="display: flex; align-items: flex-start; gap: 10px;">
-                                <i class="fa-solid fa-check-circle" style="color: #16a34a; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>Pastikan <code>XENDIT_SECRET_KEY</code> dikonfigurasi di Netlify Environment Variables.</span>
+                                <i class="fa-solid fa-check-circle"
+                                    style="color: #16a34a; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>Pastikan <code>XENDIT_SECRET_KEY</code> dikonfigurasi di Netlify Environment
+                                    Variables.</span>
                             </div>
                             <div style="display: flex; align-items: flex-start; gap: 10px;">
-                                <i class="fa-solid fa-check-circle" style="color: #16a34a; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>Pastikan <code>XENDIT_CALLBACK_TOKEN</code> dikonfigurasi dan dicocokkan di Xendit Dashboard → Settings → Developers → Callbacks.</span>
+                                <i class="fa-solid fa-check-circle"
+                                    style="color: #16a34a; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>Pastikan <code>XENDIT_CALLBACK_TOKEN</code> dikonfigurasi dan dicocokkan di Xendit
+                                    Dashboard → Settings → Developers → Callbacks.</span>
                             </div>
                             <div style="display: flex; align-items: flex-start; gap: 10px;">
-                                <i class="fa-solid fa-check-circle" style="color: #16a34a; margin-top: 2px; flex-shrink: 0;"></i>
+                                <i class="fa-solid fa-check-circle"
+                                    style="color: #16a34a; margin-top: 2px; flex-shrink: 0;"></i>
                                 <span>Webhook URL Xendit (atur di Dashboard):
-                                    <code style="display: block; margin-top: 5px; padding: 8px 10px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border);">
+                                    <code
+                                        style="display: block; margin-top: 5px; padding: 8px 10px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border);">
                                         https://apps-primadev.netlify.app/.netlify/functions/webhook
                                     </code>
                                 </span>
@@ -1880,6 +633,92 @@
 
             </div><!-- /grid -->
         </div>
+
+        <!-- ===== SIGNATURE TAB ===== -->
+        <div class="section" id="tab-signature">
+
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 28px;">
+                <div
+                    style="width: 44px; height: 44px; background: linear-gradient(135deg, #1865ca, #4f46e5); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-signature" style="color: #fff; font-size: 1.1rem;"></i>
+                </div>
+                <div>
+                    <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0;">Tanda Tangan
+                        Digital CEO</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-2); margin: 2px 0 0;">Buat atau perbarui tanda
+                        tangan digital Direktur Utama yang akan diterapkan pada seluruh dokumen legal karyawan.</p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 900px;">
+
+                <!-- LEFT: Canvas signature pad -->
+                <div
+                    style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px;">
+                    <div
+                        style="font-weight: 700; font-size: 0.95rem; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-pen-nib" style="color: var(--primary);"></i>
+                        Buat Tanda Tangan
+                    </div>
+                    <div
+                        style="border: 2px dashed var(--border); border-radius: 12px; background: #fff; position: relative; overflow: hidden;">
+                        <canvas id="sigCanvas" width="400" height="180"
+                            style="display: block; width: 100%; height: 180px; cursor: crosshair; touch-action: none;"></canvas>
+                        <div id="sigPlaceholder"
+                            style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; color: #ccc; font-size: 0.9rem;">
+                            <i class="fa-solid fa-pen" style="margin-right: 8px;"></i> Tanda tangan di sini
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 14px;">
+                        <button class="btn btn-secondary" onclick="clearSignature()" style="flex: 1;">
+                            <i class="fa-solid fa-eraser"></i> Bersihkan
+                        </button>
+                        <button class="btn btn-primary" onclick="saveSignature()" style="flex: 1;" id="btnSaveSig">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan
+                        </button>
+                    </div>
+                    <p style="font-size: 0.78rem; color: var(--text-2); margin-top: 10px; text-align: center;">
+                        Gunakan mouse atau layar sentuh untuk membuat tanda tangan
+                    </p>
+                </div>
+
+                <!-- RIGHT: Saved signature preview -->
+                <div
+                    style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px;">
+                    <div
+                        style="font-weight: 700; font-size: 0.95rem; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-eye" style="color: var(--primary);"></i>
+                        Preview Tanda Tangan Tersimpan
+                    </div>
+
+                    <div id="sigPreviewBox"
+                        style="border: 1px solid var(--border); border-radius: 12px; background: #fff; min-height: 180px; display: flex; align-items: center; justify-content: center; padding: 16px;">
+                        <div id="sigPreviewEmpty" style="text-align: center; color: #ccc;">
+                            <i class="fa-solid fa-file-signature"
+                                style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            <span style="font-size: 0.85rem;">Belum ada tanda tangan tersimpan</span>
+                        </div>
+                        <img id="sigPreviewImg" src="" alt="Tanda Tangan CEO"
+                            style="max-width: 100%; max-height: 150px; display: none;">
+                    </div>
+
+                    <div id="sigStatusBadge"
+                        style="margin-top: 14px; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-2);">
+                        <i class="fa-solid fa-circle-xmark" style="color: #ef4444;"></i>
+                        <span id="sigStatusText">Belum ada tanda tangan dikonfigurasi</span>
+                    </div>
+
+                    <div
+                        style="margin-top: 16px; padding: 12px; background: #eff6ff; border-radius: 10px; border: 1px solid #bfdbfe; font-size: 0.8rem; color: #1e40af;">
+                        <i class="fa-solid fa-circle-info" style="margin-right: 6px;"></i>
+                        Tanda tangan ini akan otomatis diterapkan pada SPK Kontrak, SPK Tetap, dan NDA di halaman data
+                        karyawan.
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- /tab-signature -->
+
     </main>
 
     <!-- ===== MODALS ===== -->
@@ -2160,17 +999,20 @@
                     <input type="hidden" id="extFormId">
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Extension ID <span style="color:var(--text-3);font-weight:400;">(contoh: wa-blaster-ext)</span></label>
+                            <label class="form-label">Extension ID <span
+                                    style="color:var(--text-3);font-weight:400;">(contoh: wa-blaster-ext)</span></label>
                             <input type="text" class="form-input" id="extId" required placeholder="wa-blaster-ext">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Nama Extension</label>
-                            <input type="text" class="form-input" id="extName" required placeholder="WA Blaster Extension">
+                            <input type="text" class="form-input" id="extName" required
+                                placeholder="WA Blaster Extension">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Deskripsi</label>
-                        <textarea class="form-input" id="extDescription" rows="2" placeholder="Deskripsi singkat extension"></textarea>
+                        <textarea class="form-input" id="extDescription" rows="2"
+                            placeholder="Deskripsi singkat extension"></textarea>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -2179,7 +1021,8 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Store URL (Chrome Web Store)</label>
-                            <input type="url" class="form-input" id="extStoreUrl" placeholder="https://chromewebstore.google.com/...">
+                            <input type="url" class="form-input" id="extStoreUrl"
+                                placeholder="https://chromewebstore.google.com/...">
                         </div>
                     </div>
 
@@ -2187,20 +1030,31 @@
                     <div class="form-group">
                         <label class="form-label">Kompatibel Browser</label>
                         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;">
-                            <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.2s;font-size:0.87rem;font-weight:600;" id="lbl-chrome">
-                                <input type="checkbox" id="platChrome" value="chrome" onchange="updatePlatformLabel()" style="accent-color:#7c3aed;">
+                            <label
+                                style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.2s;font-size:0.87rem;font-weight:600;"
+                                id="lbl-chrome">
+                                <input type="checkbox" id="platChrome" value="chrome" onchange="updatePlatformLabel()"
+                                    style="accent-color:#7c3aed;">
                                 <i class="fa-brands fa-chrome" style="color:#4285F4;font-size:1.1rem;"></i> Chrome
                             </label>
-                            <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.2s;font-size:0.87rem;font-weight:600;" id="lbl-edge">
-                                <input type="checkbox" id="platEdge" value="edge" onchange="updatePlatformLabel()" style="accent-color:#7c3aed;">
+                            <label
+                                style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.2s;font-size:0.87rem;font-weight:600;"
+                                id="lbl-edge">
+                                <input type="checkbox" id="platEdge" value="edge" onchange="updatePlatformLabel()"
+                                    style="accent-color:#7c3aed;">
                                 <i class="fa-brands fa-edge" style="color:#0078D4;font-size:1.1rem;"></i> Edge
                             </label>
-                            <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.2s;font-size:0.87rem;font-weight:600;" id="lbl-firefox">
-                                <input type="checkbox" id="platFirefox" value="firefox" onchange="updatePlatformLabel()" style="accent-color:#7c3aed;">
-                                <i class="fa-brands fa-firefox-browser" style="color:#FF7139;font-size:1.1rem;"></i> Firefox
+                            <label
+                                style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all 0.2s;font-size:0.87rem;font-weight:600;"
+                                id="lbl-firefox">
+                                <input type="checkbox" id="platFirefox" value="firefox" onchange="updatePlatformLabel()"
+                                    style="accent-color:#7c3aed;">
+                                <i class="fa-brands fa-firefox-browser" style="color:#FF7139;font-size:1.1rem;"></i>
+                                Firefox
                             </label>
                         </div>
-                        <div style="font-size:0.75rem;color:var(--text-3);margin-top:6px;">Pilih minimal satu browser. Semua yang dipilih = All Browser.</div>
+                        <div style="font-size:0.75rem;color:var(--text-3);margin-top:6px;">Pilih minimal satu browser.
+                            Semua yang dipilih = All Browser.</div>
                     </div>
 
                     <div class="form-group">
@@ -2221,7 +1075,8 @@
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary"
-                        style="width:100%;justify-content:center;padding:13px;background:linear-gradient(135deg,#7c3aed,#6d28d9);" id="extSubmitBtn">
+                        style="width:100%;justify-content:center;padding:13px;background:linear-gradient(135deg,#7c3aed,#6d28d9);"
+                        id="extSubmitBtn">
                         <i class="fa-solid fa-floppy-disk"></i> Simpan Extension
                     </button>
                 </form>
@@ -2781,7 +1636,7 @@
                 const e = productsData[key];
                 const fmt = (p) => p ? 'Rp ' + Number(p).toLocaleString('id-ID') : '—';
                 const platforms = Array.isArray(e.platform) ? e.platform : [e.platform || 'chrome'];
-                const allBrowsers = ['chrome','edge','firefox'].every(b => platforms.includes(b));
+                const allBrowsers = ['chrome', 'edge', 'firefox'].every(b => platforms.includes(b));
                 const platformHtml = allBrowsers
                     ? '<span style="font-size:0.78rem;font-weight:600;color:#7c3aed;background:#f3e8ff;padding:3px 8px;border-radius:5px;">All Browser</span>'
                     : platforms.map(p => browserIcons[p] || p).join(' ');
@@ -2816,11 +1671,11 @@
         };
 
         window.updatePlatformLabel = () => {
-            const selected = ['platChrome','platEdge','platFirefox']
+            const selected = ['platChrome', 'platEdge', 'platFirefox']
                 .filter(id => document.getElementById(id)?.checked)
                 .map(id => document.getElementById(id).value);
             // Visual highlight
-            ['lbl-chrome','lbl-edge','lbl-firefox'].forEach(id => {
+            ['lbl-chrome', 'lbl-edge', 'lbl-firefox'].forEach(id => {
                 const lbl = document.getElementById(id);
                 if (!lbl) return;
                 const isChecked = lbl.querySelector('input')?.checked;
@@ -2835,8 +1690,8 @@
             document.getElementById('extId').readOnly = false;
             document.getElementById('extModalTitle').innerHTML = '<i class="fa-solid fa-plus" style="color:#7c3aed;margin-right:8px;"></i>Tambah Extension';
             // Reset checkboxes
-            ['platChrome','platEdge','platFirefox'].forEach(id => { document.getElementById(id).checked = false; });
-            ['lbl-chrome','lbl-edge','lbl-firefox'].forEach(id => {
+            ['platChrome', 'platEdge', 'platFirefox'].forEach(id => { document.getElementById(id).checked = false; });
+            ['lbl-chrome', 'lbl-edge', 'lbl-firefox'].forEach(id => {
                 const lbl = document.getElementById(id); if (lbl) { lbl.style.borderColor = ''; lbl.style.background = ''; }
             });
             showModal('extModal');
@@ -2876,7 +1731,7 @@
                 const id = document.getElementById('extId').value.trim();
                 if (!id) throw new Error('Extension ID wajib diisi');
 
-                const platforms = ['platChrome','platEdge','platFirefox']
+                const platforms = ['platChrome', 'platEdge', 'platFirefox']
                     .filter(pid => document.getElementById(pid)?.checked)
                     .map(pid => document.getElementById(pid).value);
 
@@ -3002,6 +1857,233 @@
         });
 
         // ===== GLOBAL HELPERS (non-module) exposed via window =====
+        // ===== KARYAWAN LOGIC =====
+        const EMP_API = '/.netlify/functions/employees';
+
+        window.toggleSubmenu = (id) => {
+            document.getElementById(id)?.classList.toggle('open');
+        };
+
+        window.showEmployeeTab = (status) => {
+            // Manage active state of submenu items
+            document.querySelectorAll('.nav-submenu .nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`[data-tab="emp-${status}"]`)?.classList.add('active');
+
+            // Ensure section is active
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('tab-employees').classList.add('active');
+
+            // Set Titles
+            const titleMap = {
+                'lamaran': 'Lamaran Masuk <span>/ HRD</span>',
+                'aktif': 'Karyawan Aktif <span>/ HRD</span>',
+                'resign': 'Data Resign <span>/ HRD</span>'
+            };
+            document.getElementById('topbarTitle').innerHTML = titleMap[status];
+
+            const headerTitle = {
+                'lamaran': 'Daftar Lamaran Masuk',
+                'aktif': 'Daftar Karyawan Aktif',
+                'resign': 'Daftar Mantan Karyawan (Resign)'
+            };
+            const headerDesc = {
+                'lamaran': 'Kelola pengajuan lamaran baru yang masuk dari website.',
+                'aktif': 'Kelola data karyawan yang masih aktif bekerja di perusahaan.',
+                'resign': 'Catatan data karyawan yang telah mengundurkan diri.'
+            };
+
+            document.getElementById('empTabTitle').innerText = headerTitle[status];
+            document.getElementById('empTabDesc').innerText = headerDesc[status];
+
+            // Set Filter & Fetch
+            document.getElementById('empStatusFilter').value = status;
+            fetchEmployees();
+            closeSidebar();
+        };
+
+        const fetchEmployees = async () => {
+            const statusFilter = document.getElementById('empStatusFilter').value;
+            const tbody = document.getElementById('employeesTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Memuat data karyawan...</td></tr>';
+
+            try {
+                let url = EMP_API;
+                if (statusFilter) url += `?status=${statusFilter}`;
+
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Tidak ada data karyawan ditemukan.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(emp => {
+                    const date = new Date(emp.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const badgeClass = emp.status === 'lamaran' ? 'badge-warning' : (emp.status === 'aktif' ? 'badge-success' : (emp.status === 'resign' ? 'badge-secondary' : 'badge-danger'));
+                    const statusLabel = emp.status.toUpperCase();
+
+                    let actions = '';
+                    if (emp.status === 'lamaran') {
+                        actions = `
+                            <button class="action-btn" style="color: #059669; background: #d1fae5;" onclick="updateEmployeeStatus('${emp.id}', 'terima')" title="Terima Lamaran"><i class="fas fa-check"></i></button>
+                            <button class="action-btn" style="color: #dc2626; background: #fee2e2;" onclick="updateEmployeeStatus('${emp.id}', 'tolak')" title="Tolak Lamaran"><i class="fas fa-times"></i></button>
+                        `;
+                    } else if (emp.status === 'aktif') {
+                        actions = `
+                            <button class="action-btn" style="color: #b45309; background: #fef3c7;" onclick="updateEmployeeStatus('${emp.id}', 'resign')" title="Tandai Resign"><i class="fas fa-sign-out-alt"></i></button>
+                        `;
+                    } else if (emp.status === 'resign') {
+                        actions = `
+                            <button class="action-btn" style="color: #059669; background: #d1fae5;" onclick="updateEmployeeStatus('${emp.id}', 'rekruit_kembali')" title="Rekrut Kembali"><i class="fas fa-undo"></i></button>
+                            <button class="action-btn" style="color: #dc2626; background: #fee2e2;" onclick="deleteEmployee('${emp.id}')" title="Hapus Permanen"><i class="fas fa-trash-alt"></i></button>
+                        `;
+                    }
+
+                    let portfolioLink = emp.portfolio && emp.portfolio !== '-' ? `<a href="${emp.portfolio}" target="_blank" style="color: var(--primary); text-decoration: none; margin-right: 12px; display: inline-block; margin-bottom: 4px;"><i class="fas fa-external-link-alt"></i> Portofolio</a>` : '';
+                    let dokumenLink = emp.dokumenUrl && emp.dokumenUrl !== '-' ? `<a href="${emp.dokumenUrl}" target="_blank" style="color: #059669; text-decoration: none; display: inline-block; margin-bottom: 4px;"><i class="fas fa-file-pdf"></i> Dokumen</a>` : '';
+                    let keahlianText = emp.keahlian && emp.keahlian !== '-' ? `<div class="text-sm text-muted mt-1" style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${emp.keahlian.replace(/"/g, '&quot;')}">${emp.keahlian}</div>` : '';
+
+                    let infoCol = (portfolioLink || dokumenLink) ? `<div>${portfolioLink}${dokumenLink}</div>${keahlianText}` : (keahlianText || '-');
+
+                    return `
+                        <tr>
+                            <td data-label="NAMA / ID">
+                                <div class="font-medium">${emp.name}</div>
+                                <div class="text-sm text-muted">${emp.employeeId || 'ID Belum Dibuat'}</div>
+                            </td>
+                            <td data-label="KONTAK">
+                                <div><i class="fas fa-envelope text-muted"></i> ${emp.email}</div>
+                                <div class="text-sm text-muted mt-1"><i class="fab fa-whatsapp"></i> ${emp.whatsapp}</div>
+                            </td>
+                            <td data-label="INFO & DOKUMEN">${infoCol}</td>
+                            <td data-label="TANGGAL">${date}</td>
+                            <td data-label="STATUS"><span class="badge ${badgeClass}">${statusLabel}</span></td>
+                            <td data-label="AKSI" class="text-right">
+                                <div style="display:flex; gap:8px; justify-content:flex-end;">
+                                    ${actions}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-danger">Gagal memuat data.</td></tr>';
+            }
+        };
+
+        const updateEmployeeStatus = async (id, action) => {
+            let employeeType = 'kontrak';
+
+            if (action === 'terima') {
+                const r = await Swal.fire({
+                    title: 'Terima Lamaran',
+                    html: `
+                        <div style="text-align: left; margin-top: 15px;">
+                            <p style="margin-bottom: 15px; font-size: 0.95rem; color: var(--text-2);">Pilih jenis kontrak kerja untuk karyawan ini:</p>
+                            <label class="emp-type-card" style="display: block; cursor: pointer; border: 2px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; transition: all 0.2s;" onclick="document.getElementById('radio_kontrak').checked = true; this.style.borderColor = 'var(--primary)'; this.style.backgroundColor = 'var(--primary-light)'; document.getElementById('card_tetap').style.borderColor = 'var(--border)'; document.getElementById('card_tetap').style.backgroundColor = 'transparent';" id="card_kontrak">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <input type="radio" name="emp_type" id="radio_kontrak" value="kontrak" checked style="transform: scale(1.2);">
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--text); font-size: 1rem;">Karyawan Kontrak (PKWT)</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-2); margin-top: 4px;">Pekerja dengan waktu tertentu.</div>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="emp-type-card" style="display: block; cursor: pointer; border: 2px solid var(--border); border-radius: 12px; padding: 15px; transition: all 0.2s;" onclick="document.getElementById('radio_tetap').checked = true; this.style.borderColor = 'var(--primary)'; this.style.backgroundColor = 'var(--primary-light)'; document.getElementById('card_kontrak').style.borderColor = 'var(--border)'; document.getElementById('card_kontrak').style.backgroundColor = 'transparent';" id="card_tetap">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <input type="radio" name="emp_type" id="radio_tetap" value="tetap" style="transform: scale(1.2);">
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--text); font-size: 1rem;">Karyawan Tetap (PKWTT)</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-2); margin-top: 4px;">Pekerja dengan waktu tidak tertentu.</div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2563eb',
+                    confirmButtonText: 'Rekrut',
+                    cancelButtonText: 'Batal',
+                    didOpen: () => {
+                        document.getElementById('card_kontrak').style.borderColor = 'var(--primary)';
+                        document.getElementById('card_kontrak').style.backgroundColor = 'var(--primary-light)';
+                    },
+                    preConfirm: () => {
+                        return document.getElementById('radio_kontrak').checked ? 'kontrak' : 'tetap';
+                    }
+                });
+
+                if (!r.isConfirmed) return;
+                employeeType = r.value;
+            } else {
+                const confirmMsg = action === 'tolak' ? 'Tolak lamaran ini? Email penolakan akan dikirim.' :
+                    (action === 'rekruit_kembali' ? 'Rekrut kembali karyawan ini dan ubah status menjadi aktif?' :
+                        'Tandai karyawan ini sebagai Resign?');
+
+                const r = await Swal.fire({
+                    title: 'Konfirmasi Aksi',
+                    text: confirmMsg,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2563eb',
+                    confirmButtonText: 'Ya, Lanjutkan',
+                    cancelButtonText: 'Batal'
+                });
+                if (!r.isConfirmed) return;
+            }
+
+            try {
+                Swal.fire({ title: 'Memproses...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                const res = await fetch(EMP_API, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, action, employeeType })
+                });
+
+                const result = await res.json();
+                if (res.ok) {
+                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: result.message, timer: 1500, showConfirmButton: false });
+                    fetchEmployees();
+                } else {
+                    throw new Error(result.error || 'Terjadi kesalahan server');
+                }
+            } catch (error) {
+                Swal.fire('Gagal', error.message, 'error');
+            }
+        };
+
+        window.deleteEmployee = async (id) => {
+            const r = await Swal.fire({
+                title: 'Hapus Karyawan?',
+                text: 'Data karyawan ini akan dihapus secara permanen!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                confirmButtonText: 'Ya, Hapus!'
+            });
+            if (r.isConfirmed) {
+                try {
+                    Swal.fire({ title: 'Menghapus...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                    const res = await fetch(`${EMP_API}?id=${id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        Swal.fire({ icon: 'success', title: 'Terhapus!', timer: 1500, showConfirmButton: false });
+                        fetchEmployees();
+                    } else {
+                        throw new Error('Gagal menghapus');
+                    }
+                } catch (err) {
+                    Swal.fire('Error', err.message, 'error');
+                }
+            }
+        };
+
+        window.fetchEmployees = fetchEmployees;
+        window.updateEmployeeStatus = updateEmployeeStatus;
+
         window.fetchData = fetchData;
 
         window.selectGatewayOption = (gateway) => {
@@ -3094,59 +2176,7 @@
         })();
     </script>
 
-    <script>
-        // ===== TAB SWITCHING =====
-        window.switchTab = (tab) => {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('tab-' + tab)?.classList.add('active');
-            document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
-
-            const titles = { overview: 'Overview <span>/ Dashboard</span>', licenses: 'License Manager <span>/ Kelola Lisensi</span>', apps: 'App Manager <span>/ Kelola Produk</span>', extensions: 'Extension Manager <span>/ Kelola Browser Extension</span>', settings: 'Payment Gateway <span>/ Pengaturan Gateway</span>' };
-            document.getElementById('topbarTitle').innerHTML = titles[tab] || tab;
-
-            closeSidebar();
-        };
-
-        // ===== MODAL =====
-        window.showModal = (id) => { document.getElementById(id)?.classList.add('show'); };
-        window.closeModal = (id) => { document.getElementById(id)?.classList.remove('show'); };
-        document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('show'); }));
-
-        // ===== DROPDOWN =====
-        window.toggleDD = (id) => {
-            const el = document.getElementById(id);
-            document.querySelectorAll('.custom-dropdown').forEach(d => { if (d.id !== id) d.classList.remove('open'); });
-            el?.classList.toggle('open');
-        };
-        window.closeDD = (id) => { document.getElementById(id)?.classList.remove('open'); };
-        window.selectOpt = (ddId, value, labelText, labelElId) => {
-            const dd = document.getElementById(ddId);
-            dd?.querySelector('input[type=hidden]')?.setAttribute('value', value);
-            const hiddenInput = dd?.querySelector('input[type=hidden]');
-            if (hiddenInput) hiddenInput.value = value;
-            const labelEl = document.getElementById(labelElId);
-            if (labelEl) labelEl.textContent = labelText;
-            dd?.querySelectorAll('.opt-item').forEach(opt => opt.classList.remove('selected'));
-            event?.currentTarget?.classList.add('selected');
-            dd?.classList.remove('open');
-        };
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.custom-dropdown')) {
-                document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
-            }
-        });
-
-        // ===== SIDEBAR MOBILE =====
-        window.openSidebar = () => {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('sidebarOverlay').classList.add('show');
-        };
-        window.closeSidebar = () => {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('show');
-        };
-    </script>
+    <script src="/public/js/admin.js"></script>
 </body>
 
 </html>

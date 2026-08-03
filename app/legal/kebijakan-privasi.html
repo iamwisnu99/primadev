@@ -258,6 +258,63 @@
                 text-align: center;
             }
         }
+        /* KOP SURAT */
+        .kop-surat {
+            display: flex;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 3px double #000;
+            margin-bottom: 30px;
+        }
+
+        .kop-logo {
+            width: 80px;
+            height: auto;
+            margin-right: 18px;
+            flex-shrink: 0;
+        }
+
+        .kop-divider-line {
+            width: 2px;
+            height: 68px;
+            background: #1e3a8a;
+            margin-right: 18px;
+            flex-shrink: 0;
+        }
+
+        .kop-perusahaan {
+            font-size: 15pt;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            color: #1e3a8a;
+            font-family: 'Times New Roman', Times, serif;
+            text-align: left;
+        }
+
+        .kop-alamat {
+            font-size: 9pt;
+            color: #333;
+            margin-top: 3px;
+            font-family: 'Times New Roman', Times, serif;
+            text-align: left;
+        }
+
+        @media (max-width: 600px) {
+            .kop-surat {
+                flex-direction: column;
+                text-align: center;
+            }
+            .kop-logo {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            .kop-divider-line {
+                display: none;
+            }
+            .kop-perusahaan, .kop-alamat {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 
@@ -286,11 +343,16 @@
             </div>
 
             <div class="content">
-                <header>
-                    <h1>PT. Primadev Digital Technology</h1>
-                    <p class="lang-id">Dokumen Legal Resmi Perusahaan</p>
-                    <p class="lang-en" style="display:none;">Official Corporate Legal Documents</p>
-                </header>
+                <div class="kop-surat">
+                    <img src="https://i.imgur.com/BZ1xLO3.png" class="kop-logo" crossorigin="anonymous" alt="Logo Primadev">
+                    <div class="kop-divider-line"></div>
+                    <div style="flex:1;">
+                        <div class="kop-perusahaan">PT. PRIMADEV DIGITAL TECHNOLOGY</div>
+                        <div class="kop-alamat" style="font-weight:bold; margin-bottom: 2px;">SK Kemenkumham RI No. AHU-A104134.AH.01.30.Tahun 2026</div>
+                        <div class="kop-alamat">Wangon, Kab. Banyumas, Jawa Tengah 53176</div>
+                        <div class="kop-alamat">Email: admin.primadev@gmail.com &nbsp;|&nbsp; Web: apps-primadev.netlify.app</div>
+                    </div>
+                </div>
 
                 <!-- INDONESIAN CONTENT -->
                 <div class="lang-id">

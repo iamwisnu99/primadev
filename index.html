@@ -585,7 +585,55 @@
             }
         }
     </style>
+
+    <style>
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #0f172a !important;
+                color: #f8fafc !important;
+            }
+            .navbar {
+                background-color: rgba(15, 23, 42, 0.95) !important;
+                border-bottom: 1px solid #334155;
+            }
+            .navbar-brand, .nav-link {
+                color: #f8fafc !important;
+            }
+            .hero-section {
+                background-color: #0f172a !important;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                color: #f8fafc !important;
+            }
+            p.text-muted {
+                color: #94a3b8 !important;
+            }
+            .card {
+                background-color: #1e293b !important;
+                border: 1px solid #334155 !important;
+            }
+            .card-title {
+                color: #f8fafc !important;
+            }
+            .card-text {
+                color: #cbd5e1 !important;
+            }
+            footer {
+                background-color: #020617 !important;
+                border-top: 1px solid #334155;
+            }
+            .trust-logo {
+                filter: brightness(0) invert(1) opacity(0.7) !important;
+            }
+            .faq-button {
+                background-color: #1e293b !important;
+                color: #f8fafc !important;
+                border-bottom: 1px solid #334155 !important;
+            }
+        }
+    </style>
 </head>
+
 
 <body>
 
@@ -603,6 +651,7 @@
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
                     <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#products">Software</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#career-section" id="navKarir">Karir</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                     <li class="nav-item ms-lg-4">
                         <a href="/app/store" class="btn btn-primary btn-premium">
@@ -616,7 +665,6 @@
 
     <!-- Hero Section -->
     <header class="hero">
-        <!-- Bubble Animation Container -->
         <div class="bubble-container" id="bubbleBox"></div>
 
         <div class="container">
@@ -640,10 +688,8 @@
 
     <!-- Partner Trust Bar with Infinite Marquee -->
     <section class="trust-bar">
-        <!-- Row 1: Right to Left Scroll -->
         <div class="marquee-container">
             <div class="marquee-track">
-                <!-- Group 1 -->
                 <div class="marquee-group">
                     <img src="public/logo.png" alt="PT. Primadev Digital Technology" class="trust-logo"
                         style="height: 38px;">
@@ -658,7 +704,7 @@
                     <img src="/public/supabase.png" alt="Supabase" class="trust-logo" style="height: 40px;">
                     <img src="/public/firebase.png" alt="Firebase" class="trust-logo" style="height: 40px;">
                 </div>
-                <!-- Group 2 (Exact Duplicate for Seamless -50% Loop) -->
+
                 <div class="marquee-group" aria-hidden="true">
                     <img src="public/logo.png" alt="PT. Primadev Digital Technology" class="trust-logo"
                         style="height: 38px;">
@@ -676,10 +722,8 @@
             </div>
         </div>
 
-        <!-- Row 2: Left to Right Scroll (Only visible on mobile screens) -->
         <div class="marquee-container marquee-row-2">
             <div class="marquee-track marquee-track-reverse">
-                <!-- Group 1 Reverse -->
                 <div class="marquee-group">
                     <img src="/public/firebase.png" alt="Firebase" class="trust-logo" style="height: 40px;">
                     <img src="/public/supabase.png" alt="Supabase" class="trust-logo" style="height: 40px;">
@@ -694,7 +738,7 @@
                     <img src="public/logo.png" alt="PT. Primadev Digital Technology" class="trust-logo"
                         style="height: 38px;">
                 </div>
-                <!-- Group 2 Reverse (Exact Duplicate for Seamless -50% Loop) -->
+
                 <div class="marquee-group" aria-hidden="true">
                     <img src="/public/firebase.png" alt="Firebase" class="trust-logo" style="height: 40px;">
                     <img src="/public/supabase.png" alt="Supabase" class="trust-logo" style="height: 40px;">
@@ -723,7 +767,6 @@
                         <img src="public/logo.png" alt="Primadev Logo" class="img-fluid"
                             style="max-height: 200px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.05));">
 
-                        <!-- Subtle Background Pattern -->
                         <div class="position-absolute top-0 start-0 w-100 h-100 opacity-25"
                             style="background-image: radial-gradient(var(--primary) 1px, transparent 1px); background-size: 20px 20px; z-index: -1;">
                         </div>
@@ -810,7 +853,6 @@
                 </p>
             </div>
             <div class="row g-4 justify-content-center" id="productContainer">
-                <!-- Loading State -->
                 <div class="col-12 text-center py-5">
                     <div class="spinner-border text-primary" role="status"></div>
                     <p class="mt-2 text-muted">Memuat solusi terbaik untuk Anda...</p>
@@ -902,6 +944,35 @@
         </div>
     </section>
 
+    <!-- Career CTA Section -->
+    <section class="career-cta py-5" id="career-section"
+        style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); position: relative; overflow: hidden;">
+        <div class="container position-relative" style="z-index: 2;">
+            <div class="row justify-content-center align-items-center text-center">
+                <div class="col-lg-8" data-aos="zoom-in">
+                    <div class="d-inline-block px-3 py-1 mb-3 rounded-pill bg-white text-primary fw-bold shadow-sm"
+                        style="font-size: 0.9rem;">
+                        <i class="fa-solid fa-briefcase me-2"></i> Open Recruitment
+                    </div>
+                    <h2 class="display-5 fw-bold mb-3 text-dark">Mari Berkembang Bersama Primadev</h2>
+                    <p class="lead text-secondary mb-4 px-md-5">Kami mencari talenta kreatif, inovatif, dan bersemangat
+                        untuk menciptakan produk digital luar biasa. Jadilah bagian dari revolusi teknologi kami.</p>
+                    <a href="/app/career" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold shadow"
+                        id="btnAjukanLamaran">
+                        Ajukan Lamaran <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div
+            style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(37,99,235,0.1); border-radius: 50%; z-index: 1;">
+        </div>
+        <div
+            style="position: absolute; bottom: -80px; right: -50px; width: 250px; height: 250px; background: rgba(37,99,235,0.1); border-radius: 50%; z-index: 1;">
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -911,12 +982,19 @@
                         style="height: 48px; filter: brightness(0) invert(1);">
                     <p class="small">PT. Primadev Digital Technology berkomitmen untuk menghadirkan teknologi yang
                         mempermudah kehidupan dan meningkatkan daya saing bisnis di pasar global.</p>
-                    <div class="d-flex gap-3 mt-4">
+
+                    <p class="small fw-semibold" style="color: #94a3b8; margin-top: 1rem; margin-bottom: 0.5rem;">
+                        AHU-A104134.AH.01.30.Tahun 2026
+                    </p>
+
+                    <div class="d-flex gap-3">
                         <a href="/app/support" class="footer-link"><i class="fa-solid fa-headset fs-5"></i></a>
+                        <a href="mailto:support.primadev@gmail.com" class="footer-link"><i
+                                class="fa-solid fa-envelope fs-5"></i></a>
                         <a href="https://instagram.com/primadev.id" class="footer-link"><i
                                 class="fa-brands fa-instagram fs-5"></i></a>
-                        <a href="https://github.com/iamwisnu99" class="footer-link"><i
-                                class="fa-brands fa-github fs-5"></i></a>
+                        <a href="https://tiktok.com/@primadev.id" class="footer-link"><i
+                                class="fa-brands fa-tiktok fs-5"></i></a>
                     </div>
                 </div>
                 <div class="col-lg-2 ms-auto">
@@ -982,14 +1060,12 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // AOS Init
             AOS.init({
                 duration: 1000,
                 once: true,
                 offset: 100
             });
 
-            // Navbar Scroll Effect
             const nav = document.getElementById('mainNav');
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 50) {
@@ -999,10 +1075,8 @@
                 }
             });
 
-            // Set Current Year
             document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-            // Create Hero Bubbles
             function createBubbles() {
                 const box = document.getElementById('bubbleBox');
                 const bubbleCount = 15;
@@ -1020,7 +1094,6 @@
             }
             createBubbles();
 
-            // Fetch and Render Products
             async function loadFeaturedProducts() {
                 const container = document.getElementById('productContainer');
                 try {
@@ -1080,7 +1153,6 @@
                         container.innerHTML += html;
                     });
 
-                    // Re-init AOS for new elements
                     AOS.refresh();
 
                 } catch (error) {
@@ -1092,6 +1164,76 @@
             loadFeaturedProducts();
         });
     </script>
+
+    <div id="pageTransitionOverlay" style="
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        z-index: 99999;
+        opacity: 0;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 20px;
+        transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    ">
+        <img src="https://i.imgur.com/BZ1xLO3.png" style="height:52px; filter:brightness(0) invert(1); opacity:0.9;">
+        <div style="
+            width: 42px; height: 42px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: ptSpin 0.75s linear infinite;
+        "></div>
+        <style>
+            @keyframes ptSpin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </div>
+
+    <script>
+        window.addEventListener('pageshow', function (e) {
+            const overlay = document.getElementById('pageTransitionOverlay');
+            if (!overlay) return;
+            overlay.style.transition = 'none';
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+            requestAnimationFrame(() => {
+                overlay.style.transition = 'opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+        });
+
+        document.getElementById('navKarir').addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.getElementById('career-section');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const navCollapse = document.getElementById('navbarNav');
+                if (navCollapse && navCollapse.classList.contains('show')) {
+                    navCollapse.classList.remove('show');
+                }
+            }
+        });
+
+        document.getElementById('btnAjukanLamaran').addEventListener('click', function (e) {
+            e.preventDefault();
+            const dest = this.getAttribute('href');
+            const overlay = document.getElementById('pageTransitionOverlay');
+
+            overlay.style.pointerEvents = 'all';
+            overlay.style.opacity = '1';
+
+            setTimeout(() => {
+                window.location.href = dest;
+            }, 480);
+        });
+    </script>
 </body>
+
 
 </html>

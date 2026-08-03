@@ -9,7 +9,6 @@ Allow: /app/legal/
 # Halaman admin — wajib tersembunyi dari publik dan mesin pencari
 Disallow: /app/admin
 Disallow: /app/admin-dashboard
-Disallow: /app/cs-panel
 
 # Halaman transaksi — tidak relevan untuk mesin pencari
 Disallow: /app/checkout

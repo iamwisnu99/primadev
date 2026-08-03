@@ -6,9 +6,6 @@ const { getPremiumTemplate, getRenewalTemplate } = require('./email_template');
 let PRICING_DB;
 try { PRICING_DB = require('../../products.json'); } catch (e) { PRICING_DB = {}; }
 
-// =====================================================================
-// INISIALISASI FIREBASE
-// =====================================================================
 if (!admin.apps.length) {
     let serviceAccount = null;
     try {
@@ -54,21 +51,26 @@ if (!admin.apps.length) {
 
 const db = admin.database();
 
-// =====================================================================
-// HELPER: GENERATE LICENSE KEY
-// =====================================================================
 const generateRandomKey = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const seg = () => Array(4).fill(0).map(() => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
     return `PRIMA-${seg()}-${seg()}-${seg()}`;
 };
 
-// =====================================================================
-// HELPER: KIRIM EMAIL
-// =====================================================================
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
 const sendEmail = async (data, isRenewal = false) => {
-    const url = 'https://api.emailjs.com/api/v1.0/email/send';
-    if (!process.env.EMAILJS_SERVICE_ID) return;
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.warn("[EMAIL] Kredensial Gmail tidak diset. Email tidak dikirim.");
+        return;
+    }
 
     const templateData = {
         name: data.name,
@@ -80,34 +82,21 @@ const sendEmail = async (data, isRenewal = false) => {
     };
 
     const messageHtml = isRenewal ? getRenewalTemplate(templateData) : getPremiumTemplate(templateData);
-
-    const payload = {
-        service_id: process.env.EMAILJS_SERVICE_ID,
-        template_id: process.env.EMAILJS_TEMPLATE_ID,
-        user_id: process.env.EMAILJS_PUBLIC_KEY,
-        accessToken: process.env.EMAILJS_PRIVATE_KEY,
-        template_params: {
-            to_email: data.email,
-            to_name: data.name,
-            license_key: data.key,
-            expiry_date: data.expiryDate,
-            type: isRenewal ? `Perpanjangan ${data.appName}` : `${data.appName} (${data.type})`,
-            message_html: messageHtml
-        }
-    };
+    const subject = isRenewal ? `Perpanjangan Lisensi ${data.appName}` : `Pesanan Selesai: Lisensi ${data.appName} (${data.type})`;
 
     try {
-        await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const info = await transporter.sendMail({
+            from: `"PT. Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
+            to: data.email,
+            subject: subject,
+            html: messageHtml
+        });
+        console.log("[EMAIL] Email terkirim:", info.messageId);
     } catch (e) {
         console.error("[EMAIL] Gagal mengirim email:", e.message);
     }
 };
 
-// =====================================================================
-// HELPER: VERIFIKASI SIGNATURE MIDTRANS
-// Formula: SHA512(order_id + status_code + gross_amount + ServerKey)
-// Ref: https://docs.midtrans.com/reference/verifying-payment-notification
-// =====================================================================
 const verifyMidtransSignature = (notification, serverKey) => {
     const { order_id, status_code, gross_amount, signature_key } = notification;
     if (!signature_key || !order_id || !status_code || !gross_amount) return false;
@@ -118,13 +107,6 @@ const verifyMidtransSignature = (notification, serverKey) => {
     return isValid;
 };
 
-// =====================================================================
-// HELPER: NORMALISASI STATUS MIDTRANS → STATUS INTERNAL
-// transaction_status: capture/settlement → 'settlement'
-//                     deny/expire/cancel → 'cancel'
-//                     pending           → 'pending'
-// fraud_status: jika 'deny' → selalu cancel meski transaction_status lain
-// =====================================================================
 const normalizeMidtransStatus = (notification) => {
     const ts = (notification.transaction_status || '').toLowerCase();
     const fs = (notification.fraud_status || '').toLowerCase();
@@ -134,12 +116,7 @@ const normalizeMidtransStatus = (notification) => {
     return 'pending';
 };
 
-// =====================================================================
-// MAIN WEBHOOK HANDLER — Xendit + Midtrans (Dual Gateway)
-// =====================================================================
 exports.handler = async (event) => {
-    // Tentukan apakah berjalan di lingkungan Netlify (production/staging)
-    // Jika ya, verifikasi token/signature WAJIB — tidak boleh dilewati
     const isProductionEnv = !!process.env.NETLIFY;
 
     try {
@@ -150,15 +127,11 @@ exports.handler = async (event) => {
         const notification = JSON.parse(event.body);
         console.log('[WEBHOOK] Notifikasi diterima:', JSON.stringify(notification));
 
-        // ----------------------------------------------------------------
-        // STEP 1: EKSTRAK ORDER ID
-        // Coba semua lokasi yang mungkin dari Xendit maupun Midtrans
-        // ----------------------------------------------------------------
         let orderId =
-            notification.order_id           // Midtrans (semua tipe pembayaran)
-            || notification.external_id    // Xendit VA & Retail
-            || notification.data?.reference_id  // Xendit eWallet (nested)
-            || notification.reference_id   // Xendit QRIS (root level)
+            notification.order_id
+            || notification.external_id
+            || notification.data?.reference_id
+            || notification.reference_id
             || notification.data?.metadata?.order_id
             || notification.metadata?.order_id
             || null;
@@ -171,9 +144,6 @@ exports.handler = async (event) => {
         orderId = String(orderId).trim();
         console.log(`[WEBHOOK] OrderID terdeteksi: ${orderId}`);
 
-        // ----------------------------------------------------------------
-        // STEP 2: CARI TRANSAKSI DI FIREBASE → TENTUKAN GATEWAY
-        // ----------------------------------------------------------------
         const trxRef = db.ref(`transactions/${orderId}`);
         const trxSnap = await trxRef.once('value');
 
@@ -184,7 +154,6 @@ exports.handler = async (event) => {
 
         const trxData = trxSnap.val();
 
-        // Sudah diproses sebelumnya — idempotency guard
         if (trxData.status === 'success') {
             console.log(`[WEBHOOK] OrderID: ${orderId} sudah pernah diproses sebelumnya. Webhook dilewati.`);
             return { statusCode: 200, body: 'Already processed' };
@@ -193,15 +162,10 @@ exports.handler = async (event) => {
         const gateway = (trxData.gateway || 'xendit').toLowerCase();
         console.log(`[WEBHOOK] Gateway dari database: ${gateway}`);
 
-        // ----------------------------------------------------------------
-        // STEP 3: VERIFIKASI KEAMANAN BERDASARKAN GATEWAY
-        // ----------------------------------------------------------------
         let transactionStatus = 'pending';
         let paymentType = gateway === 'midtrans' ? 'Midtrans' : 'Xendit';
 
         if (gateway === 'midtrans') {
-            // Midtrans: verifikasi signature SHA-512
-            // Formula: SHA512(order_id + status_code + gross_amount + serverKey)
             const serverKey = process.env.MIDTRANS_SERVER_KEY || '';
             if (!serverKey) {
                 if (isProductionEnv) {
@@ -220,7 +184,6 @@ exports.handler = async (event) => {
 
             transactionStatus = normalizeMidtransStatus(notification);
 
-            // Label metode pembayaran Midtrans
             const pt = (notification.payment_type || '').toLowerCase();
             const bank = notification.bank || notification.va_numbers?.[0]?.bank || '';
             if (pt === 'bank_transfer' || pt === 'echannel') {
@@ -242,7 +205,6 @@ exports.handler = async (event) => {
             }
 
         } else {
-            // Xendit: verifikasi x-callback-token
             const xCallbackToken =
                 event.headers?.['x-callback-token']
                 || event.headers?.['X-Callback-Token']
@@ -262,7 +224,6 @@ exports.handler = async (event) => {
                 console.log(`[WEBHOOK-XENDIT] Verifikasi token callback berhasil. OrderID: ${orderId}`);
             }
 
-            // Normalisasi status Xendit
             const isEwalletPayload = !!(notification.data && (notification.data.reference_id || notification.data.status));
             const rawStatus = (
                 (isEwalletPayload ? notification.data?.status : null)
@@ -281,8 +242,6 @@ exports.handler = async (event) => {
                 transactionStatus = 'pending';
             }
 
-            // Verifikasi silang jumlah pembayaran dari webhook dengan jumlah tersimpan di database
-            // Ini mencegah skenario di mana webhook palsu dibuat menggunakan orderId yang valid
             if (transactionStatus === 'settlement' && trxData.amount !== undefined) {
                 const webhookAmount = Number(
                     notification.amount || notification.expected_amount ||
@@ -298,7 +257,6 @@ exports.handler = async (event) => {
                 }
             }
 
-            // Label metode pembayaran Xendit
             const channelCode = notification.data?.channel_code || notification.channel_code || '';
             if (notification.bank_code) {
                 paymentType = `Xendit VA (${notification.bank_code})`;
@@ -313,9 +271,6 @@ exports.handler = async (event) => {
 
         console.log(`[WEBHOOK] Gateway: ${gateway} | Status: ${transactionStatus} | Metode Pembayaran: ${paymentType}`);
 
-        // ----------------------------------------------------------------
-        // STEP 4: PROSES PEMBAYARAN BERHASIL
-        // ----------------------------------------------------------------
         if (transactionStatus === 'settlement') {
 
             await trxRef.update({
@@ -326,7 +281,6 @@ exports.handler = async (event) => {
 
             console.log(`[WEBHOOK] Transaksi berhasil dikonfirmasi. OrderID: ${orderId} | Tipe: ${trxData.orderType || 'NEW'}`);
 
-            // ---- RENEWAL: Perpanjang lisensi yang sudah ada ----
             if (trxData.orderType === 'RENEWAL') {
                 const targetKey = trxData.targetLicenseKey;
                 if (!targetKey) {
@@ -370,7 +324,6 @@ exports.handler = async (event) => {
 
                 console.log(`[WEBHOOK] Lisensi ${targetKey} berhasil diperpanjang.`);
 
-            // ---- PEMBELIAN BARU: Buat lisensi baru ----
             } else {
                 console.log('[WEBHOOK] Membuat lisensi baru...');
 
@@ -413,9 +366,6 @@ exports.handler = async (event) => {
 
             return { statusCode: 200, body: 'OK - Processed' };
 
-        // ----------------------------------------------------------------
-        // STEP 5: PEMBAYARAN GAGAL / DIBATALKAN
-        // ----------------------------------------------------------------
         } else if (transactionStatus === 'cancel') {
             await trxRef.update({ status: 'failed' });
             console.log(`[WEBHOOK] Transaksi ${orderId} gagal atau dibatalkan. Status diperbarui ke failed.`);

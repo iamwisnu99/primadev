@@ -1,0 +1,1946 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartu Staff - Primadev Digital Technology</title>
+    <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        :root {
+            --blue: #1a6ed8;
+            --blue-mid: #2575e0;
+            --blue-light: #4a90e8;
+            --blue-pale: #e8f1fc;
+            --text-dark: #1a2540;
+            --text-mid: #3d5a8a;
+            --text-muted: #6b7fa8;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(140deg, #dbeafe 0%, #eef4ff 55%, #dde9ff 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            padding: 14px 30px;
+            box-shadow: 0 1px 0 rgba(26, 110, 216, 0.08), 0 4px 20px rgba(26, 110, 216, 0.06);
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar img {
+            height: 34px;
+        }
+
+        /* ── PAGE CONTAINER ── */
+        .container {
+            margin-top: 90px;
+            max-width: 1050px;
+            width: 92%;
+            display: flex;
+            flex-direction: column;
+            gap: 36px;
+            padding-bottom: 60px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* ── LEGAL DOCUMENTS SECTION ── */
+        .legal-docs-section {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-top: 22px;
+            box-shadow: 0 8px 30px rgba(26, 110, 216, 0.09);
+        }
+
+        .doc-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .doc-tab-btn {
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            border: 2px solid rgba(30, 58, 138, 0.18);
+            background: transparent;
+            color: #1e3a8a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .doc-tab-btn:hover {
+            background: #eff6ff;
+            border-color: #2563eb;
+        }
+
+        .doc-tab-btn.active {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .doc-preview-wrapper {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        .doc-preview-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.82rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .doc-preview-scroll {
+            height: 460px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background: #94a3b8;
+        }
+
+        /* The scaled-down document preview */
+        #docPreviewInner {
+            width: 794px;
+            transform-origin: top center;
+            background: white;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+        }
+
+        /* Hidden off-screen A4 document renderer */
+        #docRenderer {
+            position: fixed;
+            left: -9999px;
+            top: 0;
+            width: 794px;
+            background: white;
+            box-sizing: border-box;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000;
+            line-height: 1.65;
+        }
+
+        /* Document internal styles */
+        .doc-page {
+            padding: 56px 68px;
+            min-height: 1123px;
+            /* A4 height at 96dpi */
+            height: auto;
+            box-sizing: border-box;
+            background: #ffffff;
+            -webkit-text-size-adjust: none;
+            -moz-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+            text-size-adjust: none;
+        }
+
+        .kop-surat {
+            display: flex;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 3px double #000;
+            margin-bottom: 24px;
+        }
+
+        .kop-logo {
+            width: 80px;
+            height: auto;
+            margin-right: 18px;
+            flex-shrink: 0;
+        }
+
+        .kop-divider-line {
+            width: 2px;
+            height: 68px;
+            background: #1e3a8a;
+            margin-right: 18px;
+            flex-shrink: 0;
+        }
+
+        .kop-perusahaan {
+            font-size: 15pt;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            color: #1e3a8a;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .kop-alamat {
+            font-size: 9pt;
+            color: #333;
+            margin-top: 3px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .doc-title-block {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .doc-title {
+            font-size: 14pt;
+            font-weight: bold;
+            text-decoration: underline;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .doc-number {
+            font-size: 10pt;
+            color: #555;
+            margin-top: 6px;
+        }
+
+        .doc-pasal {
+            margin-bottom: 18px;
+        }
+
+        .doc-pasal-title {
+            font-weight: bold;
+            font-size: 11pt;
+            margin-bottom: 8px;
+            text-decoration: underline;
+        }
+
+        .doc-pasal p,
+        .doc-pasal li {
+            font-size: 11pt;
+            text-align: justify;
+            margin-bottom: 5px;
+        }
+
+        .doc-pasal ol,
+        .doc-pasal ul {
+            padding-left: 24px;
+            margin: 6px 0;
+        }
+
+        .doc-sig-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+        }
+
+        .doc-sig-block {
+            text-align: center;
+            width: 220px;
+        }
+
+        .doc-sig-img-area {
+            height: 70px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            margin-bottom: 4px;
+        }
+
+        .doc-sig-line {
+            border-top: 1px solid #000;
+            padding-top: 6px;
+            font-size: 10pt;
+        }
+
+        .doc-sig-name {
+            font-weight: bold;
+            font-size: 10.5pt;
+        }
+
+        .doc-sig-title {
+            font-size: 9.5pt;
+            color: #555;
+        }
+
+        /* ── RESPONSIVE ── */
+        #loading,
+        #error {
+            text-align: center;
+            padding: 50px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(26, 110, 216, 0.1);
+            font-size: 1.1rem;
+        }
+
+        #error {
+            color: #dc2626;
+            display: none;
+        }
+
+        #main-content {
+            display: none;
+        }
+
+        /* ── CARDS WRAPPER ── */
+        .cards-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 48px;
+            /* more breathing room between the two cards */
+        }
+
+        /* ══════════════════════════════════════════
+           ID CARD  —  680 × 430 px
+           ══════════════════════════════════════════ */
+        .id-card {
+            width: 680px;
+            height: 430px;
+            border-radius: 22px;
+            background: #ffffff;
+            box-shadow:
+                0 20px 60px rgba(26, 110, 216, 0.18),
+                0 6px 18px rgba(26, 110, 216, 0.10);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        /* ── SVG DECORATIVE SHAPES (front & back share) ── */
+        .card-svg-deco {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── DOT MATRIX  top-right ── */
+        .dot-matrix {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 108px;
+            height: 96px;
+            background-image: radial-gradient(circle, #a8c8f0 1.8px, transparent 1.8px);
+            background-size: 13px 13px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ══════════════════
+           FRONT CARD LAYOUT
+           ══════════════════ */
+
+        /* — HEADER ROW — */
+        .card-header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            padding: 20px 28px 16px 28px;
+            height: 100px;
+            border-bottom: 1px solid #e8eef8;
+        }
+
+        /* Logo block */
+        .logo-block {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .logo-block img {
+            height: 40px;
+            /* keep original colors */
+        }
+
+        .logo-text-wrap {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .logo-name-1 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.3px;
+        }
+
+        .logo-name-2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--blue);
+            letter-spacing: -0.3px;
+        }
+
+        /* Vertical blue divider */
+        .hdr-divider {
+            width: 2px;
+            height: 52px;
+            background: linear-gradient(180deg, transparent, var(--blue) 30%, var(--blue) 70%, transparent);
+            margin: 0 22px;
+            flex-shrink: 0;
+            border-radius: 2px;
+        }
+
+        /* Title block */
+        .title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .title-main {
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: var(--blue);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .title-sub {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .title-company {
+            font-size: 0.62rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            margin-top: 3px;
+        }
+
+        /* — BODY ROW — */
+        .card-body {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: flex-start;
+            padding: 22px 30px 0 30px;
+            gap: 20px;
+            height: 214px;
+        }
+
+        /* Info section (left) */
+        .info-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 4px;
+        }
+
+        .member-name {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--blue);
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .info-divider {
+            width: 100%;
+            height: 1.5px;
+            background: linear-gradient(90deg, var(--blue) 0%, rgba(26, 110, 216, 0.1) 100%);
+            border-radius: 2px;
+            margin-bottom: 14px;
+        }
+
+        .member-id-row {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 22px;
+        }
+
+        .member-id-row span {
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        /* Values row */
+        .values-row {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .val-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 0 18px;
+        }
+
+        .val-item:first-child {
+            padding-left: 0;
+        }
+
+        .val-item i {
+            font-size: 1.25rem;
+            color: var(--blue);
+        }
+
+        .val-label {
+            font-size: 0.58rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .val-sep {
+            width: 1px;
+            height: 38px;
+            background: #d0ddf5;
+            flex-shrink: 0;
+        }
+
+        /* QR section — slightly left of far-right edge */
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0;
+            padding-top: 2px;
+            padding-right: 12px;
+            /* shift left */
+        }
+
+        .qr-wrap {
+            padding: 9px;
+            border: 1.5px solid #d0ddf5;
+            border-radius: 12px;
+            background: #fff;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 14px rgba(26, 110, 216, 0.10);
+        }
+
+        /* — FOOTER ROW —
+           Footer sits on top of the curved blue SVG band.  */
+        .card-footer {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            height: 114px;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 3;
+        }
+
+        .nfc-icon-box {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.75);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+
+        .footer-tagline {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+            text-transform: uppercase;
+        }
+
+        .footer-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            z-index: 3;
+        }
+
+        /* Signature sits on blue footer → use white tones */
+        .sig-cursive {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 2.1rem;
+            color: #ffffff;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .sig-underline {
+            width: 140px;
+            height: 1.5px;
+            background: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .sig-label {
+            font-size: 0.57rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+
+        /* ══════════════════════════════════════════
+           BACK CARD
+           ══════════════════════════════════════════ */
+        .card-back {
+            background: linear-gradient(145deg, #1a4fc4 0%, #1d5fd8 50%, #2575e0 100%);
+            color: white;
+        }
+
+        .back-inner {
+            position: relative;
+            z-index: 2;
+            padding: 28px 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .back-deco-dots {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 100px;
+            height: 88px;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.22) 1.8px, transparent 1.8px);
+            background-size: 13px 13px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .back-title {
+            text-align: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+
+        .back-rules {
+            font-size: 0.82rem;
+            line-height: 1.75;
+            color: rgba(255, 255, 255, 0.88);
+            padding-left: 18px;
+            flex: 1;
+        }
+
+        .back-rules li {
+            margin-bottom: 2px;
+        }
+
+        .back-rules li::marker {
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .back-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 10px 18px;
+            border-radius: 12px;
+            margin-top: 14px;
+        }
+
+        .back-company {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+        }
+
+        .back-company strong {
+            color: #fff;
+        }
+
+        .back-sig-box {
+            text-align: center;
+        }
+
+        .back-sig-cursive {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.9rem;
+            color: white;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .back-sig-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.75);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding-top: 4px;
+        }
+
+        /* ── ACTION PANEL ── */
+        .actions-panel {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 22px;
+            background: white;
+            padding: 24px 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(26, 110, 216, 0.1);
+            /* slightly more top padding handled by container gap */
+        }
+
+        /* ── PRINT / @media print ── */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .navbar,
+            .actions-panel,
+            .profile-details,
+            .page-header {
+                display: none !important;
+            }
+
+            .container {
+                margin-top: 0;
+                padding: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .cards-wrapper {
+                gap: 20px;
+            }
+
+            .id-card {
+                box-shadow: none;
+            }
+        }
+
+        .btn {
+            padding: 12px 26px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.45);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #1e3a8a;
+            border: 2px solid rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-outline:hover {
+            background: #eff6ff;
+            border-color: #2563eb;
+        }
+
+        /* ── PROFILE DETAILS ── */
+        .profile-details {
+            background: white;
+            border-radius: 18px;
+            margin-top: 22px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(26, 110, 216, 0.09);
+        }
+
+        .profile-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 22px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            border-radius: 2px;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .detail-item label {
+            display: block;
+            font-size: 0.7rem;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            margin-bottom: 4px;
+        }
+
+        .detail-item .value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .card-outer {
+            width: 680px;
+            height: 430px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        @media (max-width: 720px) {
+            .cards-wrapper {
+                width: 100%;
+                align-items: flex-start;
+            }
+
+            .card-outer {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .actions-panel {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #docModalOverlay {
+                padding: 0 !important;
+            }
+
+            #docModalOverlay>div {
+                height: 100vh !important;
+                max-height: 100vh !important;
+                border-radius: 0 !important;
+            }
+
+            #modalDocPreviewScroll {
+                padding: 10px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/"><img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev Logo" style="filter: brightness(0);"></a>
+    </nav>
+
+    <div class="container">
+
+        <div id="loading">
+            <i class="fas fa-spinner fa-spin fa-2x" style="color:#1a6ed8;margin-bottom:15px;"></i>
+            <p>Memuat Data Karyawan...</p>
+        </div>
+
+        <div id="error">
+            <i class="fas fa-exclamation-triangle fa-2x" style="margin-bottom:15px;"></i>
+            <p id="errorMsg">Karyawan tidak ditemukan.</p>
+            <a href="/" class="btn btn-outline" style="margin-top:20px;display:inline-flex;">Kembali ke Beranda</a>
+        </div>
+
+        <div id="main-content">
+
+            <div class="page-header">
+                <h1>Kartu Identitas Karyawan</h1>
+                <p>PT. Primadev Digital Technology</p>
+            </div>
+
+            <div id="printArea">
+                <div class="cards-wrapper">
+                    <!-- FRONT CARD -->
+                    <div class="card-outer" id="outerFront">
+                        <div class="id-card" id="cardFront">
+                            <svg class="card-svg-deco" viewBox="0 0 680 430" preserveAspectRatio="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="gFooter" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#1354c8" />
+                                        <stop offset="50%" stop-color="#2470e0" />
+                                        <stop offset="100%" stop-color="#1565d8" />
+                                    </linearGradient>
+
+                                    <linearGradient id="gFooter2" x1="0%" y1="100%" x2="0%" y2="0%">
+                                        <stop offset="0%" stop-color="#1048b0" />
+                                        <stop offset="100%" stop-color="rgba(37,117,224,0)" />
+                                    </linearGradient>
+
+                                    <linearGradient id="gRight" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#3b82f6" />
+                                        <stop offset="100%" stop-color="#1a6ed8" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M0,430 L0,346 C170,310 510,310 680,346 L680,430 Z" fill="url(#gFooter)" />
+                                <path d="M0,430 L0,368 C170,340 510,340 680,368 L680,430 Z" fill="url(#gFooter2)"
+                                    opacity="0.55" />
+                                <path d="M680,88 C647,125 644,295 680,330 Z" fill="url(#gRight)" opacity="0.85" />
+                                <path d="M680,110 C658,140 655,280 680,308 Z" fill="#60a5fa" opacity="0.45" />
+                            </svg>
+
+                            <div class="dot-matrix"></div>
+
+                            <div class="card-header">
+                                <div class="logo-block">
+                                    <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev">
+                                </div>
+                                <div class="hdr-divider"></div>
+                                <div class="title-block">
+                                    <div class="title-main">KARTU STAFF</div>
+                                    <div class="title-sub">STAFF CARD</div>
+                                    <div class="title-company">PT. Primadev Digital Technology</div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="info-section">
+                                    <div class="member-name" id="cardName">KARYAWAN PRIMADEV</div>
+                                    <div class="member-role">STAFF RESMI</div>
+                                    <div class="info-divider"></div>
+                                    <div class="member-id-row">ID. &nbsp;<span id="cardId2">PDV-0001</span></div>
+
+                                    <div class="values-row">
+                                        <div class="val-item">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <span class="val-label">INTEGRITAS</span>
+                                        </div>
+                                        <div class="val-sep"></div>
+                                        <div class="val-item">
+                                            <i class="fas fa-lightbulb"></i>
+                                            <span class="val-label">INOVASI</span>
+                                        </div>
+                                        <div class="val-sep"></div>
+                                        <div class="val-item">
+                                            <i class="fas fa-users"></i>
+                                            <span class="val-label">KOLABORASI</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="qr-section">
+                                    <div class="qr-wrap">
+                                        <div id="qrcode"></div>
+                                        <div style="font-size:0.52rem;font-weight:700;color:#6b7fa8;letter-spacing:1.5px;text-align:center;margin-top:4px;"
+                                            id="cardId">PDV-0001</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="footer-left">
+                                    <div class="nfc-icon-box">
+                                        <i class="fas fa-wifi" style="transform:rotate(90deg);"></i>
+                                    </div>
+                                    <div class="footer-tagline">
+                                        TOGETHER, WE BUILD<br>DIGITAL EXCELLENCE
+                                    </div>
+                                </div>
+                                <div class="footer-right">
+                                    <div class="sig-cursive">Primadev</div>
+                                    <div class="sig-underline"></div>
+                                    <div class="sig-label">DIREKTUR</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- BACK CARD -->
+                    <div class="card-outer" id="outerBack">
+                        <div class="id-card card-back" id="cardBack">
+
+                            <svg class="card-svg-deco" viewBox="0 0 680 430" preserveAspectRatio="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="gBackLeft" x1="0%" y1="100%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="rgba(0,0,0,0.25)" />
+                                        <stop offset="100%" stop-color="rgba(0,0,0,0)" />
+                                    </linearGradient>
+                                    <linearGradient id="gBackRight" x1="100%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="rgba(255,255,255,0.12)" />
+                                        <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M0,430 L0,200 C40,160 110,155 175,195 C220,225 225,340 200,430 Z"
+                                    fill="url(#gBackLeft)" />
+                                <path d="M680,80 C648,120 645,300 680,335 Z" fill="url(#gBackRight)" />
+                            </svg>
+
+                            <div class="back-deco-dots"></div>
+
+                            <div class="back-inner">
+                                <div class="back-title">Ketentuan Pemegang Kartu</div>
+                                <ul class="back-rules">
+                                    <li>Kartu ini adalah milik resmi PT. Primadev Digital Technology.</li>
+                                    <li>Wajib ditunjukkan selama berada di lingkungan kerja perusahaan.</li>
+                                    <li>Kartu ini tidak dapat dipindahtangankan kepada pihak lain.</li>
+                                    <li>Apabila hilang, segera laporkan ke Departemen HR.</li>
+                                    <li>Kartu harus dikembalikan apabila masa kerja berakhir.</li>
+                                </ul>
+                                <div class="back-footer">
+                                    <div class="back-company">
+                                        <strong>Kantor Pusat:</strong><br>
+                                        Wangon, Kab. Banyumas<br>
+                                        Jawa Tengah 53176<br>
+                                        apps-primadev.netlify.app
+                                    </div>
+                                    <div class="back-sig-box">
+                                        <div class="back-sig-cursive">Primadev</div>
+                                        <div class="back-sig-label">Direktur Utama</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="actions-panel">
+                <button id="btnDownload" class="btn btn-primary" onclick="downloadPDF()">
+                    <i class="fas fa-file-pdf"></i> Unduh PDF
+                </button>
+            </div>
+
+            <div class="profile-details">
+                <div class="profile-title">Detail Karyawan</div>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>Nama Lengkap</label>
+                        <div class="value" id="detName">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>ID Karyawan</label>
+                        <div class="value" id="detId" style="color:#1a6ed8;font-family:monospace;">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Email</label>
+                        <div class="value" id="detEmail">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>No. WhatsApp</label>
+                        <div class="value" id="detWa">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Status</label>
+                        <div class="value">
+                            <span
+                                style="background:#dcfce7;color:#166534;padding:4px 12px;border-radius:20px;font-size:0.85rem;font-weight:bold;">AKTIF</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Tanggal Bergabung</label>
+                        <div class="value" id="detDate">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="legal-docs-section">
+                <div class="profile-title">Dokumen Legal Karyawan</div>
+
+                <div class="doc-tabs">
+                    <button class="doc-tab-btn" data-doc="spk_kontrak" id="tab_spk_kontrak"
+                        onclick="switchDocTab('spk_kontrak', this)" style="display: none;">
+                        <i class="fas fa-file-contract"></i> SPK &ndash; Kontrak
+                    </button>
+                    <button class="doc-tab-btn" data-doc="spk_tetap" id="tab_spk_tetap"
+                        onclick="switchDocTab('spk_tetap', this)" style="display: none;">
+                        <i class="fas fa-file-signature"></i> SPK &ndash; Tetap
+                    </button>
+                    <button class="doc-tab-btn active" data-doc="nda" id="tab_nda" onclick="switchDocTab('nda', this)">
+                        <i class="fas fa-shield-halved"></i> NDA
+                    </button>
+                </div>
+
+                <div class="doc-preview-wrapper"
+                    style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; margin-top: 20px;">
+                    <i class="fas fa-file-signature"
+                        style="font-size: 3rem; color: var(--blue); margin-bottom: 15px;"></i>
+                    <h3 id="docPreviewLabel"
+                        style="margin: 0 0 10px 0; color: var(--text-dark); font-size: 1.1rem; text-align: center;">
+                        Surat Perjanjian Kerja</h3>
+                    <p
+                        style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 25px; max-width: 400px;">
+                        Dokumen legal Anda siap untuk ditinjau dan diunduh. Silakan klik tombol di bawah ini.
+                    </p>
+                    <div style="display:flex; justify-content:center; gap:12px;">
+                        <button class="btn btn-outline" onclick="showDocModal()"
+                            style="background: #ffffff; color: #1a6ed8; border: 1px solid #1a6ed8; padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-expand"></i> Lihat Preview
+                        </button>
+                        <button class="btn btn-primary" id="btnDownloadDoc" onclick="downloadLegalDoc()"
+                            style="background: #1a6ed8; color: #fff; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-file-pdf"></i> Unduh PDF
+                        </button>
+                    </div>
+                    <p id="docNumberInfo" style="text-align:center;font-size:0.78rem;color:#94a3b8;margin-top:15px;">
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal for Document Preview -->
+    <div id="docModalOverlay"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
+        <div
+            style="background: #ffffff; width: 100%; max-width: 850px; height: 90vh; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <div
+                style="padding: 15px 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #ffffff;">
+                <div style="font-weight: 600; color: var(--text-dark);" id="modalDocTitle">Preview Dokumen</div>
+                <button onclick="hideDocModal()"
+                    style="background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer;"><i
+                        class="fas fa-times"></i></button>
+            </div>
+            <div style="flex: 1; overflow: auto; padding: 20px; background: #e2e8f0; display: flex; justify-content: center;"
+                id="modalDocPreviewScroll">
+                <div id="modalDocPreviewInner"
+                    style="transform-origin: top center; background: transparent; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding-bottom: 1px; flex-shrink: 0; min-width: 794px;">
+                </div>
+            </div>
+            <div style="padding: 15px 20px; border-top: 1px solid #e2e8f0; background: #ffffff; text-align: right;">
+                <button class="btn btn-primary" onclick="downloadLegalDoc()"
+                    style="background: #1a6ed8; color: #fff; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer;">
+                    <i class="fas fa-file-pdf"></i> Unduh PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden off-screen document renderer (full A4 size) -->
+    <div id="docRenderer"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const empId = urlParams.get('id');
+
+            if (!empId) { showError("ID Karyawan tidak ditemukan di URL."); return; }
+
+            try {
+                const res = await fetch(`/.netlify/functions/employees?empId=${empId}`);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Karyawan tidak ditemukan.");
+
+                // Populate card
+                document.getElementById('cardName').innerText = data.name;
+                document.getElementById('cardId').innerText = data.employeeId;
+                document.getElementById('cardId2').innerText = data.employeeId;
+
+                // Populate details
+                document.getElementById('detName').innerText = data.name;
+                document.getElementById('detId').innerText = data.employeeId;
+                document.getElementById('detEmail').innerText = data.email;
+                document.getElementById('detWa').innerText = data.whatsapp || '-';
+
+                const dateOpts = { day: 'numeric', month: 'long', year: 'numeric' };
+                document.getElementById('detDate').innerText =
+                    new Date(data.acceptedAt || data.createdAt).toLocaleDateString('id-ID', dateOpts);
+
+                // QR Code
+                new QRCode(document.getElementById("qrcode"), {
+                    text: window.location.href,
+                    width: 92,
+                    height: 92,
+                    colorDark: "#1a2540",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+
+                requestAnimationFrame(scaleCards);
+
+                initLegalDocs(data);
+
+            } catch (err) {
+                showError(err.message);
+            }
+        });
+
+        function scaleCards() {
+            const CARD_W = 680;
+            const CARD_H = 430;
+
+            const outers = [
+                { outer: document.getElementById('outerFront'), card: document.getElementById('cardFront') },
+                { outer: document.getElementById('outerBack'), card: document.getElementById('cardBack') }
+            ];
+
+            if (!outers[0].outer) return;
+
+            const isMobile = window.innerWidth <= 720;
+
+            outers.forEach(({ outer, card }) => {
+                if (isMobile) {
+                    const avail = outer.parentElement.offsetWidth || window.innerWidth - 32;
+                    const scale = Math.min(avail / CARD_W, 1);
+
+                    card.style.transformOrigin = 'top left';
+                    card.style.transform = `scale(${scale})`;
+
+                    outer.style.height = `${CARD_H * scale}px`;
+                    outer.style.width = `${avail}px`;
+                } else {
+                    card.style.transform = '';
+                    card.style.transformOrigin = '';
+                    outer.style.height = '';
+                    outer.style.width = '';
+                }
+            });
+        }
+
+        /* Panggil ulang saat resize window */
+        window.addEventListener('resize', scaleCards);
+
+        function showError(msg) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('errorMsg').innerText = msg;
+        }
+
+        async function downloadPDF() {
+            const frontCard = document.getElementById('cardFront');
+            const backCard = document.getElementById('cardBack');
+            const empId = (document.getElementById('cardId').innerText || 'PDV').trim();
+
+            const btn = document.getElementById('btnDownload');
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>&nbsp;Memproses...';
+            btn.disabled = true;
+
+            try {
+                const KTP_W_MM = 85.6;
+                const KTP_H_MM = 53.98;
+
+                const captureOpts = {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    imageTimeout: 0
+                };
+
+                const cards = [frontCard, backCard];
+                const prevBorders = cards.map(c => c.style.border);
+                cards.forEach(c => { c.style.border = '1.5px solid rgba(0,0,0,0.35)'; });
+
+                const canvasFront = await html2canvas(frontCard, captureOpts);
+                const canvasBack = await html2canvas(backCard, captureOpts);
+
+                cards.forEach((c, i) => { c.style.border = prevBorders[i]; });
+                const imgFront = canvasFront.toDataURL('image/jpeg', 0.88);
+                const imgBack = canvasBack.toDataURL('image/jpeg', 0.88);
+
+                const { jsPDF } = window.jspdf;
+
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: [KTP_W_MM, KTP_H_MM]
+                });
+
+                pdf.addImage(imgFront, 'JPEG', 0, 0, KTP_W_MM, KTP_H_MM);
+
+                pdf.addPage([KTP_W_MM, KTP_H_MM], 'landscape');
+                pdf.addImage(imgBack, 'JPEG', 0, 0, KTP_W_MM, KTP_H_MM);
+
+                pdf.save(`ID_CARD_${empId}.pdf`);
+
+            } catch (err) {
+                console.error('PDF export error:', err);
+                alert('Gagal mengekspor PDF. Silakan coba lagi.');
+            } finally {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+            }
+        }
+    </script>
+
+    <!-- LEGAL DOCUMENTS — SPK Kontrak, SPK Tetap, NDA -->
+    <script>
+        let _ceoSignature = null;
+        let _docCounters = {};
+        let _currentDoc = 'spk_kontrak';
+        let _employeeData = null;
+
+        function toRoman(n) {
+            const map = [['XII', 12], ['XI', 11], ['X', 10], ['IX', 9], ['VIII', 8],
+            ['VII', 7], ['VI', 6], ['V', 5], ['IV', 4], ['III', 3], ['II', 2], ['I', 1]];
+            for (const [r, v] of map) if (n >= v) return r;
+            return '';
+        }
+
+        function tglID(date) {
+            return new Date(date).toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+        }
+
+        function previewDocNumber(docType) {
+            const cnt = (_docCounters[docType] || 0) + 1;
+            const now = new Date();
+            return `${String(cnt).padStart(4, '0')}/ADM-IT/PDT/${toRoman(now.getMonth() + 1)}/${now.getFullYear()}`;
+        }
+
+        async function loadLegalAssets() {
+            try {
+                const res = await fetch('/.netlify/functions/signature');
+                const data = await res.json();
+                _ceoSignature = data.signature || null;
+                _docCounters = data.counters || {};
+            } catch (e) {
+                console.warn('loadLegalAssets error:', e);
+            }
+        }
+
+        function buildKop() {
+            return `
+            <div class="kop-surat">
+                <img src="https://i.imgur.com/BZ1xLO3.png" class="kop-logo" crossorigin="anonymous">
+                <div class="kop-divider-line"></div>
+                <div style="flex:1;">
+                    <div class="kop-perusahaan">PT. PRIMADEV DIGITAL TECHNOLOGY</div>
+                    <div class="kop-alamat" style="font-weight:bold; margin-bottom: 2px;">SK Kemenkumham RI No. AHU-A104134.AH.01.30.Tahun 2026</div>
+                    <div class="kop-alamat">Wangon, Kab. Banyumas, Jawa Tengah 53176</div>
+                    <div class="kop-alamat">Email: admin.primadev@gmail.com &nbsp;|&nbsp; Web: apps-primadev.netlify.app</div>
+                </div>
+            </div>`;
+        }
+
+        function buildSigArea(empName, docDate) {
+            const ceoSig = _ceoSignature
+                ? `<img src="${_ceoSignature}" style="height:64px;max-width:180px;display:block;margin:0 auto 4px;">`
+                : `<div style="height:64px;"></div>`;
+
+            return `
+            <div class="doc-sig-area" style="justify-content: flex-end;">
+                <div class="doc-sig-block" style="text-align:center;">
+                    <div style="font-size:9.5pt;margin-bottom:6px;">Wangon, ${tglID(docDate)}</div>
+                    <div class="doc-sig-img-area" style="display:block;">
+                        ${ceoSig}
+                    </div>
+                    <div class="doc-sig-line">
+                        <div class="doc-sig-name">PRIMA WISNU A.A</div>
+                        <div class="doc-sig-title">DIREKTUR UTAMA</div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function buildSPKKontrak(emp, docNumber) {
+            const today = new Date().toISOString();
+            return `
+            <div class="doc-page">
+                ${buildKop()}
+                <div class="doc-title-block">
+                    <div class="doc-title">Surat Perjanjian Kerja</div>
+                    <div style="font-size:12pt;font-weight:bold;margin-top:4px;">(PKWT — Perjanjian Kerja Waktu Tertentu)</div>
+                    <div class="doc-number">Nomor: ${docNumber}</div>
+                </div>
+
+                <p style="text-align:justify;font-size:11pt;margin-bottom:20px;">
+                    Surat Perjanjian Kerja ini dibuat dan ditandatangani pada hari ini oleh pihak-pihak yang tercantum di bawah ini.
+                </p>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 1 — IDENTITAS PARA PIHAK</div>
+                    <p><strong>Pihak Pertama (Perusahaan):</strong><br>
+                    Nama&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: PT. Primadev Digital Technology<br>
+                    Alamat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Wangon, Kab. Banyumas, Jawa Tengah 53176<br>
+                    Website&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: apps-primadev.netlify.app<br>
+                    Selanjutnya disebut sebagai <strong>"PERUSAHAAN"</strong>.</p>
+                    <p style="margin-top:10px;"><strong>Pihak Kedua (Karyawan):</strong><br>
+                    Nama&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${emp.name}<br>
+                    ID Karyawan&nbsp;: ${emp.employeeId}<br>
+                    Email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${emp.email}<br>
+                    Selanjutnya disebut sebagai <strong>"KARYAWAN"</strong>.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 2 — JABATAN DAN DESKRIPSI PEKERJAAN</div>
+                    <p>KARYAWAN ditempatkan pada posisi <strong>Staff Resmi</strong> di PT. Primadev Digital Technology dengan ruang lingkup pekerjaan yang meliputi:</p>
+                    <ol>
+                        <li>Melaksanakan tugas dan tanggung jawab sesuai arahan manajemen perusahaan;</li>
+                        <li>Berpartisipasi aktif dalam pengembangan produk dan layanan digital perusahaan;</li>
+                        <li>Menjaga kualitas kerja dan profesionalisme dalam setiap penugasan;</li>
+                        <li>Melaporkan progres pekerjaan secara berkala kepada atasan langsung.</li>
+                    </ol>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 3 — MASA KONTRAK</div>
+                    <p>Perjanjian kerja ini berlaku untuk jangka waktu <strong>sesuai kesepakatan interview</strong> terhitung sejak tanggal ditandatanganinya surat ini. Perpanjangan kontrak dapat dilakukan atas persetujuan kedua belah pihak secara tertulis sebelum masa kontrak berakhir.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 4 — KOMPENSASI DAN TUNJANGAN</div>
+                    <p>PERUSAHAAN akan memberikan kompensasi kepada KARYAWAN berupa:</p>
+                    <ol>
+                        <li>Gaji pokok: <strong>Sesuai kesepakatan pada proses interview</strong>;</li>
+                        <li>Tunjangan operasional dan fasilitas sesuai kebijakan perusahaan yang berlaku;</li>
+                        <li>Pembayaran gaji dilakukan setiap bulan pada tanggal yang telah disepakati.</li>
+                    </ol>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 5 — JAM KERJA</div>
+                    <p>Jam kerja KARYAWAN adalah <strong>sesuai kesepakatan pada proses interview</strong>. Penyesuaian jam kerja dapat dilakukan sesuai kebutuhan proyek dengan pemberitahuan terlebih dahulu.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 6 — HAK DAN KEWAJIBAN</div>
+                    <p><strong>Hak KARYAWAN:</strong></p>
+                    <ol>
+                        <li>Menerima kompensasi sesuai Pasal 4;</li>
+                        <li>Mendapatkan fasilitas kerja yang memadai;</li>
+                        <li>Mendapatkan perlindungan hukum sesuai peraturan perundang-undangan.</li>
+                    </ol>
+                    <p style="margin-top:8px;"><strong>Kewajiban KARYAWAN:</strong></p>
+                    <ol>
+                        <li>Mematuhi seluruh peraturan dan kebijakan perusahaan;</li>
+                        <li>Menjaga aset, data, dan reputasi perusahaan;</li>
+                        <li>Tidak melakukan tindakan yang merugikan perusahaan secara langsung maupun tidak langsung;</li>
+                        <li>Memberikan pemberitahuan minimal 30 (tiga puluh) hari sebelum mengundurkan diri.</li>
+                    </ol>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 7 — HAK KEKAYAAN INTELEKTUAL (IPR)</div>
+                    <p>Seluruh karya, kode program, desain, algoritma, konsep, dokumentasi, dan hasil kerja lainnya yang dibuat oleh KARYAWAN <strong>dalam lingkup pekerjaan dan selama masa kontrak</strong> ini merupakan milik eksklusif PERUSAHAAN. Hal ini mencakup namun tidak terbatas pada:</p>
+                    <ol>
+                        <li>Source code, skrip, dan modul perangkat lunak;</li>
+                        <li>Desain antarmuka (UI/UX) dan aset visual;</li>
+                        <li>Basis data, skema, dan arsitektur sistem;</li>
+                        <li>Dokumentasi teknis dan non-teknis;</li>
+                        <li>Ide, konsep, dan inovasi yang dikembangkan dalam kapasitas sebagai karyawan.</li>
+                    </ol>
+                    <p>KARYAWAN tidak diperkenankan mengklaim kepemilikan, mendaftarkan paten/hak cipta, atau menggunakan karya tersebut untuk kepentingan pihak lain tanpa persetujuan tertulis dari PERUSAHAAN.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 8 — PEMUTUSAN HUBUNGAN KERJA</div>
+                    <p>Pemutusan Hubungan Kerja (PHK) dapat terjadi dalam hal:</p>
+                    <ol>
+                        <li>Berakhirnya masa kontrak;</li>
+                        <li>Persetujuan bersama kedua belah pihak;</li>
+                        <li>KARYAWAN terbukti melanggar ketentuan perjanjian ini;</li>
+                        <li>Perusahaan mengalami kondisi force majeure yang mengharuskan pengurangan karyawan.</li>
+                    </ol>
+                    <p>Dalam hal pelanggaran berat (seperti pembocoran rahasia perusahaan, pencurian data, atau pelanggaran IPR), PERUSAHAAN berhak melakukan PHK seketika tanpa kompensasi dan dapat menuntut ganti rugi secara hukum.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 9 — PENYELESAIAN SENGKETA</div>
+                    <p>Setiap sengketa yang timbul dari perjanjian ini akan diselesaikan secara musyawarah. Apabila tidak tercapai kesepakatan, para pihak sepakat untuk menyelesaikannya melalui jalur hukum yang berlaku di wilayah hukum Republik Indonesia.</p>
+                </div>
+
+                <p style="font-size:10.5pt;margin-top:22px;text-align:justify;">
+                    Demikian surat perjanjian kerja ini dibuat dalam rangkap 2 (dua), masing-masing memiliki kekuatan hukum yang sama, ditandatangani oleh kedua belah pihak dengan penuh kesadaran dan tanpa paksaan dari pihak manapun.
+                </p>
+
+                ${buildSigArea(emp.name, today)}
+            </div>`;
+        }
+
+        function buildSPKTetap(emp, docNumber) {
+            const today = new Date().toISOString();
+            return `
+            <div class="doc-page">
+                ${buildKop()}
+                <div class="doc-title-block">
+                    <div class="doc-title">Surat Perjanjian Kerja</div>
+                    <div style="font-size:12pt;font-weight:bold;margin-top:4px;">(PKWTT — Perjanjian Kerja Waktu Tidak Tertentu)</div>
+                    <div class="doc-number">Nomor: ${docNumber}</div>
+                </div>
+
+                <p style="text-align:justify;font-size:11pt;margin-bottom:20px;">
+                    Surat Perjanjian Kerja Tetap ini dibuat dan ditandatangani pada hari ini sebagai pengangkatan karyawan tetap perusahaan.
+                </p>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 1 — IDENTITAS PARA PIHAK</div>
+                    <p><strong>Pihak Pertama (Perusahaan):</strong><br>
+                    Nama&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: PT. Primadev Digital Technology<br>
+                    Alamat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Wangon, Kab. Banyumas, Jawa Tengah 53176<br>
+                    Selanjutnya disebut sebagai <strong>"PERUSAHAAN"</strong>.</p>
+                    <p style="margin-top:10px;"><strong>Pihak Kedua (Karyawan):</strong><br>
+                    Nama&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${emp.name}<br>
+                    ID Karyawan&nbsp;: ${emp.employeeId}<br>
+                    Email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${emp.email}<br>
+                    Selanjutnya disebut sebagai <strong>"KARYAWAN TETAP"</strong>.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 2 — STATUS PEGAWAI TETAP</div>
+                    <p>KARYAWAN resmi diangkat sebagai <strong>Karyawan Tetap (Pegawai Tetap)</strong> PT. Primadev Digital Technology tanpa batasan waktu, sesuai ketentuan Undang-Undang Ketenagakerjaan No. 13 Tahun 2003 dan perubahannya. Status ini berlaku selama KARYAWAN memenuhi standar kinerja dan tidak melanggar ketentuan yang berlaku.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 3 — JABATAN DAN DESKRIPSI PEKERJAAN</div>
+                    <p>KARYAWAN ditempatkan sebagai <strong>Staff Tetap</strong> dengan tanggung jawab penuh sesuai arahan manajemen, termasuk pengembangan produk digital, pemeliharaan sistem, dan tugas lain yang ditetapkan perusahaan.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 4 — KOMPENSASI, TUNJANGAN, DAN FASILITAS</div>
+                    <ol>
+                        <li>Gaji pokok: <strong>Sesuai kesepakatan pada proses interview</strong>;</li>
+                        <li>Tunjangan hari raya (THR) sesuai ketentuan hukum yang berlaku;</li>
+                        <li>Hak cuti tahunan minimal 12 (dua belas) hari kerja per tahun;</li>
+                        <li>Jaminan BPJS Kesehatan dan BPJS Ketenagakerjaan sesuai ketentuan;</li>
+                        <li>Fasilitas kerja dan pengembangan kompetensi sesuai kebijakan perusahaan.</li>
+                    </ol>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 5 — JAM KERJA</div>
+                    <p>Jam kerja: <strong>Sesuai kesepakatan pada proses interview</strong>, dengan fleksibilitas yang dapat disesuaikan berdasarkan kebutuhan proyek dan kebijakan perusahaan.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 6 — HAK KEKAYAAN INTELEKTUAL (IPR)</div>
+                    <p>Seluruh karya intelektual, kode program, desain, inovasi, dan output kerja yang dihasilkan KARYAWAN <strong>dalam lingkup jabatan dan selama masa kerja</strong> merupakan milik eksklusif PERUSAHAAN, mencakup:</p>
+                    <ol>
+                        <li>Source code, algoritma, dan modul perangkat lunak;</li>
+                        <li>Desain produk, aset visual, dan dokumentasi;</li>
+                        <li>Inovasi, ide bisnis, dan strategi yang dikembangkan dalam kapasitas karyawan.</li>
+                    </ol>
+                    <p>Hak ini bersifat permanen dan tidak berakhir meski hubungan kerja telah berakhir.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 7 — KEWAJIBAN DAN LARANGAN</div>
+                    <ol>
+                        <li>Mematuhi seluruh peraturan, SOP, dan kebijakan perusahaan;</li>
+                        <li>Menjaga kerahasiaan informasi perusahaan (merujuk pada NDA terpisah);</li>
+                        <li>Tidak bekerja untuk kompetitor langsung tanpa izin tertulis perusahaan;</li>
+                        <li>Memberikan pemberitahuan pengunduran diri minimal 30 (tiga puluh) hari.</li>
+                    </ol>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 8 — PEMUTUSAN HUBUNGAN KERJA</div>
+                    <p>PHK dapat dilakukan sesuai ketentuan UU Ketenagakerjaan. Pelanggaran berat (pencurian data, pembocoran rahasia, sabotase sistem) akan mengakibatkan PHK seketika dan tuntutan ganti rugi secara hukum.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 9 — PENYELESAIAN SENGKETA</div>
+                    <p>Sengketa diselesaikan secara musyawarah. Bila tidak tercapai kesepakatan, akan diselesaikan melalui Pengadilan Hubungan Industrial yang berwenang.</p>
+                </div>
+
+                <p style="font-size:10.5pt;margin-top:22px;text-align:justify;">
+                    Perjanjian ini dibuat dalam 2 (dua) rangkap bermaterai cukup, masing-masing memiliki kekuatan hukum yang sama.
+                </p>
+
+                ${buildSigArea(emp.name, today)}
+            </div>`;
+        }
+
+        function buildNDA(emp, docNumber) {
+            const today = new Date().toISOString();
+            return `
+            <div class="doc-page">
+                ${buildKop()}
+                <div class="doc-title-block">
+                    <div class="doc-title">Perjanjian Kerahasiaan</div>
+                    <div style="font-size:12pt;font-weight:bold;margin-top:4px;">(Non-Disclosure Agreement / NDA)</div>
+                    <div class="doc-number">Nomor: ${docNumber}</div>
+                </div>
+
+                <p style="text-align:justify;font-size:11pt;margin-bottom:20px;">
+                    Perjanjian Kerahasiaan ini dibuat antara PT. Primadev Digital Technology dan karyawan yang bersangkutan guna melindungi aset informasi dan rahasia dapur perusahaan.
+                </p>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 1 — PARA PIHAK</div>
+                    <p><strong>Pihak yang Mengungkapkan (Disclosing Party):</strong><br>
+                    PT. Primadev Digital Technology — selanjutnya disebut <strong>"PERUSAHAAN"</strong>.</p>
+                    <p style="margin-top:8px;"><strong>Pihak Penerima (Receiving Party):</strong><br>
+                    Nama: ${emp.name} &nbsp;|&nbsp; ID: ${emp.employeeId}<br>
+                    Email: ${emp.email}<br>
+                    Selanjutnya disebut <strong>"KARYAWAN"</strong>.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 2 — DEFINISI INFORMASI RAHASIA</div>
+                    <p>Yang dimaksud dengan <strong>"Informasi Rahasia"</strong> dalam perjanjian ini mencakup seluruh informasi yang diperoleh KARYAWAN dalam kapasitasnya bekerja untuk PERUSAHAAN, termasuk namun tidak terbatas pada:</p>
+                    <ol>
+                        <li><strong>Source Code &amp; Arsitektur Sistem</strong> — Seluruh kode program, skrip, algoritma, modul, library internal, dan arsitektur teknis produk PT. Primadev Digital Technology;</li>
+                        <li><strong>Struktur Database</strong> — Skema basis data, relasi tabel, query khusus, dan prosedur penyimpanan data;</li>
+                        <li><strong>Kredensial Keamanan</strong> — API Key, token autentikasi, password server, kredensial cloud, private key, dan semua akses keamanan lainnya;</li>
+                        <li><strong>Strategi Bisnis</strong> — Rencana produk, roadmap pengembangan, strategi pemasaran, model bisnis, rencana ekspansi, dan informasi keuangan perusahaan;</li>
+                        <li><strong>Data Klien</strong> — Seluruh informasi identitas, transaksi, preferensi, dan data pribadi klien/pelanggan PT. Primadev Digital Technology;</li>
+                        <li><strong>Informasi Internal</strong> — Kebijakan internal, struktur organisasi, data gaji karyawan lain, dan informasi operasional perusahaan.</li>
+                    </ol>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 3 — KEWAJIBAN KERAHASIAAN</div>
+                    <p>KARYAWAN dengan ini berkomitmen untuk:</p>
+                    <ol>
+                        <li>Merahasiakan seluruh Informasi Rahasia dari pihak mana pun tanpa persetujuan tertulis PERUSAHAAN;</li>
+                        <li>Tidak menyalin, mendistribusikan, mempublikasikan, atau memperbanyak Informasi Rahasia dalam bentuk apapun;</li>
+                        <li>Tidak menggunakan Informasi Rahasia untuk kepentingan pribadi atau pihak ketiga;</li>
+                        <li>Segera melaporkan kepada manajemen apabila mengetahui adanya potensi kebocoran informasi;</li>
+                        <li>Mengembalikan atau menghapus seluruh Informasi Rahasia yang dimiliki saat hubungan kerja berakhir.</li>
+                    </ol>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 4 — LARANGAN PEMBOCORAN DATA KLIEN</div>
+                    <p>KARYAWAN <strong>dilarang keras</strong> untuk:</p>
+                    <ol>
+                        <li>Mengungkapkan nama, kontak, data transaksi, atau informasi pribadi klien kepada pihak luar;</li>
+                        <li>Menggunakan data klien untuk tujuan komersial, riset, atau kepentingan pribadi;</li>
+                        <li>Menyimpan data klien di perangkat pribadi tanpa izin tertulis dari manajemen;</li>
+                        <li>Menjual, menukar, atau meminjamkan data klien kepada kompetitor atau pihak ketiga manapun.</li>
+                    </ol>
+                    <p>Pelanggaran terhadap pasal ini dapat dikualifikasikan sebagai tindak pidana sesuai UU ITE No. 19 Tahun 2016 dan UU Perlindungan Data Pribadi.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 5 — SANKSI DAN GANTI RUGI</div>
+                    <p>Apabila KARYAWAN terbukti melanggar perjanjian ini, PERUSAHAAN berhak untuk:</p>
+                    <ol>
+                        <li>Melakukan Pemutusan Hubungan Kerja secara sepihak dan seketika tanpa kompensasi;</li>
+                        <li>Menuntut ganti rugi materiil dan immateriil atas seluruh kerugian yang ditimbulkan;</li>
+                        <li>Melaporkan pelanggaran kepada pihak berwajib berdasarkan ketentuan hukum yang berlaku, termasuk UU ITE, KUHP, dan peraturan perlindungan data pribadi;</li>
+                        <li>Memohon injunsi (perintah pengadilan) untuk menghentikan tindakan pelanggaran lebih lanjut.</li>
+                    </ol>
+                    <p>Besaran ganti rugi akan ditentukan berdasarkan nilai kerugian aktual yang dapat dibuktikan di persidangan.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 6 — MASA BERLAKU</div>
+                    <p>Perjanjian ini berlaku <strong>selama masa kerja KARYAWAN dan 2 (dua) tahun setelah berakhirnya hubungan kerja</strong> dengan PERUSAHAAN, dalam bentuk apapun berakhirnya hubungan tersebut.</p>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 7 — PENGECUALIAN</div>
+                    <p>Kewajiban kerahasiaan tidak berlaku terhadap informasi yang:</p>
+                    <ol>
+                        <li>Telah tersedia secara publik tanpa kesalahan KARYAWAN;</li>
+                        <li>Diwajibkan untuk diungkapkan oleh hukum atau putusan pengadilan yang berkekuatan hukum tetap.</li>
+                    </ol>
+                </div>
+
+                <div class="doc-pasal">
+                    <div class="doc-pasal-title">PASAL 8 — PENYELESAIAN SENGKETA</div>
+                    <p>Sengketa yang timbul dari perjanjian ini diselesaikan berdasarkan hukum Republik Indonesia. Para pihak sepakat untuk menyelesaikan sengketa melalui pengadilan yang berwenang di wilayah hukum Kabupaten Banyumas, Jawa Tengah.</p>
+                </div>
+
+                <p style="font-size:10.5pt;margin-top:22px;text-align:justify;">
+                    Dengan menandatangani perjanjian ini, KARYAWAN menyatakan telah membaca, memahami, dan menyetujui seluruh ketentuan di atas dengan penuh kesadaran dan tanpa paksaan.
+                </p>
+
+                ${buildSigArea(emp.name, today)}
+            </div>`;
+        }
+
+        const DOC_LABELS = {
+            spk_kontrak: 'Surat Perjanjian Kerja — Kontrak (PKWT)',
+            spk_tetap: 'Surat Perjanjian Kerja — Tetap (PKWTT)',
+            nda: 'Perjanjian Kerahasiaan (NDA)'
+        };
+
+        function renderDoc(docType) {
+            if (!_employeeData) return;
+
+            const docNum = previewDocNumber(docType);
+            let html = '';
+
+            if (docType === 'spk_kontrak') html = buildSPKKontrak(_employeeData, docNum);
+            else if (docType === 'spk_tetap') html = buildSPKTetap(_employeeData, docNum);
+            else if (docType === 'nda') html = buildNDA(_employeeData, docNum);
+
+            document.getElementById('docRenderer').innerHTML = html;
+
+            const inner = document.getElementById('modalDocPreviewInner');
+            if (inner) {
+                inner.innerHTML = html;
+                const scroll = document.getElementById('modalDocPreviewScroll');
+                const availW = scroll.offsetWidth || 800;
+                const paddingSpace = window.innerWidth <= 768 ? 20 : 40;
+                const scale = Math.min((availW - paddingSpace) / 794, 1);
+
+                inner.style.transform = 'none';
+                inner.style.width = '794px';
+                inner.style.height = 'auto';
+                inner.style.minHeight = '1123px';
+
+                setTimeout(() => {
+                    const actualHeight = inner.offsetHeight || 1123;
+                    inner.style.transform = `scale(${scale})`;
+                    inner.style.marginBottom = `${-(actualHeight * (1 - scale))}px`;
+                }, 0);
+            }
+
+            document.getElementById('docPreviewLabel').innerHTML = DOC_LABELS[docType];
+            const modalTitle = document.getElementById('modalDocTitle');
+            if (modalTitle) modalTitle.innerHTML = DOC_LABELS[docType];
+
+            document.getElementById('docNumberInfo').textContent =
+                `Nomor dokumen (estimasi): ${docNum} — akan dikonfirmasi saat unduh`;
+        }
+
+        function switchDocTab(docType, btn) {
+            _currentDoc = docType;
+            document.querySelectorAll('.doc-tab-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderDoc(docType);
+        }
+
+        async function downloadLegalDoc() {
+            if (!_employeeData) return;
+
+            const btn = document.getElementById('btnDownloadDoc');
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+            btn.disabled = true;
+
+            try {
+                let officialNumber = previewDocNumber(_currentDoc);
+                try {
+                    const res = await fetch('/.netlify/functions/signature', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-admin-token': ''
+                        },
+                        body: JSON.stringify({ type: 'counter', docType: _currentDoc })
+                    });
+                    if (res.ok) {
+                        const d = await res.json();
+                        const now = new Date();
+                        officialNumber = `${String(d.counter).padStart(4, '0')}/ADM-IT/PDT/${toRoman(now.getMonth() + 1)}/${now.getFullYear()}`;
+                        _docCounters[_currentDoc] = d.counter;
+                    }
+                } catch (_) { }
+
+                let html = '';
+                if (_currentDoc === 'spk_kontrak') html = buildSPKKontrak(_employeeData, officialNumber);
+                else if (_currentDoc === 'spk_tetap') html = buildSPKTetap(_employeeData, officialNumber);
+                else if (_currentDoc === 'nda') html = buildNDA(_employeeData, officialNumber);
+
+                const renderer = document.getElementById('docRenderer');
+                renderer.innerHTML = html;
+
+                await Promise.all(
+                    [...renderer.querySelectorAll('img')].map(img =>
+                        img.complete ? Promise.resolve() :
+                            new Promise(r => { img.onload = r; img.onerror = r; })
+                    )
+                );
+
+                const canvas = await html2canvas(renderer, {
+                    scale: 2.5,
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    imageTimeout: 8000
+                });
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.9);
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+                const pW = 210;
+                const pH = 297;
+                const imgW = pW;
+                const imgH = (canvas.height * pW) / canvas.width;
+
+                let posY = 0;
+                let remaining = imgH;
+
+                pdf.addImage(imgData, 'JPEG', 0, posY, imgW, imgH);
+                remaining -= pH;
+
+                while (remaining > 0) {
+                    posY -= pH;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, posY, imgW, imgH);
+                    remaining -= pH;
+                }
+
+                const fileSlug = {
+                    spk_kontrak: 'SPK_Kontrak',
+                    spk_tetap: 'SPK_Tetap',
+                    nda: 'NDA'
+                }[_currentDoc];
+
+                pdf.save(`${fileSlug}_${_employeeData.employeeId}.pdf`);
+
+                renderDoc(_currentDoc);
+
+            } catch (err) {
+                console.error('downloadLegalDoc error:', err);
+                alert('Gagal mengunduh dokumen. Silakan coba lagi.');
+            } finally {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+            }
+        }
+
+        function showDocModal() {
+            document.getElementById('docModalOverlay').style.display = 'flex';
+            renderDoc(_currentDoc);
+        }
+
+        function hideDocModal() {
+            document.getElementById('docModalOverlay').style.display = 'none';
+        }
+
+        async function initLegalDocs(empData) {
+            _employeeData = empData;
+            await loadLegalAssets();
+
+            const empType = empData.employeeType || 'kontrak';
+            const tabKontrak = document.getElementById('tab_spk_kontrak');
+            const tabTetap = document.getElementById('tab_spk_tetap');
+
+            let defaultTab = 'spk_kontrak';
+
+            if (empType === 'kontrak') {
+                if (tabKontrak) tabKontrak.style.display = 'inline-block';
+                if (tabTetap) tabTetap.style.display = 'none';
+                defaultTab = 'spk_kontrak';
+                switchDocTab(defaultTab, tabKontrak);
+            } else {
+                if (tabKontrak) tabKontrak.style.display = 'none';
+                if (tabTetap) tabTetap.style.display = 'inline-block';
+                defaultTab = 'spk_tetap';
+                switchDocTab(defaultTab, tabTetap);
+            }
+        }
+    </script>
+</body>
+
+</html>

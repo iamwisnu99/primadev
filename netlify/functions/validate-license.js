@@ -15,9 +15,6 @@
 
 const admin = require('firebase-admin');
 
-// ============================================================
-// INIT FIREBASE ADMIN (singleton — aman di Netlify cold start)
-// ============================================================
 if (!admin.apps.length) {
     let serviceAccount = null;
     try {
@@ -48,11 +45,6 @@ if (!admin.apps.length) {
     }
 }
 
-// ============================================================
-// CORS HEADERS
-// Dibuat terbuka (*) karena dipanggil dari browser extension.
-// Browser extension tidak memiliki origin seperti website biasa.
-// ============================================================
 const CORS_HEADERS = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -60,31 +52,22 @@ const CORS_HEADERS = {
     'Content-Type': 'application/json'
 };
 
-// ============================================================
-// HELPER: Buat response JSON standar
-// ============================================================
 const respond = (statusCode, body) => ({
     statusCode,
     headers: CORS_HEADERS,
     body: JSON.stringify(body)
 });
 
-// ============================================================
-// MAIN HANDLER
-// ============================================================
 exports.handler = async (event) => {
 
-    // --- CORS Preflight ---
     if (event.httpMethod === 'OPTIONS') {
         return { statusCode: 204, headers: CORS_HEADERS, body: '' };
     }
 
-    // --- Hanya terima POST ---
     if (event.httpMethod !== 'POST') {
         return respond(405, { valid: false, error: 'Method tidak diizinkan.' });
     }
 
-    // --- Parse body ---
     let body;
     try {
         body = JSON.parse(event.body || '{}');
@@ -94,9 +77,6 @@ exports.handler = async (event) => {
 
     const { licenseKey, name, email } = body;
 
-    // ============================================================
-    // VALIDASI INPUT
-    // ============================================================
     if (!licenseKey || !name || !email) {
         return respond(400, {
             valid: false,
@@ -116,9 +96,6 @@ exports.handler = async (event) => {
         return respond(400, { valid: false, error: 'Format email tidak valid.' });
     }
 
-    // ============================================================
-    // CEK KONEKSI DATABASE
-    // ============================================================
     let db;
     try {
         db = admin.database();
@@ -127,9 +104,6 @@ exports.handler = async (event) => {
         return respond(500, { valid: false, error: 'Koneksi database gagal. Coba lagi.' });
     }
 
-    // ============================================================
-    // LOOKUP LICENSE KEY DI FIREBASE
-    // ============================================================
     let licSnap;
     try {
         licSnap = await db.ref(`licenses/${licenseKey.trim()}`).once('value');
@@ -144,11 +118,7 @@ exports.handler = async (event) => {
 
     const lic = licSnap.val();
 
-    // ============================================================
-    // COCOKKAN NAMA & EMAIL
-    // Case-insensitive, trim whitespace di kedua sisi.
-    // ============================================================
-    const nameMatch  = (lic.name  || '').toLowerCase().trim() === name.toLowerCase().trim();
+    const nameMatch = (lic.name || '').toLowerCase().trim() === name.toLowerCase().trim();
     const emailMatch = (lic.email || '').toLowerCase().trim() === email.toLowerCase().trim();
 
     if (!nameMatch || !emailMatch) {
@@ -159,9 +129,6 @@ exports.handler = async (event) => {
         });
     }
 
-    // ============================================================
-    // CEK STATUS LISENSI
-    // ============================================================
     const status = (lic.status || '').toLowerCase();
 
     if (status === 'banned') {
@@ -176,13 +143,9 @@ exports.handler = async (event) => {
         return respond(200, { valid: false, error: 'Lisensi tidak aktif.' });
     }
 
-    // ============================================================
-    // CEK TANGGAL KADALUARSA (jika bukan lifetime)
-    // ============================================================
     if (lic.expiryDate && lic.expiryDate !== 'Seumur Hidup') {
         const expiry = new Date(lic.expiryDate);
         if (!isNaN(expiry) && expiry < new Date()) {
-            // Auto-update status ke 'expired' di Firebase
             try {
                 await db.ref(`licenses/${licenseKey.trim()}`).update({ status: 'expired' });
             } catch (err) {
@@ -195,18 +158,15 @@ exports.handler = async (event) => {
         }
     }
 
-    // ============================================================
-    // ✅ SEMUA VALIDASI LULUS — LISENSI VALID
-    // ============================================================
     console.log(`[validate-license] ✅ Valid: key=${licenseKey.trim()} | email=${email.toLowerCase().trim()}`);
 
     return respond(200, {
         valid: true,
         holderName: lic.name,
-        appName:    lic.appName    || 'Primadev Extension',
-        appId:      lic.appId      || '',
+        appName: lic.appName || 'Primadev Extension',
+        appId: lic.appId || '',
         expiryDate: lic.expiryDate || 'Seumur Hidup',
-        licenseType: lic.type      || 'extension',
-        message:    'Lisensi valid. Extension berhasil diaktifkan.'
+        licenseType: lic.type || 'extension',
+        message: 'Lisensi valid. Extension berhasil diaktifkan.'
     });
 };
