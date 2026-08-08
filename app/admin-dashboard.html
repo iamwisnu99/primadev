@@ -52,6 +52,9 @@
             <a class="nav-item" data-tab="extensions" onclick="switchTab('extensions')">
                 <i class="fa-solid fa-puzzle-piece"></i> Extension Manager
             </a>
+            <a class="nav-item" data-tab="app-details" onclick="switchTab('app-details')">
+                <i class="fa-solid fa-layer-group"></i> App Details
+            </a>
             <div class="nav-item-group">
                 <a class="nav-item" onclick="toggleSubmenu('submenu-karyawan')">
                     <i class="fa-solid fa-users"></i> Karyawan <i class="fa-solid fa-chevron-down ms-auto"
@@ -719,6 +722,51 @@
             </div>
         </div><!-- /tab-signature -->
 
+        <!-- ===== APP DETAILS TAB ===== -->
+        <div class="section" id="tab-app-details">
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #0ea5e9, #2563eb); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-layer-group" style="color: #fff; font-size: 1.1rem;"></i>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0;">App Details Manager</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-2); margin: 2px 0 0;">Kelola portfolio Website, Aplikasi, dan Extension yang tampil di halaman utama.</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="openCreatePortfolioModal()">
+                    <i class="fa-solid fa-plus"></i> Tambah Item
+                </button>
+            </div>
+
+            <!-- Sub-tab filter -->
+            <div style="display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+                <button class="portfolio-filter-btn active" id="pf-all" onclick="filterPortfolio('all')">
+                    <i class="fa-solid fa-grid-2"></i> Semua
+                </button>
+                <button class="portfolio-filter-btn" id="pf-website" onclick="filterPortfolio('website')">
+                    <i class="fa-solid fa-globe"></i> Website
+                </button>
+                <button class="portfolio-filter-btn" id="pf-app" onclick="filterPortfolio('app')">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Aplikasi
+                </button>
+                <button class="portfolio-filter-btn" id="pf-extension" onclick="filterPortfolio('extension')">
+                    <i class="fa-solid fa-puzzle-piece"></i> Extension
+                </button>
+            </div>
+
+            <!-- Portfolio Grid -->
+            <div id="portfolioGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px;">
+                <div class="empty-state">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <h4>Belum Ada Item</h4>
+                    <p>Tambahkan website, aplikasi, atau extension pertama Anda.</p>
+                </div>
+            </div>
+
+        </div><!-- /tab-app-details -->
+
     </main>
 
     <!-- ===== MODALS ===== -->
@@ -1084,6 +1132,130 @@
         </div>
     </div>
 
+    <!-- ===== PORTFOLIO MODAL ===== -->
+    <div class="modal-overlay" id="portfolioModal">
+        <div class="modal-box" style="max-width: 680px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <div class="modal-title" id="portfolioModalTitle">
+                    <i class="fa-solid fa-plus" style="color:var(--primary);margin-right:8px;"></i>Tambah Portfolio
+                </div>
+                <button class="modal-close" onclick="closeModal('portfolioModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="portfolioForm" onsubmit="handlePortfolioSubmit(event)">
+                    <input type="hidden" id="portfolioFormId">
+
+                    <!-- Type Selector -->
+                    <div class="form-group">
+                        <label class="form-label">Tipe Item</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <label id="ptype-website" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.87rem;font-weight:600;transition:all 0.2s;">
+                                <input type="radio" name="portfolioType" value="website" onchange="onPortfolioTypeChange()" style="accent-color:var(--primary);"> <i class="fa-solid fa-globe" style="color:#0ea5e9;"></i> Website
+                            </label>
+                            <label id="ptype-app" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.87rem;font-weight:600;transition:all 0.2s;">
+                                <input type="radio" name="portfolioType" value="app" onchange="onPortfolioTypeChange()" style="accent-color:var(--primary);"> <i class="fa-solid fa-mobile-screen-button" style="color:#1865ca;"></i> Aplikasi
+                            </label>
+                            <label id="ptype-extension" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.87rem;font-weight:600;transition:all 0.2s;">
+                                <input type="radio" name="portfolioType" value="extension" onchange="onPortfolioTypeChange()" style="accent-color:var(--primary);"> <i class="fa-solid fa-puzzle-piece" style="color:#7c3aed;"></i> Extension
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nama</label>
+                        <input type="text" class="form-input" id="pName" required placeholder="Nama website / aplikasi / extension">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Deskripsi Singkat</label>
+                        <input type="text" class="form-input" id="pShortDesc" required placeholder="Deskripsi singkat (1-2 kalimat)">
+                    </div>
+
+                    <!-- Website-only fields -->
+                    <div id="pWebsiteFields">
+                        <div class="form-group">
+                            <label class="form-label">URL Website <span style="color:var(--text-3);font-weight:400;">(dipakai untuk auto-thumbnail)</span></label>
+                            <input type="url" class="form-input" id="pWebsiteUrl" placeholder="https://example.com">
+                        </div>
+                        <div style="padding:12px;background:#eff6ff;border-radius:10px;border:1px solid #bfdbfe;font-size:0.8rem;color:#1e40af;margin-bottom:16px;">
+                            <i class="fa-solid fa-circle-info" style="margin-right:6px;"></i>
+                            Thumbnail akan otomatis diambil dari URL website menggunakan layanan screenshot gratis.
+                        </div>
+                    </div>
+
+                    <!-- App/Extension fields -->
+                    <div id="pAppExtFields" style="display:none;">
+                        <div class="form-group">
+                            <label class="form-label">Deskripsi Lengkap</label>
+                            <textarea class="form-input" id="pLongDesc" rows="4" placeholder="Deskripsi detail fitur dan manfaat..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Fitur Utama <span style="color:var(--text-3);font-weight:400;">(satu per baris)</span></label>
+                            <textarea class="form-input" id="pFeatures" rows="4" placeholder="Kirim pesan massal\nAutomasi reply\nAnti-block system"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Link Download / Store URL</label>
+                            <input type="url" class="form-input" id="pStoreUrl" placeholder="https://play.google.com/... atau https://chromewebstore...">
+                        </div>
+
+                        <!-- Icon Upload (opsional) -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                Icon Aplikasi / Extension
+                                <span style="color:var(--text-3);font-weight:400;"> (opsional, maks 1MB)</span>
+                            </label>
+                            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                                <label style="display:flex;align-items:center;gap:10px;padding:10px 18px;border:2px dashed var(--border);border-radius:12px;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--text-2);background:var(--bg);transition:all 0.2s;"
+                                    onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)';"
+                                    onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)';">
+                                    <i class="fa-solid fa-image" style="font-size:1.1rem;"></i>
+                                    Upload Icon
+                                    <input type="file" accept="image/*" style="display:none;" onchange="handleIconFile(this)">
+                                </label>
+                                <div id="pIconPreview"></div>
+                            </div>
+                            <div style="margin-top:8px;font-size:0.75rem;color:var(--text-3);">
+                                <i class="fa-solid fa-circle-info" style="margin-right:4px;"></i>
+                                Icon akan ditampilkan di card dengan sudut membulat (rounded corner). Disarankan 1:1 (persegi).
+                            </div>
+                        </div>
+
+                        <!-- Screenshots Upload -->
+
+                        <div class="form-group">
+                            <label class="form-label">Screenshot Aplikasi <span style="color:var(--text-3);font-weight:400;">(max 5 gambar, maks 1MB/gambar)</span></label>
+                            <div id="pScreenshotUploadArea" style="border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);" onclick="document.getElementById('pScreenshotInput').click()" ondragover="event.preventDefault();this.style.borderColor='var(--primary)';" ondragleave="this.style.borderColor='var(--border)';" ondrop="handleScreenshotDrop(event)">
+                                <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem;color:var(--text-3);margin-bottom:8px;"></i>
+                                <div style="font-size:0.88rem;color:var(--text-2);font-weight:600;">Klik atau drag & drop gambar di sini</div>
+                                <div style="font-size:0.75rem;color:var(--text-3);margin-top:4px;">PNG, JPG, WEBP — maks 1MB per gambar</div>
+                            </div>
+                            <input type="file" id="pScreenshotInput" multiple accept="image/*" style="display:none;" onchange="handleScreenshotFiles(this.files)">
+                            <!-- Preview Grid -->
+                            <div id="pScreenshotPreviews" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Status Tampil</label>
+                        <div style="display:flex;gap:10px;">
+                            <label style="display:flex;align-items:center;gap:6px;font-size:0.87rem;cursor:pointer;">
+                                <input type="radio" name="pStatus" value="published" checked style="accent-color:var(--primary);"> Published
+                            </label>
+                            <label style="display:flex;align-items:center;gap:6px;font-size:0.87rem;cursor:pointer;">
+                                <input type="radio" name="pStatus" value="draft" style="accent-color:var(--primary);"> Draft
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" id="portfolioSubmitBtn">
+                        <i class="fa-solid fa-floppy-disk"></i> Simpan
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <div id="pwaToast"
         style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,0.1);display:none;align-items:center;gap:14px;z-index:9000;min-width:320px;max-width:90vw;">
@@ -1101,10 +1273,56 @@
         </div>
     </div>
 
+    <style>
+        /* ===== PORTFOLIO FILTER BUTTONS ===== */
+        .portfolio-filter-btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 9px 18px; border-radius: 100px;
+            border: 1.5px solid var(--border); background: var(--surface);
+            font-size: 0.85rem; font-weight: 600; color: var(--text-2);
+            cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        .portfolio-filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .portfolio-filter-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+        /* ===== PORTFOLIO CARD ===== */
+        .portfolio-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden; transition: all 0.25s;
+            display: flex; flex-direction: column;
+        }
+        .portfolio-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.1); transform: translateY(-3px); }
+        .portfolio-card-thumb {
+            width: 100%; height: 160px;
+            background: linear-gradient(135deg, #e0e7ef, #c7d2fe);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: #94a3b8;
+            overflow: hidden; position: relative;
+        }
+        .portfolio-card-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block; position: absolute; top: 0; left: 0;
+        }
+        .portfolio-card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .portfolio-card-type {
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.06em; padding: 3px 9px; border-radius: 100px;
+            display: inline-block; width: fit-content;
+        }
+        .ptype-website { background: #e0f2fe; color: #0369a1; }
+        .ptype-app { background: #dbeafe; color: #1d4ed8; }
+        .ptype-extension { background: #f3e8ff; color: #7c3aed; }
+        .ptype-draft { background: #f1f5f9; color: #64748b; }
+        .portfolio-card-title { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+        .portfolio-card-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.5; flex: 1; }
+        .portfolio-card-actions { display: flex; gap: 8px; margin-top: 10px; border-top: 1px solid var(--border); padding-top: 12px; }
+        .portfolio-card-actions button { flex: 1; font-size: 0.8rem; }
+    </style>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getDatabase, ref, get, query, orderByChild, equalTo, onValue, set, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+        import { getDatabase, ref, get, query, orderByChild, equalTo, onValue, set, remove, push } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
         // ===== STATE =====
         let auth, db;
@@ -1144,6 +1362,7 @@
 
                 fetchData();
                 loadProducts();
+                loadPortfolio();
                 loadGatewaySettings();
                 startClock();
             });
@@ -1834,7 +2053,311 @@
         window.refreshCurrentSection = () => {
             fetchData();
             loadProducts();
+            loadPortfolio();
             Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Data diperbarui', showConfirmButton: false, timer: 1500 });
+        };
+
+        // ===== PORTFOLIO DATA =====
+        let portfolioData = {};
+        let portfolioFilter = 'all';
+        let portfolioScreenshots = []; // array of base64 strings
+        let portfolioIcon = null;      // base64 string for app/extension icon
+        let editPortfolioKey = null;
+
+        const loadPortfolio = () => {
+            onValue(ref(db, 'portfolio'), (snap) => {
+                portfolioData = snap.val() || {};
+                renderPortfolioGrid();
+            });
+        };
+
+        const renderPortfolioGrid = () => {
+            const grid = document.getElementById('portfolioGrid');
+            if (!grid) return;
+
+            let keys = Object.keys(portfolioData);
+            if (portfolioFilter !== 'all') {
+                keys = keys.filter(k => portfolioData[k]?.type === portfolioFilter);
+            }
+
+            if (keys.length === 0) {
+                grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <h4>Belum Ada Item</h4>
+                    <p>${portfolioFilter === 'all' ? 'Tambahkan website, aplikasi, atau extension pertama Anda.' : `Belum ada item bertipe "${portfolioFilter}".`}</p>
+                </div>`;
+                return;
+            }
+
+            grid.innerHTML = keys.map(key => {
+                const item = portfolioData[key];
+                const type = item.type || 'website';
+                const isDraft = item.status === 'draft';
+                const typeLabel = { website: 'Website', app: 'Aplikasi', extension: 'Extension' }[type] || type;
+                const typeClass = isDraft ? 'ptype-draft' : `ptype-${type}`;
+                const badgeText = isDraft ? 'Draft' : typeLabel;
+
+                let thumbHtml = '';
+                if (type === 'website' && item.url) {
+                    const thumbUrl = `https://s0.wp.com/mshots/v1/${encodeURIComponent(item.url)}?w=400&h=220`;
+                    thumbHtml = `<div class="portfolio-card-thumb"><img src="${thumbUrl}" alt="${item.name}" onerror="this.parentElement.innerHTML='<i class=\"fa-solid fa-globe\"></i>'"></div>`;
+                } else if ((type === 'app' || type === 'extension') && item.screenshots && item.screenshots.length > 0) {
+                    thumbHtml = `<div class="portfolio-card-thumb"><img src="${item.screenshots[0]}" alt="${item.name}" onerror="this.parentElement.innerHTML='<i class=\"fa-solid fa-image\"></i>'"></div>`;
+                } else {
+                    const faIcon = { website: 'fa-globe', app: 'fa-mobile-screen-button', extension: 'fa-puzzle-piece' }[type] || 'fa-box';
+                    thumbHtml = `<div class="portfolio-card-thumb"><i class="fa-solid ${faIcon}"></i></div>`;
+                }
+
+                // App icon overlay (rounded, modern)
+                const appIconHtml = (type === 'app' || type === 'extension') && item.appIcon
+                    ? `<div style="position:absolute;bottom:-20px;left:16px;width:48px;height:48px;border-radius:14px;overflow:hidden;border:3px solid var(--surface);box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:2;">
+                           <img src="${item.appIcon}" style="width:100%;height:100%;object-fit:cover;">
+                       </div>` : '';
+
+                const topPaddingBody = (type === 'app' || type === 'extension') && item.appIcon ? 'padding-top:28px;' : '';
+                return `
+                <div class="portfolio-card">
+                    <div style="position:relative;">
+                        ${thumbHtml}
+                        ${appIconHtml}
+                    </div>
+                    <div class="portfolio-card-body" style="${topPaddingBody}">
+                        <span class="portfolio-card-type ${typeClass}">${badgeText}</span>
+                        <div class="portfolio-card-title">${item.name}</div>
+                        <div class="portfolio-card-desc">${item.shortDesc || ''}</div>
+                        <div class="portfolio-card-actions">
+                            <button class="btn btn-secondary" style="font-size:0.78rem;" onclick="openEditPortfolioModal('${key}')">
+                                <i class="fa-solid fa-pen"></i> Edit
+                            </button>
+                            <button class="btn" style="font-size:0.78rem;background:#fee2e2;color:#dc2626;border:none;display:flex;align-items:center;gap:4px;" onclick="deletePortfolioItem('${key}')">
+                                <i class="fa-solid fa-trash-can"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+
+        window.filterPortfolio = (filter) => {
+            portfolioFilter = filter;
+            // Update active button
+            document.querySelectorAll('.portfolio-filter-btn').forEach(btn => btn.classList.remove('active'));
+            const btn = document.getElementById(`pf-${filter}`);
+            if (btn) btn.classList.add('active');
+            renderPortfolioGrid();
+        };
+
+        window.openCreatePortfolioModal = () => {
+            editPortfolioKey = null;
+            portfolioScreenshots = [];
+            portfolioIcon = null;
+            document.getElementById('portfolioForm').reset();
+            document.getElementById('portfolioFormId').value = '';
+            document.getElementById('portfolioModalTitle').innerHTML = '<i class="fa-solid fa-plus" style="color:var(--primary);margin-right:8px;"></i>Tambah Portfolio Item';
+            document.getElementById('portfolioSubmitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan';
+            // Default to website
+            document.querySelector('input[name="portfolioType"][value="website"]').checked = true;
+            onPortfolioTypeChange();
+            renderScreenshotPreviews();
+            renderIconPreview();
+            showModal('portfolioModal');
+        };
+
+        window.openEditPortfolioModal = (key) => {
+            const item = portfolioData[key];
+            if (!item) return;
+            editPortfolioKey = key;
+            portfolioScreenshots = item.screenshots ? [...item.screenshots] : [];
+            portfolioIcon = item.appIcon || null;
+
+            document.getElementById('portfolioFormId').value = key;
+            document.getElementById('pName').value = item.name || '';
+            document.getElementById('pShortDesc').value = item.shortDesc || '';
+            document.getElementById('pLongDesc').value = item.longDesc || '';
+            document.getElementById('pFeatures').value = (item.features || []).join('\n');
+            document.getElementById('pStoreUrl').value = item.storeUrl || '';
+            document.getElementById('pWebsiteUrl').value = item.url || '';
+
+            // Set type radio
+            const typeInput = document.querySelector(`input[name="portfolioType"][value="${item.type || 'website'}"]`);
+            if (typeInput) typeInput.checked = true;
+            onPortfolioTypeChange();
+
+            // Set status
+            const statusInput = document.querySelector(`input[name="pStatus"][value="${item.status || 'published'}"]`);
+            if (statusInput) statusInput.checked = true;
+
+            document.getElementById('portfolioModalTitle').innerHTML = '<i class="fa-solid fa-pen" style="color:var(--primary);margin-right:8px;"></i>Edit Portfolio Item';
+            document.getElementById('portfolioSubmitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update';
+            renderScreenshotPreviews();
+            renderIconPreview();
+            showModal('portfolioModal');
+        };
+
+        window.onPortfolioTypeChange = () => {
+            const type = document.querySelector('input[name="portfolioType"]:checked')?.value || 'website';
+            document.getElementById('pWebsiteFields').style.display = type === 'website' ? 'block' : 'none';
+            document.getElementById('pAppExtFields').style.display = type !== 'website' ? 'block' : 'none';
+            // Visual highlight of selected type
+            ['website','app','extension'].forEach(t => {
+                const lbl = document.getElementById(`ptype-${t}`);
+                if (!lbl) return;
+                if (t === type) {
+                    lbl.style.borderColor = 'var(--primary)';
+                    lbl.style.background = 'var(--primary-light)';
+                } else {
+                    lbl.style.borderColor = 'var(--border)';
+                    lbl.style.background = '';
+                }
+            });
+        };
+
+        window.handlePortfolioSubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('portfolioSubmitBtn');
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+            try {
+                const type = document.querySelector('input[name="portfolioType"]:checked')?.value || 'website';
+                const status = document.querySelector('input[name="pStatus"]:checked')?.value || 'published';
+
+                const data = {
+                    type,
+                    status,
+                    name: document.getElementById('pName').value.trim(),
+                    shortDesc: document.getElementById('pShortDesc').value.trim(),
+                    updatedAt: Date.now()
+                };
+
+                if (type === 'website') {
+                    data.url = document.getElementById('pWebsiteUrl').value.trim();
+                } else {
+                    data.longDesc = document.getElementById('pLongDesc').value.trim();
+                    data.storeUrl = document.getElementById('pStoreUrl').value.trim();
+                    data.features = document.getElementById('pFeatures').value.split('\n').map(f => f.trim()).filter(Boolean);
+                    data.screenshots = portfolioScreenshots;
+                    if (portfolioIcon) data.appIcon = portfolioIcon;
+                }
+
+                if (editPortfolioKey) {
+                    await set(ref(db, 'portfolio/' + editPortfolioKey), data);
+                } else {
+                    const newRef = push(ref(db, 'portfolio'));
+                    await set(newRef, data);
+                }
+
+                closeModal('portfolioModal');
+                Swal.fire({ icon: 'success', title: 'Tersimpan!', timer: 1500, showConfirmButton: false });
+            } catch (err) {
+                Swal.fire('Gagal', err.message, 'error');
+            } finally {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+            }
+        };
+
+        window.deletePortfolioItem = (key) => {
+            Swal.fire({ title: 'Hapus Item?', text: 'Item ini akan dihapus permanen dari halaman utama.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Hapus!' })
+                .then(async (r) => {
+                    if (r.isConfirmed) {
+                        try {
+                            await remove(ref(db, 'portfolio/' + key));
+                            Swal.fire({ icon: 'success', title: 'Terhapus!', timer: 1500, showConfirmButton: false });
+                        } catch (err) { Swal.fire('Gagal', err.message, 'error'); }
+                    }
+                });
+        };
+
+        // ===== SCREENSHOT UPLOAD =====
+        const renderScreenshotPreviews = () => {
+            const container = document.getElementById('pScreenshotPreviews');
+            if (!container) return;
+            if (portfolioScreenshots.length === 0) { container.innerHTML = ''; return; }
+            container.innerHTML = portfolioScreenshots.map((b64, idx) => `
+                <div style="position:relative;width:90px;height:70px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border);">
+                    <img src="${b64}" style="width:100%;height:100%;object-fit:cover;">
+                    <button type="button" onclick="removeScreenshot(${idx})" style="position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(220,38,38,0.9);color:#fff;border:none;cursor:pointer;font-size:0.6rem;display:flex;align-items:center;justify-content:center;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>`).join('');
+        };
+
+        window.removeScreenshot = (idx) => {
+            portfolioScreenshots.splice(idx, 1);
+            renderScreenshotPreviews();
+        };
+
+        // ===== ICON UPLOAD =====
+        const renderIconPreview = () => {
+            const container = document.getElementById('pIconPreview');
+            if (!container) return;
+            if (!portfolioIcon) {
+                container.innerHTML = '';
+                return;
+            }
+            container.innerHTML = `
+                <div style="position:relative;display:inline-block;">
+                    <img src="${portfolioIcon}" style="width:72px;height:72px;border-radius:18px;object-fit:cover;border:2px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+                    <button type="button" onclick="removeAppIcon()" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#dc2626;color:#fff;border:none;cursor:pointer;font-size:0.6rem;display:flex;align-items:center;justify-content:center;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>`;
+        };
+
+        window.removeAppIcon = () => {
+            portfolioIcon = null;
+            renderIconPreview();
+        };
+
+        window.handleIconFile = async (input) => {
+            const file = input.files[0];
+            if (!file) return;
+            if (file.size > 1024 * 1024) {
+                Swal.fire('File Terlalu Besar', 'Icon maksimal 1MB.', 'warning');
+                input.value = ''; return;
+            }
+            try {
+                portfolioIcon = await processImageFile(file);
+                renderIconPreview();
+            } catch (err) { Swal.fire('Error', err.message, 'error'); }
+            input.value = '';
+        };
+
+        const processImageFile = (file) => {
+            return new Promise((resolve, reject) => {
+                if (file.size > 1.5 * 1024 * 1024) {
+                    reject(new Error(`File "${file.name}" melebihi batas 1MB.`));
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = () => reject(new Error(`Gagal membaca file ${file.name}`));
+                reader.readAsDataURL(file);
+            });
+        };
+
+        window.handleScreenshotFiles = async (files) => {
+            if (portfolioScreenshots.length >= 5) {
+                Swal.fire('Batas Tercapai', 'Maksimal 5 screenshot per item.', 'warning'); return;
+            }
+            const remaining = 5 - portfolioScreenshots.length;
+            const toProcess = Array.from(files).slice(0, remaining);
+            try {
+                for (const file of toProcess) {
+                    const b64 = await processImageFile(file);
+                    portfolioScreenshots.push(b64);
+                }
+                renderScreenshotPreviews();
+            } catch (err) { Swal.fire('Error', err.message, 'error'); }
+            document.getElementById('pScreenshotInput').value = '';
+        };
+
+        window.handleScreenshotDrop = async (event) => {
+            event.preventDefault();
+            document.getElementById('pScreenshotUploadArea').style.borderColor = 'var(--border)';
+            const files = event.dataTransfer.files;
+            if (files.length) await handleScreenshotFiles(files);
         };
 
         // ===== FLATPICKR =====

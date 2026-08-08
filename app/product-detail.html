@@ -1104,294 +1104,195 @@
             </div>
             <div class="trust-item">
                 <i class="fa-solid fa-certificate"></i>
-                <span>Lisensi Resmi</span>
-            </div>
+    <main class="store-main" style="max-width: 1000px; margin: 40px auto; padding: 0 20px;">
+        <div id="loadingDetail" style="text-align: center; padding: 80px 0;">
+            <i class="fa-solid fa-spinner fa-spin fa-3x" style="color: var(--primary); margin-bottom:16px;"></i>
+            <p style="color: var(--text-secondary);">Memuat detail produk...</p>
         </div>
-    </div>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="store-main">
-        <div id="catalogSection">
-            <div class="catalog-tabs" id="catalogTabs">
-                <button class="catalog-tab active" data-filter="all" onclick="switchCatalogTab(this, 'all')">
-                    <i class="fa-solid fa-th-large"></i> Semua
-                </button>
-                <button class="catalog-tab" data-filter="app" onclick="switchCatalogTab(this, 'app')">
-                    <i class="fa-solid fa-mobile-screen"></i> Aplikasi
-                </button>
-                <button class="catalog-tab" data-filter="extension" onclick="switchCatalogTab(this, 'extension')">
-                    <i class="fa-solid fa-puzzle-piece"></i> Extension
-                </button>
-            </div>
-
-            <div id="appsGrid" class="apps-grid">
-                <div class="skeleton-card">
-                    <div style="display:flex; gap:14px; margin-bottom:14px;">
-                        <div class="skeleton" style="width:72px; height:72px; border-radius:16px; flex-shrink:0;"></div>
-                        <div style="flex:1;">
-                            <div class="skeleton" style="height:14px; width:70%; margin-bottom:8px;"></div>
-                            <div class="skeleton" style="height:10px; width:50%; margin-bottom:8px;"></div>
-                            <div class="skeleton" style="height:10px; width:40%;"></div>
-                        </div>
-                    </div>
-                    <div class="skeleton" style="height:10px; margin-bottom:6px;"></div>
-                    <div class="skeleton" style="height:10px; width:80%; margin-bottom:16px;"></div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div class="skeleton" style="height:18px; width:80px;"></div>
-                        <div class="skeleton" style="height:36px; width:100px; border-radius:100px;"></div>
+        <div id="errorDetail" style="display:none; text-align: center; padding: 80px 0;">
+            <i class="fa-solid fa-triangle-exclamation fa-4x" style="color: #f59e0b; margin-bottom: 20px;"></i>
+            <h3 style="margin-bottom: 10px;">Produk Tidak Ditemukan</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Mohon maaf, produk yang Anda cari tidak tersedia.</p>
+            <a href="/app/store" class="btn" style="background:var(--primary); color:#fff; padding: 12px 24px; border-radius: 12px; font-weight: 600; display:inline-block;"><i class="fa-solid fa-arrow-left"></i> Kembali ke Store</a>
+        </div>
+        
+        <div id="productDetailContainer" style="display: none; background: #fff; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 40px;">
+            <div class="row g-0">
+                <div class="col-lg-7 d-flex align-items-center justify-content-center" style="background-color: #f8fafc; min-height: 300px; position:relative;" id="pd-carousel-col">
+                    <div class="w-100 p-lg-4 p-0" id="pd-carousel-container" style="position:relative; width: 100%; overflow:hidden;">
+                        <!-- Carousel -->
                     </div>
                 </div>
-                <div class="skeleton-card">
-                    <div style="display:flex; gap:14px; margin-bottom:14px;">
-                        <div class="skeleton" style="width:72px; height:72px; border-radius:16px; flex-shrink:0;"></div>
-                        <div style="flex:1;">
-                            <div class="skeleton" style="height:14px; width:75%; margin-bottom:8px;"></div>
-                            <div class="skeleton" style="height:10px; width:50%; margin-bottom:8px;"></div>
-                            <div class="skeleton" style="height:10px; width:45%;"></div>
+                <div class="col-lg-5">
+                    <div style="padding:32px 28px;">
+                        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;" id="pd-header">
+                            <!-- Icon and Title -->
                         </div>
-                    </div>
-                    <div class="skeleton" style="height:10px; margin-bottom:6px;"></div>
-                    <div class="skeleton" style="height:10px; width:65%; margin-bottom:16px;"></div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div class="skeleton" style="height:18px; width:80px;"></div>
-                        <div class="skeleton" style="height:36px; width:100px; border-radius:100px;"></div>
-                    </div>
-                </div>
-                <div class="skeleton-card">
-                    <div style="display:flex; gap:14px; margin-bottom:14px;">
-                        <div class="skeleton" style="width:72px; height:72px; border-radius:16px; flex-shrink:0;"></div>
-                        <div style="flex:1;">
-                            <div class="skeleton" style="height:14px; width:60%; margin-bottom:8px;"></div>
-                            <div class="skeleton" style="height:10px; width:45%; margin-bottom:8px;"></div>
-                            <div class="skeleton" style="height:10px; width:55%;"></div>
+                        <p id="pd-desc" style="color:#475569;line-height:1.78;margin-bottom:28px;font-size:0.95rem;"></p>
+                        <div id="pd-features"></div>
+                        <div id="pd-price-section" style="margin-top:20px; padding-top:20px; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
                         </div>
-                    </div>
-                    <div class="skeleton" style="height:10px; margin-bottom:6px;"></div>
-                    <div class="skeleton" style="height:10px; width:75%; margin-bottom:16px;"></div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div class="skeleton" style="height:18px; width:80px;"></div>
-                        <div class="skeleton" style="height:36px; width:100px; border-radius:100px;"></div>
+                        <button id="pd-buy-btn" onclick="goToCheckoutReal()" class="btn w-100 py-3 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2 mt-4" style="background:var(--primary);border:none;color:#fff;font-size:1rem;box-shadow:0 8px 24px rgba(37,99,235,0.25); cursor:pointer;">
+                            <i class="fa-solid fa-bag-shopping"></i> Lanjutkan Pembelian
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-
-
     </main>
 
-    <!-- FOOTER -->
-    <footer class="store-footer">
-        <div class="footer-inner">
-            <div class="footer-links">
-                <a href="/" class="footer-link">Beranda</a>
-                <a href="/app/legal/syarat-ketentuan" class="footer-link">Syarat & Ketentuan</a>
-                <a href="/app/support" class="footer-link">Dukungan</a>
-                <a href="mailto:admin.primadev@gmail.com" class="footer-link">Kontak</a>
-            </div>
-            <p class="footer-copy" style="margin-bottom: 6px;">&copy; <span id="currentYear"></span> PT. Primadev Digital Technology | All Rights Reserved.</p>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #16a34a; font-weight: 600;">
-                <i class="fas fa-shield-check"></i>
-                <span>Terdaftar & Diawasi oleh Kemenkumham RI (AHU-A104134.AH.01.30.Tahun 2026)</span>
-            </div>
-            <script>document.getElementById('currentYear').textContent = new Date().getFullYear();</script>
-        </div>
-    </footer>
+    <!-- Support Help & Footer -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module">
+        let currentProductId = null;
+        let pricingData = null;
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        async function initProductDetail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            currentProductId = urlParams.get('id');
+            if (!currentProductId) {
+                showError();
+                return;
+            }
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            requestAnimationFrame(() => document.body.classList.add("loaded"));
-        });
-
-        window.addEventListener("pageshow", (event) => {
-            if (event.persisted) document.body.classList.add("loaded");
-        });
-
-        document.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function (e) {
-                const target = this.getAttribute('href');
-                if (target && !target.startsWith('#') && !target.startsWith('javascript') && !target.startsWith('mailto') && this.target !== '_blank') {
-                    e.preventDefault();
-                    document.body.classList.remove("loaded");
-                    setTimeout(() => { window.location.href = target; }, 400);
-                }
-            });
-        });
-
-        let SERVER_CATALOG = {};
-        let currentCatalogFilter = 'all';
-
-        const iconColors = ['app-icon-blue', 'app-icon-green', 'app-icon-purple', 'app-icon-orange', 'app-icon-teal', 'app-icon-pink'];
-        const badgeTypes = ['badge-popular', 'badge-new', '', '', 'badge-hot', ''];
-
-        async function initStore() {
             try {
-                const response = await fetch('/.netlify/functions/public_order');
-                const data = await response.json();
-                SERVER_CATALOG = data.catalog;
-                renderCatalog();
+                // Fetch Pricing DB
+                const configRes = await fetch('/.netlify/functions/public_order');
+                const data = await configRes.json();
+                pricingData = data.catalog[currentProductId];
 
-                const urlParams = new URLSearchParams(window.location.search);
-                const tabParam = urlParams.get('tab');
-                if (tabParam === 'extension') {
-                    const extBtn = document.querySelector('[data-filter="extension"]');
-                    if (extBtn) switchCatalogTab(extBtn, 'extension');
+                // Fetch Firebase Config
+                const fbRes = await fetch('/.netlify/functions/get-config');
+                const firebaseConfig = await fbRes.json();
+
+                const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
+                const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
+
+                const existing = getApps().find(a => a.name === 'store-reader');
+                const app = existing || initializeApp(firebaseConfig, 'store-reader');
+                const db = getDatabase(app);
+                
+                const snap = await get(ref(db, 'portfolio/' + currentProductId));
+                const item = snap.val();
+
+                if (!item && !pricingData) {
+                    showError();
+                    return;
                 }
-            } catch (error) {
-                console.error("Init Error", error);
-                document.getElementById('appsGrid').innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
-                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 16px; display:block;"></i>
-                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Gagal memuat katalog. <a href="javascript:location.reload()" style="color:var(--accent); font-weight:600;">Coba lagi</a></p>
-                    </div>`;
+
+                renderProductDetail(item || pricingData, pricingData);
+
+            } catch (err) {
+                console.error("Init Error", err);
+                showError();
             }
         }
 
-        function buildBrowserBadges(platforms) {
-            if (!platforms) return '';
-            const list = Array.isArray(platforms) ? platforms : [platforms];
-            const isAll = ['chrome', 'edge', 'firefox'].every(b => list.includes(b));
-            if (isAll) return `<span class="browser-badge all"><i class="fa-solid fa-earth-asia"></i> All Browser</span>`;
-            const icons = {
-                chrome: `<span class="browser-badge chrome"><i class="fa-brands fa-chrome"></i> Chrome</span>`,
-                edge: `<span class="browser-badge edge"><i class="fa-brands fa-edge"></i> Edge</span>`,
-                firefox: `<span class="browser-badge firefox"><i class="fa-brands fa-firefox-browser"></i> Firefox</span>`,
-            };
-            return list.map(p => icons[p] || `<span class="browser-badge all">${p}</span>`).join('');
+        function showError() {
+            document.getElementById('loadingDetail').style.display = 'none';
+            document.getElementById('errorDetail').style.display = 'block';
         }
 
-        function renderCatalog(filter = currentCatalogFilter) {
-            const container = document.getElementById('appsGrid');
-            container.innerHTML = '';
-            const keys = Object.keys(SERVER_CATALOG);
+        function renderProductDetail(item, pricing) {
+            document.getElementById('loadingDetail').style.display = 'none';
+            document.getElementById('productDetailContainer').style.display = 'block';
 
-            keys.forEach((key, index) => {
-                const item = SERVER_CATALOG[key];
-                const itemType = item.type || 'app';
-                if (filter !== 'all' && itemType !== filter) return;
-                if (itemType === 'extension') {
-                    const platforms = item.platform || ['chrome'];
-                    const browserBadges = buildBrowserBadges(platforms);
-                    const minPrice = item.price ? Math.min(...Object.values(item.price).filter(p => p > 0)) : 0;
+            const type = item.type || 'app';
+            const colorMap = { website: '#0ea5e9', app: '#2563eb', extension: '#7c3aed' };
+            const iconMap = { website: 'fa-globe', app: 'fa-mobile-screen-button', extension: 'fa-puzzle-piece' };
+            const labelMap = { website: 'Website', app: 'Aplikasi', extension: 'Extension' };
+            const rgbMap = { website: '14,165,233', app: '37,99,235', extension: '124,58,237' };
 
-                    container.innerHTML += `
-                    <div class="ext-card" style="animation-delay: ${index * 0.07}s;" data-type="extension">
-                        <div style="display:flex; align-items:flex-start; gap:14px; margin-bottom:12px;">
-                            <div class="ext-icon">
-                                <i class="fa-solid ${item.icon || 'fa-puzzle-piece'}"></i>
-                            </div>
-                            <div style="flex:1; min-width:0;">
-                                <div style="font-weight:700; font-size:0.97rem; color:var(--text-primary); margin-bottom:2px;">${item.name}</div>
-                                <div style="font-size:0.76rem; color:var(--text-secondary);">Primadev Digital Technology</div>
-                                <div style="display:flex; align-items:center; gap:4px; margin-top:4px;">
-                                    <span style="color:#f59e0b; font-size:0.8rem;">★★★★★</span>
-                                    <span style="font-size:0.73rem; color:var(--text-tertiary);">4.9</span>
-                                </div>
-                            </div>
-                        </div>
-                        <p style="font-size:0.82rem; color:var(--text-secondary); line-height:1.55; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
-                            ${item.description || 'Browser extension resmi dari Primadev Digital Technology.'}
-                        </p>
-                        <div class="browser-badges">${browserBadges}</div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:14px; border-top:1px solid var(--border-light);">
-                            <div>
-                                <div style="font-size:0.7rem; color:var(--text-tertiary); font-weight:500;">Mulai dari</div>
-                                <div style="font-size:1.05rem; font-weight:800; color:#7c3aed;">Rp ${minPrice.toLocaleString('id-ID')}</div>
-                            </div>
-                            <button onclick="goToCheckout('${key}')" class="btn-install-ext">
-                                <i class="fa-solid fa-puzzle-piece"></i> Beli Lisensi
-                            </button>
-                        </div>
-                    </div>`;
+            const color = colorMap[type] || '#4f46e5';
+            const icon = item.icon || iconMap[type] || 'fa-box';
+            const label = labelMap[type] || type;
+            const rgb = rgbMap[type] || '79,70,229';
+            const screenshots = item.screenshots || [];
 
-                } else {
-                    const colorClass = iconColors[index % iconColors.length];
-                    const badgeClass = badgeTypes[index % badgeTypes.length];
-                    const minPrice = item.price ? Math.min(...Object.values(item.price)) : 0;
-                    const badgeHtml = badgeClass ? `<span class="card-badge ${badgeClass}">${badgeClass === 'badge-popular' ? '🔥 Popular' : badgeClass === 'badge-new' ? '✨ Baru' : '⚡ Hot'}</span>` : '';
-
-                    container.innerHTML += `
-                    <div class="app-card" style="animation-delay: ${index * 0.07}s;" data-type="app">
-                        ${badgeHtml}
-                        <div class="app-card-header">
-                            <div class="app-icon ${colorClass}">
-                                <i class="fa-solid ${item.icon || 'fa-box'}"></i>
-                            </div>
-                            <div class="app-meta">
-                                <div class="app-name">${item.name}</div>
-                                <div class="app-developer">Primadev Digital Technology</div>
-                                <div class="app-rating">
-                                    <span class="stars">★★★★★</span>
-                                    <span class="rating-text">4.9 (500+ ulasan)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="app-package">${item.package || 'com.primadev.app'}</div>
-                        <div class="app-description">${item.description || 'Aplikasi premium resmi dari Primadev Digital Technology dengan fitur lengkap dan dukungan penuh.'}</div>
-                        <div class="app-card-screenshots">
-                            <div class="screenshot-pill"></div>
-                            <div class="screenshot-pill"></div>
-                            <div class="screenshot-pill"></div>
-                            <div class="screenshot-pill"></div>
-                        </div>
-                        <div class="app-card-footer">
-                            <div class="price-tag">
-                                <span class="price-label">Mulai dari</span>
-                                <span class="price-amount">Rp ${minPrice.toLocaleString('id-ID')}</span>
-                                <span class="price-period">/bulan</span>
-                            </div>
-                            <button onclick="goToCheckout('${key}')" class="btn-install">
-                                <i class="fa-solid fa-download"></i>
-                                Beli Lisensi
-                            </button>
-                        </div>
-                    </div>`;
-                }
-            });
-
-            const searchEl = document.getElementById('searchInput');
-            if (searchEl && !searchEl._listenerAttached) {
-                searchEl.addEventListener('input', function () { filterCatalog(this.value); });
-                searchEl._listenerAttached = true;
-            }
-
-            if (container.innerHTML.trim() === '') {
-                const label = filter === 'extension' ? 'Browser Extension' : 'Aplikasi';
-                container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
-                    <i class="fa-solid fa-box-open" style="font-size:2.5rem;color:var(--text-tertiary);display:block;margin-bottom:16px;"></i>
-                    <p style="color:var(--text-secondary);">Belum ada ${label} tersedia saat ini.</p>
+            // Carousel
+            let carouselHtml = '';
+            if (screenshots.length > 0) {
+                carouselHtml = `
+                <div class="screenshot-carousel" style="position:relative; width:100%; overflow:hidden; border-radius:16px;">
+                    <div class="screenshot-track" id="screenshotTrack" style="transform:translateX(0); display:flex; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+                        ${screenshots.map((src, i) => `<div class="screenshot-slide" style="min-width:100%;"><img src="${src}" alt="Screenshot ${i+1}" style="width:100%; max-height:380px; object-fit:contain; display:block;"></div>`).join('')}
+                    </div>
+                    ${screenshots.length > 1 ? `
+                    <button class="carousel-btn prev" onclick="moveCarousel(-1)" style="position:absolute; top:50%; left:16px; transform:translateY(-50%); background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:10;"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="carousel-btn next" onclick="moveCarousel(1)" style="position:absolute; top:50%; right:16px; transform:translateY(-50%); background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:10;"><i class="fa-solid fa-chevron-right"></i></button>` : ''}
                 </div>`;
+            } else {
+                carouselHtml = `<div style="padding:60px 20px; text-align:center; color:#94a3b8;"><i class="fa-solid ${icon} fa-4x mb-3"></i><p>Tidak ada pratinjau</p></div>`;
+            }
+            document.getElementById('pd-carousel-container').innerHTML = carouselHtml;
+
+            // Header
+            document.getElementById('pd-header').innerHTML = `
+                ${item.appIcon
+                    ? `<img src="${item.appIcon}" style="width:56px;height:56px;border-radius:16px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,0.12);border:2px solid rgba(0,0,0,0.06);">`
+                    : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(${rgb},0.1);color:${color};display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">
+                           <i class="fa-solid ${icon}"></i>
+                       </div>`
+                }
+                <div>
+                    <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${color};margin-bottom:4px;">${label}</div>
+                    <h3 style="font-size:1.4rem;font-weight:800;color:#0f172a;margin:0;line-height:1.2;">${item.name}</h3>
+                </div>
+            `;
+
+            document.getElementById('pd-desc').innerHTML = item.longDesc || item.shortDesc || item.description || '';
+
+            if (item.features && item.features.length > 0) {
+                document.getElementById('pd-features').innerHTML = `
+                    <div style="margin-bottom:28px;">
+                        <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8;margin-bottom:14px;">Fitur Utama</div>
+                        <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;">
+                            ${item.features.map(f => `<li style="display:flex; gap:10px; font-size:0.9rem; color:#334155;"><span style="color:#10b981; margin-top:2px;"><i class="fa-solid fa-check"></i></span>${f}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (pricing && pricing.price) {
+                const minPrice = Math.min(...Object.values(pricing.price));
+                document.getElementById('pd-price-section').innerHTML = `
+                    <div>
+                        <div style="font-size:0.7rem; color:var(--text-tertiary); font-weight:500;">Mulai dari</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:var(--primary);">Rp ${minPrice.toLocaleString('id-ID')}</div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('pd-price-section').innerHTML = `
+                    <div>
+                        <div style="font-size:1rem; font-weight:700; color:var(--text-secondary);">Harga Khusus</div>
+                    </div>
+                `;
+                document.getElementById('pd-buy-btn').innerHTML = `<i class="fa-solid fa-arrow-right"></i> Dapatkan Sekarang`;
             }
         }
 
-        function switchCatalogTab(btn, filter) {
-            document.querySelectorAll('.catalog-tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            currentCatalogFilter = filter;
-            renderCatalog(filter);
-        }
+        let carouselCurrent = 0;
+        window.moveCarousel = (dir) => {
+            const track = document.getElementById('screenshotTrack');
+            const slides = track.querySelectorAll('.screenshot-slide');
+            if(slides.length === 0) return;
+            carouselCurrent += dir;
+            if(carouselCurrent < 0) carouselCurrent = slides.length - 1;
+            if(carouselCurrent >= slides.length) carouselCurrent = 0;
+            track.style.transform = `translateX(-${carouselCurrent * 100}%)`;
+        };
 
-        function filterCatalog(query) {
-            const cards = document.querySelectorAll('.app-card, .ext-card');
-            const q = query.toLowerCase().trim();
-            cards.forEach(card => {
-                const name = card.querySelector('.app-name, [style*="font-weight:700"]')?.textContent.toLowerCase() || '';
-                const pkg = card.querySelector('.app-package')?.textContent.toLowerCase() || '';
-                const desc = card.querySelector('.app-description, p')?.textContent.toLowerCase() || '';
-                card.style.display = (!q || name.includes(q) || pkg.includes(q) || desc.includes(q)) ? '' : 'none';
-            });
-        }
+        window.goToCheckoutReal = () => {
+            if (pricingData && pricingData.price) {
+                localStorage.setItem('checkout_product_id', currentProductId);
+                window.location.href = '/app/checkout';
+            } else {
+                // If it's a portfolio item without price, go to custom-order or external URL
+                window.location.href = '/app/custom-order';
+            }
+        };
 
-        function goToCheckout(id) {
-            localStorage.setItem('checkout_product_id', id);
-            window.location.href = `/app/product-detail?id=${id}`;
-        }
-        const styleEl = document.createElement('style');
-        styleEl.textContent = '.d-none { display: none !important; }';
-        document.head.appendChild(styleEl);
-
-        function showHelp() {
+        window.showHelp = () => {
             Swal.fire({
                 title: 'Pusat Bantuan Primadev',
                 text: 'Tim dukungan kami siap membantu setiap pertanyaan dan kendala Anda.',
@@ -1409,10 +1310,9 @@
                     </div>
                 `
             });
-        }
+        };
 
-        initStore();
+        initProductDetail();
     </script>
 </body>
-
 </html>

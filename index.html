@@ -163,6 +163,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
     <style>
         :root {
@@ -584,6 +585,98 @@
                 margin: 0 10px;
             }
         }
+
+        /* ===== PORTFOLIO SHOWCASE SECTION ===== */
+        .sw-tab-bar {
+            display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem;
+        }
+        .sw-tab-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 22px; border-radius: 100px;
+            border: 2px solid #e2e8f0; background: #fff;
+            font-size: 0.88rem; font-weight: 700; color: #64748b;
+            cursor: pointer; transition: all 0.25s; font-family: inherit;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .sw-tab-btn:hover { border-color: #1865ca; color: #1865ca; box-shadow: 0 4px 16px rgba(24,101,202,0.15); }
+        .sw-tab-btn.active { background: #1865ca; border-color: #1865ca; color: #fff; box-shadow: 0 8px 24px rgba(24,101,202,0.35); }
+
+        .portfolio-item-card {
+            background: #fff; border: 1px solid rgba(226,232,240,0.8); border-radius: 20px;
+            overflow: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; height: 100%;
+        }
+        .portfolio-item-card:hover {
+            transform: translateY(-8px); box-shadow: 0 20px 50px rgba(79,70,229,0.14); border-color: rgba(79,70,229,0.3);
+        }
+        .portfolio-thumb {
+            width: 100%; height: 200px; overflow: hidden;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%);
+            position: relative; display: flex; align-items: center; justify-content: center;
+        }
+        .portfolio-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .portfolio-item-card:hover .portfolio-thumb img { transform: scale(1.04); }
+        .portfolio-thumb-icon { font-size: 3rem; color: #a5b4fc; }
+        .portfolio-thumb-badge {
+            position: absolute; top: 12px; left: 12px;
+            padding: 4px 12px; border-radius: 100px;
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .badge-website { background: rgba(14,165,233,0.15); color: #0369a1; border: 1px solid rgba(14,165,233,0.3); }
+        .badge-app { background: rgba(37,99,235,0.12); color: #1d4ed8; border: 1px solid rgba(37,99,235,0.2); }
+        .badge-extension { background: rgba(124,58,237,0.12); color: #7c3aed; border: 1px solid rgba(124,58,237,0.2); }
+        .portfolio-card-body { padding: 22px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .portfolio-card-title { font-size: 1.1rem; font-weight: 800; color: #0f172a; line-height: 1.3; }
+        .portfolio-card-desc { font-size: 0.88rem; color: #64748b; line-height: 1.6; flex: 1; }
+        .portfolio-card-footer { margin-top: 16px; padding-top: 16px; border-top: 1px solid #f1f5f9; }
+
+        /* ===== PORTFOLIO DETAIL MODAL ===== */
+        .portfolio-modal-overlay {
+            position: fixed; inset: 0; background: rgba(15,23,42,0.75); backdrop-filter: blur(8px);
+            z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .portfolio-modal-overlay.open { opacity: 1; pointer-events: all; }
+        .portfolio-modal-box {
+            background: #fff; border-radius: 24px; max-width: 900px; width: 100%;
+            max-height: 90vh; overflow-y: auto; overflow-x: hidden; position: relative;
+            transform: translateY(30px) scale(0.97);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+        }
+        .portfolio-modal-overlay.open .portfolio-modal-box { transform: translateY(0) scale(1); }
+        .pmodal-close {
+            position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%;
+            background: #f1f5f9; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; color: #64748b; z-index: 10; transition: all 0.2s;
+        }
+        .pmodal-close:hover { background: #e2e8f0; color: #0f172a; }
+        .screenshot-carousel { position: relative; overflow: hidden; background: #0f172a; border-radius: 16px; }
+        .screenshot-track { display: flex; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .screenshot-slide { min-width: 100%; }
+        .screenshot-slide img { width: 100%; max-height: 380px; object-fit: contain; display: block; }
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 5; transition: all 0.2s; font-size: 0.85rem;
+        }
+        .carousel-btn:hover { background: rgba(255,255,255,0.3); }
+        .carousel-btn.prev { left: 12px; }
+        .carousel-btn.next { right: 12px; }
+        .carousel-dots { display: flex; gap: 6px; justify-content: center; padding: 12px 0 4px; }
+        .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; cursor: pointer; transition: all 0.2s; }
+        .carousel-dot.active { background: var(--primary); width: 24px; border-radius: 4px; }
+        .feature-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+        .feature-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.9rem; color: #334155; line-height: 1.5; }
+        .feature-list li .fi {
+            width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #fff;
+        }
     </style>
 
     <style>
@@ -845,21 +938,55 @@
     </section>
 
     <!-- Products Section -->
-    <section id="products" class="py-5">
+    <!-- Portfolio Showcase Section -->
+    <section id="products" class="py-5" style="background: linear-gradient(180deg, #f8faff 0%, #fff 100%);">
         <div class="container py-5">
+            <!-- Section Header -->
             <div class="text-center mb-5" data-aos="fade-up">
-                <h2 class="display-6 fw-bold">Our Flagship <span class="text-primary">Software</span></h2>
-                <p class="text-muted">Aplikasi unggulan yang telah membantu ratusan entitas bisnis di seluruh Indonesia.
-                </p>
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill mb-3 fw-bold"
+                    style="background: rgba(24,101,202,0.08); color: #1865ca; font-size: 0.85rem;">
+                    <i class="fa-solid fa-layer-group"></i> Our Portfolio
+                </div>
+                <h2 class="display-6 fw-bold mb-3">Produk &amp; Layanan <span class="text-primary">Kami</span></h2>
+                <p class="text-muted mx-auto" style="max-width: 560px; font-size: 1rem;">Website, Aplikasi Mobile, hingga Browser Extension &mdash; semuanya dirancang untuk meningkatkan produktivitas bisnis Anda.</p>
             </div>
-            <div class="row g-4 justify-content-center" id="productContainer">
+
+            <!-- Tab Filter Buttons -->
+            <div class="sw-tab-bar" data-aos="fade-up" data-aos-delay="80">
+                <button class="sw-tab-btn active" id="tab-all" onclick="filterPortfolioHome('all')">
+                    <i class="fa-solid fa-grip"></i> Semua
+                </button>
+                <button class="sw-tab-btn" id="tab-website" onclick="filterPortfolioHome('website')">
+                    <i class="fa-solid fa-globe"></i> Website
+                </button>
+                <button class="sw-tab-btn" id="tab-app" onclick="filterPortfolioHome('app')">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Aplikasi
+                </button>
+                <button class="sw-tab-btn" id="tab-extension" onclick="filterPortfolioHome('extension')">
+                    <i class="fa-solid fa-puzzle-piece"></i> Extension
+                </button>
+            </div>
+
+            <!-- Portfolio Grid -->
+            <div class="row g-4" id="portfolioHomeContainer">
                 <div class="col-12 text-center py-5">
                     <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2 text-muted">Memuat solusi terbaik untuk Anda...</p>
+                    <p class="mt-3 text-muted" style="font-size:0.9rem;">Memuat portfolio...</p>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Portfolio Detail Modal -->
+    <div class="portfolio-modal-overlay" id="portfolioDetailModal" onclick="closePortfolioDetailModal(event)">
+        <div class="portfolio-modal-box" id="portfolioModalBox">
+            <button class="pmodal-close" onclick="closePortfolioDetailModalBtn()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="portfolioModalContent"></div>
+        </div>
+    </div>
+
 
     <!-- Custom Project CTA Section -->
     <section class="py-5">
@@ -1060,109 +1187,272 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            AOS.init({
-                duration: 1000,
-                once: true,
-                offset: 100
-            });
+            AOS.init({ duration: 1000, once: true, offset: 100 });
 
             const nav = document.getElementById('mainNav');
             window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    nav.classList.add('scrolled');
-                } else {
-                    nav.classList.remove('scrolled');
-                }
+                nav.classList.toggle('scrolled', window.scrollY > 50);
             });
 
             document.getElementById('currentYear').textContent = new Date().getFullYear();
 
             function createBubbles() {
                 const box = document.getElementById('bubbleBox');
-                const bubbleCount = 15;
-                for (let i = 0; i < bubbleCount; i++) {
-                    const bubble = document.createElement('div');
-                    bubble.className = 'bubble';
+                for (let i = 0; i < 15; i++) {
+                    const b = document.createElement('div');
+                    b.className = 'bubble';
                     const size = Math.random() * 60 + 20 + 'px';
-                    bubble.style.width = size;
-                    bubble.style.height = size;
-                    bubble.style.left = Math.random() * 100 + '%';
-                    bubble.style.animationDelay = Math.random() * 10 + 's';
-                    bubble.style.setProperty('--duration', Math.random() * 15 + 10 + 's');
-                    box.appendChild(bubble);
+                    b.style.width = size; b.style.height = size;
+                    b.style.left = Math.random() * 100 + '%';
+                    b.style.animationDelay = Math.random() * 10 + 's';
+                    b.style.setProperty('--duration', Math.random() * 15 + 10 + 's');
+                    box.appendChild(b);
                 }
             }
             createBubbles();
+        });
+    </script>
 
-            async function loadFeaturedProducts() {
-                const container = document.getElementById('productContainer');
-                try {
-                    const response = await fetch('/.netlify/functions/public_order');
-                    const data = await response.json();
-                    const catalog = data.catalog;
+    <script>
+        // ===== PORTFOLIO HOME =====
+        let portfolioHomeData = {};
+        let portfolioHomeFilter = 'all';
+        let carouselCurrent = 0;
+        let carouselKey = null;
 
-                    container.innerHTML = '';
+        async function loadPortfolioHome() {
+            const container = document.getElementById('portfolioHomeContainer');
+            try {
+                const configRes = await fetch('/.netlify/functions/get-config');
+                const firebaseConfig = await configRes.json();
 
-                    Object.keys(catalog).forEach((key, index) => {
-                        const item = catalog[key];
-                        const isWA = item.name.toLowerCase().includes('wa') || item.name.toLowerCase().includes('whatsapp');
-                        const colorHex = isWA ? '#10b981' : '#1865ca';
-                        const colorDark = isWA ? '#059669' : '#1456a8';
-                        const colorRgb = isWA ? '16, 185, 129' : '24, 101, 202';
+                const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
+                const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
 
-                        const html = `
-                            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="${index * 100}">
-                                <div class="software-card position-relative p-4 bg-white rounded-4 d-flex flex-column h-100" 
-                                     style="border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: all 0.3s ease; overflow: hidden; cursor: pointer;"
-                                     onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 15px 35px rgba(${colorRgb}, 0.12)'; this.style.borderColor='${colorHex}';"
-                                     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.04)'; this.style.borderColor='rgba(226, 232, 240, 0.8)';">
-                                    
-                                    <div class="d-flex justify-content-between align-items-center mb-4 position-relative z-1">
-                                        <div class="d-flex align-items-center justify-content-center rounded-circle shadow-sm" 
-                                             style="width: 50px; height: 50px; background: rgba(${colorRgb}, 0.1); color: ${colorHex}; font-size: 1.3rem;">
-                                            <i class="fa-solid ${item.icon || 'fa-rocket'}"></i>
-                                        </div>
-                                        <span class="badge px-3 py-2 rounded-pill fw-bold" 
-                                              style="background: rgba(241, 245, 249, 1); color: #475569; border: 1px solid #e2e8f0; font-size: 0.7rem;">
-                                            ${item.brand || 'Primadev'}
-                                        </span>
-                                    </div>
+                const existing = getApps().find(a => a.name === 'portfolio-reader');
+                const app = existing || initializeApp(firebaseConfig, 'portfolio-reader');
+                const db = getDatabase(app);
+                const snap = await get(ref(db, 'portfolio'));
+                portfolioHomeData = snap.val() || {};
+                renderPortfolioHome();
+            } catch (err) {
+                console.error('Portfolio load error:', err);
+                container.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Portfolio akan segera tersedia.</p></div>';
+            }
+        }
 
-                                    <h4 class="fw-bold text-dark mb-2 position-relative z-1" style="font-size: 1.25rem;">${item.name}</h4>
-                                    
-                                    <p class="text-secondary mb-4 position-relative z-1" style="font-size: 0.9rem; line-height: 1.5; flex-grow: 1;">
-                                        ${item.description || 'Solusi teknologi terdepan dari Primadev untuk mendukung efisiensi bisnis Anda secara maksimal.'}
-                                    </p>
-
-                                    <div class="d-flex flex-wrap gap-2 mb-4 position-relative z-1">
-                                        <span class="badge bg-light text-secondary fw-medium px-2 py-1 rounded border" style="font-size: 0.7rem;"><i class="fa-solid fa-check text-success me-1"></i> Secure</span>
-                                        <span class="badge bg-light text-secondary fw-medium px-2 py-1 rounded border" style="font-size: 0.7rem;"><i class="fa-solid fa-check text-success me-1"></i> Fast</span>
-                                    </div>
-
-                                    <div class="pt-3 mt-auto border-top position-relative z-1">
-                                        <a href="/app/store" class="btn w-100 py-2 rounded-3 fw-bold d-flex justify-content-center align-items-center gap-2" 
-                                           style="background: transparent; color: ${colorHex}; border: 1.5px solid ${colorHex}; font-size: 0.9rem; transition: all 0.2s;"
-                                           onmouseover="this.style.background='${colorHex}'; this.style.color='white';"
-                                           onmouseout="this.style.background='transparent'; this.style.color='${colorHex}';">
-                                            Lihat Produk <i class="fa-solid fa-arrow-right-long"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        container.innerHTML += html;
-                    });
-
-                    AOS.refresh();
-
-                } catch (error) {
-                    console.error("Error loading products:", error);
-                    container.innerHTML = '<div class="col-12 text-center"><p class="text-danger">Gagal memuat katalog produk.</p></div>';
-                }
+        function renderPortfolioHome() {
+            const container = document.getElementById('portfolioHomeContainer');
+            let keys = Object.keys(portfolioHomeData).filter(k => portfolioHomeData[k]?.status === 'published');
+            if (portfolioHomeFilter !== 'all') {
+                keys = keys.filter(k => portfolioHomeData[k]?.type === portfolioHomeFilter);
             }
 
-            loadFeaturedProducts();
-        });
+            if (keys.length === 0) {
+                container.innerHTML = `<div class="col-12 d-flex justify-content-center py-4">
+                    <lottie-player
+                        src="/public/anim/blue_coming_soon.json"
+                        background="transparent"
+                        speed="1"
+                        style="width: 320px; height: 320px;"
+                        loop
+                        autoplay>
+                    </lottie-player>
+                </div>`;
+                return;
+            }
+
+            const colorMap = { website: '#0ea5e9', app: '#2563eb', extension: '#7c3aed' };
+            const iconMap = { website: 'fa-globe', app: 'fa-mobile-screen-button', extension: 'fa-puzzle-piece' };
+            const labelMap = { website: 'Website', app: 'Aplikasi', extension: 'Extension' };
+            const badgeMap = { website: 'badge-website', app: 'badge-app', extension: 'badge-extension' };
+
+            container.innerHTML = keys.map((key, idx) => {
+                const item = portfolioHomeData[key];
+                const type = item.type || 'website';
+                const color = colorMap[type] || '#4f46e5';
+                const icon = iconMap[type] || 'fa-box';
+                const label = labelMap[type] || type;
+                const badgeCls = badgeMap[type] || 'badge-app';
+
+                // Thumbnail
+                let thumbHtml = `<div class="portfolio-thumb-icon"><i class="fa-solid ${icon}"></i></div>`;
+                if (type === 'website' && item.url) {
+                    const tu = `https://s0.wp.com/mshots/v1/${encodeURIComponent(item.url)}?w=600&h=380`;
+                    thumbHtml = `<img src="${tu}" alt="${item.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'portfolio-thumb-icon\\'><i class=\\'fa-solid ${icon}\\'></i></div>'">`;
+                } else if (item.screenshots && item.screenshots.length > 0) {
+                    thumbHtml = `<img src="${item.screenshots[0]}" alt="${item.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'portfolio-thumb-icon\\'><i class=\\'fa-solid ${icon}\\'></i></div>'">`;
+                }
+
+                // CTA button
+                const ctaBtn = type === 'website'
+                    ? `<a href="${item.url || '#'}" target="_blank" rel="noopener"
+                           class="btn w-100 py-2 rounded-3 fw-bold d-flex justify-content-center align-items-center gap-2"
+                           style="background:transparent;color:${color};border:1.5px solid ${color};font-size:0.88rem;"
+                           onmouseover="this.style.background='${color}';this.style.color='#fff';"
+                           onmouseout="this.style.background='transparent';this.style.color='${color}';">
+                           Buka Website <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.78rem;"></i>
+                       </a>`
+                    : `<button onclick="openPortfolioDetail('${key}')"
+                            class="btn w-100 py-2 rounded-3 fw-bold d-flex justify-content-center align-items-center gap-2"
+                            style="background:transparent;color:${color};border:1.5px solid ${color};font-size:0.88rem;"
+                            onmouseover="this.style.background='${color}';this.style.color='#fff';"
+                            onmouseout="this.style.background='transparent';this.style.color='${color}';">
+                            Lihat Detail <i class="fa-solid fa-arrow-right"></i>
+                        </button>`;
+
+                // App icon overlay
+                const appIconOverlay = (type === 'app' || type === 'extension') && item.appIcon
+                    ? `<div style="position:absolute;bottom:-18px;left:16px;width:44px;height:44px;border-radius:12px;overflow:hidden;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.15);z-index:3;">
+                           <img src="${item.appIcon}" style="width:100%;height:100%;object-fit:cover;">
+                       </div>` : '';
+                const cardBodyPt = (type === 'app' || type === 'extension') && item.appIcon ? 'padding-top:28px;' : '';
+
+                return `<div class="col-sm-6 col-lg-4" data-aos="fade-up" data-aos-delay="${idx * 80}">
+                    <div class="portfolio-item-card">
+                        <div class="portfolio-thumb" style="position:relative;">
+                            ${thumbHtml}
+                            <span class="portfolio-thumb-badge ${badgeCls}">${label}</span>
+                            ${appIconOverlay}
+                        </div>
+                        <div class="portfolio-card-body" style="${cardBodyPt}">
+
+                            <div class="portfolio-card-title">${item.name}</div>
+                            <div class="portfolio-card-desc">${item.shortDesc || ''}</div>
+                            <div class="portfolio-card-footer">${ctaBtn}</div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            if (window.AOS) AOS.refresh();
+        }
+
+        window.filterPortfolioHome = (filter) => {
+            portfolioHomeFilter = filter;
+            document.querySelectorAll('.sw-tab-btn').forEach(b => b.classList.remove('active'));
+            const btn = document.getElementById('tab-' + filter);
+            if (btn) btn.classList.add('active');
+            renderPortfolioHome();
+        };
+
+        window.openPortfolioDetail = (key) => {
+            const item = portfolioHomeData[key];
+            if (!item) return;
+            carouselCurrent = 0;
+            carouselKey = key;
+
+            const type = item.type || 'app';
+            const colorMap = { website: '#0ea5e9', app: '#2563eb', extension: '#7c3aed' };
+            const iconMap = { website: 'fa-globe', app: 'fa-mobile-screen-button', extension: 'fa-puzzle-piece' };
+            const labelMap = { website: 'Website', app: 'Aplikasi', extension: 'Extension' };
+            const rgbMap = { website: '14,165,233', app: '37,99,235', extension: '124,58,237' };
+
+            const color = colorMap[type] || '#4f46e5';
+            const icon = iconMap[type] || 'fa-box';
+            const label = labelMap[type] || type;
+            const rgb = rgbMap[type] || '79,70,229';
+            const screenshots = item.screenshots || [];
+
+            // Carousel
+            let carouselHtml = '';
+            if (screenshots.length > 0) {
+                carouselHtml = `
+                <div class="screenshot-carousel">
+                    <div class="screenshot-track" id="screenshotTrack" style="transform:translateX(0)">
+                        ${screenshots.map((src, i) => `<div class="screenshot-slide"><img src="${src}" alt="Screenshot ${i+1}"></div>`).join('')}
+                    </div>
+                    ${screenshots.length > 1 ? `
+                    <button class="carousel-btn prev" onclick="moveCarousel(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="carousel-btn next" onclick="moveCarousel(1)"><i class="fa-solid fa-chevron-right"></i></button>` : ''}
+                </div>
+                ${screenshots.length > 1 ? `<div class="carousel-dots" id="carouselDots">${screenshots.map((_,i) => `<div class="carousel-dot${i===0?' active':''}" onclick="goCarousel(${i})"></div>`).join('')}</div>` : ''}`;
+            }
+
+            if (screenshots.length === 0) {
+                carouselHtml = `<div style="padding:60px 20px; text-align:center; color:#94a3b8;"><i class="fa-solid ${icon} fa-4x mb-3"></i><p>Tidak ada pratinjau</p></div>`;
+            }
+
+            // Features
+            let featuresHtml = '';
+            if (item.features && item.features.length > 0) {
+                featuresHtml = `<div style="margin-bottom:28px;">
+                    <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8;margin-bottom:14px;">Fitur Utama</div>
+                    <ul class="feature-list">
+                        ${item.features.map(f => `<li><span class="fi"><i class="fa-solid fa-check"></i></span>${f}</li>`).join('')}
+                    </ul>
+                </div>`;
+            }
+
+            // Store button
+            const storeBtn = item.storeUrl ? `<a href="${item.storeUrl}" target="_blank" rel="noopener"
+                class="btn w-100 py-3 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2"
+                style="background:${color};border:none;color:#fff;font-size:0.95rem;">
+                <i class="fa-solid fa-download"></i> Download / Dapatkan
+            </a>` : '';
+
+            document.getElementById('portfolioModalContent').innerHTML = `
+                <div class="row g-0">
+                    <div class="col-lg-7 d-flex align-items-center justify-content-center" style="background-color: #f8fafc;">
+                        <div class="w-100 p-lg-4 p-0">
+                            ${carouselHtml}
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div style="padding:32px 28px;">
+                            <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;">
+                                ${item.appIcon
+                                    ? `<img src="${item.appIcon}" style="width:56px;height:56px;border-radius:16px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,0.12);border:2px solid rgba(0,0,0,0.06);">`
+                                    : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(${rgb},0.1);color:${color};display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">
+                                           <i class="fa-solid ${icon}"></i>
+                                       </div>`
+                                }
+        
+                                <div>
+                                    <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${color};margin-bottom:4px;">${label}</div>
+                                    <h3 style="font-size:1.4rem;font-weight:800;color:#0f172a;margin:0;line-height:1.2;">${item.name}</h3>
+                                </div>
+                            </div>
+                            <p style="color:#475569;line-height:1.78;margin-bottom:28px;font-size:0.95rem;">${item.longDesc || item.shortDesc || ''}</p>
+                            ${featuresHtml}
+                            ${storeBtn}
+                        </div>
+                    </div>
+                </div>`;
+
+            document.getElementById('portfolioDetailModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closePortfolioDetailModal = (e) => {
+            if (e.target === document.getElementById('portfolioDetailModal')) closePortfolioDetailModalBtn();
+        };
+        window.closePortfolioDetailModalBtn = () => {
+            document.getElementById('portfolioDetailModal').classList.remove('open');
+            document.body.style.overflow = '';
+        };
+
+        window.moveCarousel = (dir) => {
+            const item = portfolioHomeData[carouselKey];
+            const screenshots = item ? (item.screenshots || []) : [];
+            const track = document.getElementById('screenshotTrack');
+            if (!track) return;
+            carouselCurrent = (carouselCurrent + dir + screenshots.length) % screenshots.length;
+            track.style.transform = `translateX(-${carouselCurrent * 100}%)`;
+            document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === carouselCurrent));
+        };
+
+        window.goCarousel = (idx) => {
+            const track = document.getElementById('screenshotTrack');
+            if (!track) return;
+            carouselCurrent = idx;
+            track.style.transform = `translateX(-${carouselCurrent * 100}%)`;
+            document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === carouselCurrent));
+        };
+
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePortfolioDetailModalBtn(); });
+
+        loadPortfolioHome();
     </script>
 
     <div id="pageTransitionOverlay" style="
