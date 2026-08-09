@@ -207,6 +207,41 @@
             padding: 0;
         }
 
+        /* Prevent background scroll when modals are open */
+        body.modal-open,
+        body.portfolio-modal-open,
+        html.portfolio-modal-open {
+            overflow: hidden !important;
+            padding-right: 0 !important;
+        }
+
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #96bffd;
+            border-radius: 10px;
+            border: 2px solid #f8fafc;
+            /* creates a padded look */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0d6efd;
+        }
+
+        /* Firefox Support */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #96bffd #f8fafc;
+        }
+
         /* --- Global Smooth Scroll --- */
         html {
             scroll-behavior: smooth;
@@ -1710,7 +1745,8 @@
                 </div>`;
 
             document.getElementById('portfolioDetailModal').classList.add('open');
-            document.body.style.overflow = 'hidden';
+            document.body.classList.add('portfolio-modal-open');
+            document.documentElement.classList.add('portfolio-modal-open');
         };
 
         window.closePortfolioDetailModal = (e) => {
@@ -1718,7 +1754,8 @@
         };
         window.closePortfolioDetailModalBtn = () => {
             document.getElementById('portfolioDetailModal').classList.remove('open');
-            document.body.style.overflow = '';
+            document.body.classList.remove('portfolio-modal-open');
+            document.documentElement.classList.remove('portfolio-modal-open');
         };
 
         window.moveCarousel = (dir) => {
@@ -1742,6 +1779,17 @@
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePortfolioDetailModalBtn(); });
 
         loadPortfolioHome();
+
+        // Fix scroll issue for Bootstrap Story Modal
+        const storyModalEl = document.getElementById('storyModal');
+        if (storyModalEl) {
+            storyModalEl.addEventListener('show.bs.modal', () => {
+                document.documentElement.classList.add('portfolio-modal-open');
+            });
+            storyModalEl.addEventListener('hidden.bs.modal', () => {
+                document.documentElement.classList.remove('portfolio-modal-open');
+            });
+        }
     </script>
 
     <div id="pageTransitionOverlay" style="
