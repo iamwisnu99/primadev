@@ -699,8 +699,11 @@ exports.handler = async (event, context) => {
         try {
             const prodSnap = await db.ref('products').once('value');
             if (prodSnap.exists()) PRICING_DB = prodSnap.val();
+            
+            const portSnap = await db.ref('portfolio').once('value');
+            if (portSnap.exists()) PORTFOLIO_DB = portSnap.val();
         } catch (e) {
-            console.error("[BACKEND] Gagal memuat produk dari Firebase:", e.message);
+            console.error("[BACKEND] Gagal memuat data dari Firebase:", e.message);
         }
     }
 
@@ -720,6 +723,7 @@ exports.handler = async (event, context) => {
             headers,
             body: JSON.stringify({
                 catalog: PRICING_DB,
+                portfolio: PORTFOLIO_DB,
                 xenditPublicKey: XENDIT_PUBLIC_KEY,
                 midtransClientKey: process.env.MIDTRANS_CLIENT_KEY || '',
                 activeGateway: activeGw

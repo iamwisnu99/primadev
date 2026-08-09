@@ -2128,8 +2128,10 @@
                         ${appIconHtml}
                     </div>
                     <div class="portfolio-card-body" style="${topPaddingBody}">
-                        <span class="portfolio-card-type ${typeClass}">${badgeText}</span>
-                        <div class="portfolio-card-title">${item.name}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+                            <div class="portfolio-card-title">${item.name}</div>
+                            <span class="portfolio-card-type ${typeClass}" style="flex-shrink: 0; white-space: nowrap; margin: 0;">${badgeText}</span>
+                        </div>
                         <div class="portfolio-card-desc">${item.shortDesc || ''}</div>
                         <div class="portfolio-card-actions">
                             <button class="btn btn-secondary" style="font-size:0.78rem;" onclick="openEditPortfolioModal('${key}')">

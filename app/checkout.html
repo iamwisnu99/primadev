@@ -691,6 +691,7 @@
         let selectedDuration = 'monthly';
         let selectedPayment = 'qris';
         let productData = null;
+        let PORTFOLIO_MAP = {};
 
         async function init() {
             if (!productId) {
@@ -702,6 +703,7 @@
                 const res = await fetch('/.netlify/functions/public_order');
                 const data = await res.json();
                 CATALOG = data.catalog;
+                if (data.portfolio) PORTFOLIO_MAP = data.portfolio;
                 productData = CATALOG[productId];
 
                 if (!productData) throw new Error("Produk tidak ditemukan.");
@@ -720,7 +722,12 @@
 
         function renderProduct() {
             document.getElementById('sumName').textContent = productData.name;
-            document.getElementById('sumIcon').innerHTML = `<i class="fa-solid ${productData.icon || 'fa-box'}"></i>`;
+            const portfolio = PORTFOLIO_MAP[productId];
+            if (portfolio && portfolio.appIcon) {
+                document.getElementById('sumIcon').innerHTML = `<img src="${portfolio.appIcon}" alt="${productData.name}" style="width:100%; height:100%; object-fit:cover; border-radius: inherit;">`;
+            } else {
+                document.getElementById('sumIcon').innerHTML = `<i class="fa-solid ${productData.icon || 'fa-box'}"></i>`;
+            }
         }
 
         function renderDurations() {
