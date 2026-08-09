@@ -354,7 +354,6 @@
                     </div>
                 </div>
 
-                <!-- INDONESIAN CONTENT -->
                 <div class="lang-id">
                     <h2>Syarat dan Ketentuan (Terms & Conditions)</h2>
                     <p class="last-updated">Terakhir diperbarui: 11 Juli 2026</p>
@@ -412,7 +411,6 @@
                         serangan siber pasca-garansi).</p>
                 </div>
 
-                <!-- ENGLISH CONTENT -->
                 <div class="lang-en" style="display:none;">
                     <h2>Terms and Conditions</h2>
                     <p class="last-updated">Last updated: July 11, 2026</p>
@@ -485,7 +483,7 @@
             const savedLang = localStorage.getItem('preferredLang') || 'id';
             setLanguage(savedLang);
 
-            // Smooth page transition
+
             document.querySelectorAll('.nav-tabs a').forEach(link => {
                 link.addEventListener('click', e => {
                     if (!e.currentTarget.classList.contains('active')) {
@@ -500,7 +498,7 @@
             });
         });
 
-        // Fix BFCache (Blank white screen when pressing browser Back button)
+
         window.addEventListener('pageshow', function (event) {
             if (event.persisted) {
                 document.body.style.animation = 'none';

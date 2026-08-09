@@ -14,7 +14,6 @@ const extract = (htmlPath, cssRelativePath, jsRelativePath) => {
 
     let content = fs.readFileSync(absHtml, 'utf8');
 
-    // Extract CSS
     const styleMatch = content.match(/<style>([\s\S]*?)<\/style>/);
     if (styleMatch) {
         fs.mkdirSync(path.dirname(absCss), { recursive: true });
@@ -23,8 +22,6 @@ const extract = (htmlPath, cssRelativePath, jsRelativePath) => {
         console.log(`Extracted CSS to ${cssRelativePath}`);
     }
 
-    // Extract JS - exclude external scripts and match the main inline script block
-    // <script> with no attributes
     const scriptMatch = content.match(/<script>([\s\S]*?)<\/script>/);
     if (scriptMatch) {
         fs.mkdirSync(path.dirname(absJs), { recursive: true });

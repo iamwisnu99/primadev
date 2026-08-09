@@ -19,7 +19,6 @@
 <body>
 
     <div class="layout-container">
-        <!-- Left Showcase -->
         <div class="brand-showcase">
             <div class="brand-content">
                 <div class="logo-container">
@@ -52,7 +51,6 @@
             <script src="/public/js/career.js"></script>
         </div>
 
-        <!-- Right Form -->
         <div class="form-section">
             <a href="/" class="back-link" id="backLink"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
 
@@ -77,7 +75,6 @@
             </div>
 
             <form id="careerForm">
-                <!-- STEP 1 -->
                 <div class="step-content active" id="step1">
                     <div class="form-group">
                         <label for="name">Nama Lengkap <span>*</span></label>
@@ -122,7 +119,6 @@
                     </div>
                 </div>
 
-                <!-- STEP 2 -->
                 <div class="step-content" id="step2">
                     <div class="form-group">
                         <label for="keahlian">Deskripsikan Keahlian Anda <span>*</span></label>
@@ -154,7 +150,6 @@
                     </div>
                 </div>
 
-                <!-- STEP 3 -->
                 <div class="step-content" id="step3">
                     <div class="form-group">
                         <label>Upload Dokumen Pendukung <span class="optional">(Opsional - NILAI TAMBAH)</span></label>
@@ -345,7 +340,7 @@
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
-                // Maksimum ukuran file (3MB)
+
                 if (file.size > 3 * 1024 * 1024) {
                     Swal.fire('Terlalu Besar', 'Maksimal ukuran file adalah 3MB', 'error');
                     event.target.value = '';
@@ -388,7 +383,7 @@
             try {
                 let dokumenUrl = '';
 
-                // Upload ke Supabase jika ada file
+
                 if (selectedFile && supabaseClient) {
                     btnText.textContent = 'Mengunggah Dokumen...';
                     const fileExt = selectedFile.name.split('.').pop();

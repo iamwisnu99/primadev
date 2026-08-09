@@ -971,7 +971,6 @@
 
             <div id="printArea">
                 <div class="cards-wrapper">
-                    <!-- FRONT CARD -->
                     <div class="card-outer" id="outerFront">
                         <div class="id-card" id="cardFront">
                             <svg class="card-svg-deco" viewBox="0 0 680 430" preserveAspectRatio="none"
@@ -1067,7 +1066,6 @@
                         </div>
                     </div>
 
-                    <!-- BACK CARD -->
                     <div class="card-outer" id="outerBack">
                         <div class="id-card card-back" id="cardBack">
 
@@ -1204,7 +1202,6 @@
         </div>
     </div>
 
-    <!-- Modal for Document Preview -->
     <div id="docModalOverlay"
         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
         <div
@@ -1231,7 +1228,6 @@
         </div>
     </div>
 
-    <!-- Hidden off-screen document renderer (full A4 size) -->
     <div id="docRenderer"></div>
 
     <script>
@@ -1246,12 +1242,12 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || "Karyawan tidak ditemukan.");
 
-                // Populate card
+
                 document.getElementById('cardName').innerText = data.name;
                 document.getElementById('cardId').innerText = data.employeeId;
                 document.getElementById('cardId2').innerText = data.employeeId;
 
-                // Populate details
+
                 document.getElementById('detName').innerText = data.name;
                 document.getElementById('detId').innerText = data.employeeId;
                 document.getElementById('detEmail').innerText = data.email;
@@ -1261,7 +1257,7 @@
                 document.getElementById('detDate').innerText =
                     new Date(data.acceptedAt || data.createdAt).toLocaleDateString('id-ID', dateOpts);
 
-                // QR Code
+
                 new QRCode(document.getElementById("qrcode"), {
                     text: window.location.href,
                     width: 92,
@@ -1383,7 +1379,6 @@
         }
     </script>
 
-    <!-- LEGAL DOCUMENTS — SPK Kontrak, SPK Tetap, NDA -->
     <script>
         let _ceoSignature = null;
         let _docCounters = {};

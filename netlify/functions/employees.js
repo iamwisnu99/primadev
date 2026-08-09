@@ -1,7 +1,6 @@
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 
-// --- INIT FIREBASE ---
 if (!admin.apps.length) {
     let serviceAccount = null;
     try {

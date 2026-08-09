@@ -33,7 +33,7 @@
             min-height: 100vh;
         }
 
-        /* ===== SIDEBAR ===== */
+        
         .sidebar {
             position: fixed;
             top: 0;
@@ -246,7 +246,7 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);
         }
 
-        /* ===== TOPBAR ===== */
+        
         .topbar {
             position: fixed;
             top: 0;
@@ -313,7 +313,7 @@
             border-color: #bfdbfe;
         }
 
-        /* Hamburger for mobile */
+        
         .hamburger {
             display: none;
             width: 36px;
@@ -329,7 +329,7 @@
             transition: all 0.2s;
         }
 
-        /* ===== MAIN CONTENT ===== */
+        
         .main {
             margin-left: var(--sidebar-w);
             margin-top: var(--topbar-h);
@@ -358,7 +358,7 @@
             }
         }
 
-        /* ===== STAT CARDS ===== */
+        
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -447,7 +447,7 @@
             color: #7c3aed;
         }
 
-        /* ===== CARD ===== */
+        
         .card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -483,7 +483,7 @@
             padding: 22px;
         }
 
-        /* ===== TOOLBAR ===== */
+        
         .toolbar {
             padding: 16px 22px;
             border-bottom: 1px solid var(--border);
@@ -566,7 +566,7 @@
             font-size: 0.8rem;
         }
 
-        /* ===== TABLE ===== */
+        
         .table-wrap {
             overflow-x: auto;
         }
@@ -689,7 +689,7 @@
             color: #dc2626;
         }
 
-        /* ===== PAGINATION ===== */
+        
         .pagination-bar {
             padding: 14px 20px;
             border-top: 1px solid var(--border);
@@ -734,7 +734,7 @@
             cursor: not-allowed;
         }
 
-        /* ===== EMPTY STATE ===== */
+        
         .empty-state {
             padding: 60px 20px;
             text-align: center;
@@ -757,7 +757,7 @@
             color: var(--text-3);
         }
 
-        /* ===== ACTIVITY FEED ===== */
+        
         .activity-item {
             display: flex;
             align-items: flex-start;
@@ -794,7 +794,7 @@
             margin-top: 2px;
         }
 
-        /* ===== CUSTOM DROPDOWN ===== */
+        
         .custom-dropdown {
             position: relative;
         }
@@ -903,7 +903,7 @@
             transform: rotate(180deg);
         }
 
-        /* ===== MODAL ===== */
+        
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -1089,7 +1089,7 @@
             letter-spacing: 1px;
         }
 
-        /* ===== LOADING ===== */
+        
         #loadingScreen {
             position: fixed;
             inset: 0;
@@ -1123,19 +1123,19 @@
             color: var(--text-2);
         }
 
-        /* ===== OVERVIEW BOTTOM GRID ===== */
+        
         .overview-bottom-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
 
-        /* ===== STATS GRID 3-COL ===== */
+        
         .stats-grid-3 {
             grid-template-columns: repeat(3, 1fr);
         }
 
-        /* ===== SIDEBAR MOBILE OVERLAY ===== */
+        
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -1144,9 +1144,9 @@
             z-index: 190;
         }
 
-        /* ===== RESPONSIVE ===== */
+        
 
-        /* Tablet */
+        
         @media (max-width: 1024px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -1157,10 +1157,10 @@
             }
         }
 
-        /* Mobile */
+        
         @media (max-width: 768px) {
 
-            /* Sidebar */
+            
             .sidebar {
                 transform: translateX(-100%);
             }
@@ -1173,7 +1173,7 @@
                 display: block;
             }
 
-            /* Layout */
+            
             .topbar {
                 left: 0;
                 padding: 0 16px;
@@ -1183,7 +1183,7 @@
                 display: none;
             }
 
-            /* hide breadcrumb on mobile */
+            
             .topbar-title {
                 font-size: 0.95rem;
             }
@@ -1202,7 +1202,7 @@
                 display: flex;
             }
 
-            /* Stats grids → 2 col on mobile */
+            
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
@@ -1232,13 +1232,13 @@
                 display: none;
             }
 
-            /* hide subtitle on mobile to save space */
+            
             .overview-bottom-grid {
                 grid-template-columns: 1fr;
                 gap: 14px;
             }
 
-            /* Toolbar */
+            
             .toolbar {
                 gap: 8px;
                 padding: 12px 14px;
@@ -1262,7 +1262,7 @@
                 white-space: nowrap;
             }
 
-            /* Table → card mode */
+            
             .form-row {
                 grid-template-columns: 1fr;
             }
@@ -1314,14 +1314,14 @@
                 border-radius: 0 0 10px 10px;
             }
 
-            /* Key badge in card mode */
+            
             .key-badge {
                 font-size: 0.72rem;
                 letter-spacing: 0.3px;
                 word-break: break-all;
             }
 
-            /* Pagination */
+            
             .pagination-bar {
                 padding: 12px 14px;
                 gap: 8px;
@@ -1331,7 +1331,7 @@
                 font-size: 0.78rem;
             }
 
-            /* Card headers */
+            
             .card-header {
                 padding: 14px 16px;
                 flex-wrap: wrap;
@@ -1339,7 +1339,7 @@
             }
         }
 
-        /* Small mobile */
+        
         @media (max-width: 480px) {
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
@@ -1364,7 +1364,7 @@
             }
         }
 
-        /* ===== SUBMENU ===== */
+        
         .nav-submenu {
             display: none;
             flex-direction: column;
@@ -1388,7 +1388,7 @@
             font-size: 0.85rem;
         }
         
-/* Utility Classes for Data Karyawan Table */
+
 .font-medium { font-weight: 500; }
 .text-sm { font-size: 0.875rem; }
 .text-muted { color: #64748b; }

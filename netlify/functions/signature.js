@@ -1,17 +1,3 @@
-/**
- * signature.js — Netlify Serverless Function
- * Menyimpan dan mengambil tanda tangan digital CEO + counter nomor dokumen
- * dari Firebase Realtime Database.
- *
- * GET  /.netlify/functions/signature
- *   → { signature: "data:image/png;base64,...", counters: { spk_kontrak: N, spk_tetap: N, nda: N } }
- *
- * POST /.netlify/functions/signature
- *   Header: x-admin-token: <ADMIN_SECRET>
- *   Body (save signature): { type: "signature", data: "data:image/png;base64,..." }
- *   Body (next counter):   { type: "counter", docType: "spk_kontrak"|"spk_tetap"|"nda" }
- *   → { success: true } | { success: true, counter: N }
- */
 
 const admin = require('firebase-admin');
 
@@ -85,7 +71,6 @@ exports.handler = async (event) => {
 
         if (event.httpMethod === 'POST') {
 
-            // Auth
             const token = event.headers['x-admin-token'] ||
                 event.headers['X-Admin-Token'];
             if (token !== process.env.ADMIN_SECRET) {

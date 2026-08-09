@@ -13,7 +13,6 @@
     <meta name="googlebot" content="index, follow">
     <link rel="canonical" href="https://apps-primadev.netlify.app/app/renew" />
 
-    <!-- OpenGraph / Social Media Meta Tags -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Perpanjang Lisensi — PT Primadev Digital Technology" />
     <meta property="og:description" content="Perpanjang lisensi software Primadev Anda dengan mudah dan cepat. Pilih durasi, bayar, aktif otomatis." />
@@ -22,12 +21,10 @@
     <meta property="og:image" content="https://apps-primadev.netlify.app/public/logo.png" />
     <meta property="og:locale" content="id_ID" />
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Perpanjang Lisensi — PT Primadev Digital Technology" />
     <meta name="twitter:description" content="Perpanjang lisensi software Primadev Anda dengan mudah dan cepat." />
 
-    <!-- JSON-LD: WebPage + BreadcrumbList -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -1171,7 +1168,6 @@
 
 <body>
 
-    <!-- NAVBAR -->
     <nav class="renew-nav">
         <div class="renew-nav-inner">
             <a class="nav-logo" href="/">
@@ -1185,18 +1181,14 @@
         </div>
     </nav>
 
-    <!-- PAGE WRAPPER -->
     <div class="page-wrapper">
 
-        <!-- MAIN CARD -->
         <div class="main-card">
-            <!-- Header -->
             <div class="card-header-bar">
                 <h2><i class="fa-solid fa-arrows-rotate"></i> Perpanjang Lisensi</h2>
                 <p>Validasi kepemilikan lisensi dan pilih durasi perpanjangan</p>
             </div>
 
-            <!-- Step Progress -->
             <div class="step-track">
                 <div class="step-node active" id="snode-1">
                     <div class="step-circle" id="scircle-1">1</div>
@@ -1216,7 +1208,6 @@
 
             <div class="card-body">
 
-                <!-- ===== STEP 1: VALIDASI ===== -->
                 <div class="step-panel active" id="panel-1">
                     <form onsubmit="checkLicense(event)">
                         <div class="form-row">
@@ -1257,9 +1248,7 @@
                     </form>
                 </div>
 
-                <!-- ===== STEP 2: DURASI & METODE ===== -->
                 <div class="step-panel" id="panel-2">
-                    <!-- License Info Card -->
                     <div class="license-card">
                         <div class="license-card-icon">
                             <i class="fa-solid fa-box-open"></i>
@@ -1277,7 +1266,6 @@
                         </div>
                     </div>
 
-                    <!-- Duration Selection -->
                     <div class="section-label">Pilih Durasi Perpanjangan</div>
                     <div class="duration-list">
                         <div class="duration-item selected" onclick="selectDuration('monthly', this)" id="dur-monthly">
@@ -1306,10 +1294,8 @@
                     </div>
                     <input type="hidden" id="selectedDuration" value="monthly">
 
-                    <!-- Payment Method -->
                     <div class="section-label">Metode Pembayaran</div>
 
-                    <!-- QRIS -->
                     <div class="payment-group active" id="pg-qris" onclick="selectPaymentGroup('qris')">
                         <div class="payment-group-header">
                             <div class="pg-icon c-qris"><i class="fa-solid fa-qrcode"></i></div>
@@ -1323,7 +1309,6 @@
                         </div>
                     </div>
 
-                    <!-- Virtual Account -->
                     <div class="payment-group" id="pg-va">
                         <div class="payment-group-header" onclick="togglePG('va')">
                             <div class="pg-icon c-va"><i class="fa-solid fa-building-columns"></i></div>
@@ -1375,7 +1360,6 @@
                         </div>
                     </div>
 
-                    <!-- E-Wallet -->
                     <div class="payment-group" id="pg-ewallet">
                         <div class="payment-group-header" onclick="togglePG('ewallet')">
                             <div class="pg-icon c-ew"><i class="fa-solid fa-wallet"></i></div>
@@ -1409,7 +1393,6 @@
                         </div>
                     </div>
 
-                    <!-- Gerai Retail -->
                     <div class="payment-group" id="pg-cstore">
                         <div class="payment-group-header" onclick="togglePG('cstore')">
                             <div class="pg-icon c-cs"><i class="fa-solid fa-store"></i></div>
@@ -1454,7 +1437,6 @@
                     </div>
                 </div>
 
-                <!-- ===== STEP 3: PAYMENT STATUS ===== -->
                 <div class="step-panel" id="panel-3">
                     <div class="status-header">
                         <span class="order-badge" id="renewOrderId">
@@ -1471,7 +1453,6 @@
                         Ikuti instruksi di bawah ini untuk menyelesaikan perpanjangan lisensi Anda.
                     </p>
 
-                    <!-- Payment instruction area (filled by JS) -->
                     <div id="paymentInstructionArea"></div>
 
                     <div class="waiting-row">
@@ -1488,10 +1469,8 @@
             </div>
         </div>
 
-        <!-- SIDEBAR -->
         <div class="sidebar">
 
-            <!-- Order Summary -->
             <div class="sidebar-card" id="summaryCard">
                 <div class="sidebar-card-title">Ringkasan Pesanan</div>
                 <div class="info-list">
@@ -1515,7 +1494,6 @@
                 </div>
             </div>
 
-            <!-- Info -->
             <div class="sidebar-card">
                 <div class="sidebar-card-title">Informasi</div>
                 <div class="info-list">
@@ -1540,7 +1518,6 @@
                 </div>
             </div>
 
-            <!-- Trust -->
             <div class="sidebar-card" style="background: var(--primary-light); border-color: #c7d9f5;">
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                     <div
@@ -1558,7 +1535,6 @@
         </div>
     </div>
 
-    <!-- FINAL SUCCESS OVERLAY -->
     <div id="finalOverlay">
         <div style="padding: 32px; text-align: center;">
             <div class="success-icon"><i class="fa-solid fa-check"></i></div>
@@ -1574,11 +1550,11 @@
     </div>
 
     <script>
-        // =================== PAGE LOAD ===================
+
         document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(() => document.body.classList.add('loaded'));
 
-            // Pre-fill license key from URL param
+
             const urlParams = new URLSearchParams(window.location.search);
             const key = urlParams.get('key');
             if (key) document.getElementById('licenseKey').value = key;
@@ -1588,20 +1564,20 @@
             if (e.persisted) document.body.classList.add('loaded');
         });
 
-        // =================== STATE ===================
+
         let currentLicenseData = null;
         let selectedPaymentMethod = 'qris';
         let selectedDurationValue = 'monthly';
         let activePolling = null;
         let countdownInterval = null;
 
-        // =================== STEP UI ===================
+
         function goToStep(step) {
-            // Hide all panels
+
             document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(`panel-${step}`).classList.add('active');
 
-            // Update step nodes
+
             for (let i = 1; i <= 3; i++) {
                 const node = document.getElementById(`snode-${i}`);
                 const circle = document.getElementById(`scircle-${i}`);
@@ -1619,13 +1595,13 @@
                 if (line) line.classList.toggle('done', i < step);
             }
 
-            // Scroll to top on mobile
+
             if (window.innerWidth <= 768) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
-        // =================== STEP 1: VALIDASI ===================
+
         async function checkLicense(e) {
             e.preventDefault();
             const key = document.getElementById('licenseKey').value.trim().toUpperCase();
@@ -1669,9 +1645,9 @@
             }
         }
 
-        // =================== POPULATE STEP 2 ===================
+
         function populateRenewalStep(data) {
-            // License card
+
             document.getElementById('infoAppName').textContent = data.appName || 'Unknown App';
             document.getElementById('infoType').textContent = (data.type || 'Standard').toUpperCase();
 
@@ -1688,12 +1664,12 @@
             });
             if (isExpired) expRow.classList.add('expired');
 
-            // Harga dari data catalog atau hardcode default
+
             const prices = data.renewalPrice || { monthly: 80000, yearly: 860000 };
             document.getElementById('price-monthly').textContent = 'Rp ' + (prices.monthly || 80000).toLocaleString('id-ID');
             document.getElementById('price-yearly').textContent = 'Rp ' + (prices.yearly || 860000).toLocaleString('id-ID');
 
-            // Sidebar summary
+
             const elSumApp = document.getElementById('sumAppName');
             if (elSumApp) elSumApp.textContent = data.appName || '—';
             updateSummary();
@@ -1714,7 +1690,7 @@
             if (elTotal) elTotal.textContent = 'Rp ' + price.toLocaleString('id-ID');
         }
 
-        // =================== DURATION SELECT ===================
+
         function selectDuration(value, el) {
             selectedDurationValue = value;
             document.getElementById('selectedDuration').value = value;
@@ -1723,7 +1699,7 @@
             updateSummary();
         }
 
-        // =================== PAYMENT GROUP ===================
+
         function togglePG(id) {
             const group = document.getElementById(`pg-${id}`);
             const isOpen = group.classList.contains('open');
@@ -1751,7 +1727,7 @@
             updateSummary();
         }
 
-        // =================== STEP 2: PROSES BAYAR (Core API) ===================
+
         async function processRenewal() {
             if (!currentLicenseData) return;
 
@@ -1766,7 +1742,7 @@
             btn.disabled = true;
 
             try {
-                // Panggil path RENEWAL via Core API
+
                 const res = await fetch('/.netlify/functions/public_order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1774,8 +1750,8 @@
                         action: 'renew_transaction',
                         licenseKey: currentLicenseData.key,
                         duration,
-                        // [SECURITY] 'amount' TIDAK dikirim dari client
-                        // Harga selalu dihitung dari server berdasarkan licenseKey & duration
+
+
                         buyerName: currentLicenseData.name,
                         buyerEmail: currentLicenseData.email,
                         paymentMethod
@@ -1785,7 +1761,7 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Gagal membuat transaksi renewal');
 
-                // Xendit mengembalikan field 'order_id'
+
                 const orderId = data.order_id || data.orderId || '—';
 
                 goToStep(3);
@@ -1803,7 +1779,7 @@
             }
         }
 
-        // =================== RENDER INSTRUCTION (Core API) ===================
+
         function renderPaymentInstruction(data) {
             const area = document.getElementById('paymentInstructionArea');
             let html = '';
@@ -1827,7 +1803,7 @@
             };
 
             if (data.payment_type === 'qris') {
-                // QRIS — tampilkan QR code
+
                 const qrUrl = data.actions?.find(a => a.name === 'generate-qr-code')?.url || '';
                 html = `
                     <div class="payment-display" style="text-align:center;">
@@ -1848,7 +1824,7 @@
                     </div>`;
 
             } else if (data.payment_type === 'bank_transfer' || data.payment_type === 'echannel') {
-                // Virtual Account
+
                 let vaNumber = '', bankCode = '', bankName = '', bankLogo = '';
                 let extraInfo = '', copyValue = '';
 
@@ -1894,7 +1870,7 @@
                     </div>`;
 
             } else if (data.payment_type === 'gopay' || data.payment_type === 'shopeepay') {
-                // E-Wallet deeplink
+
                 const deepLink = data.actions?.find(a => a.name === 'deeplink-redirect')?.url || '#';
                 const walletName = data.payment_type === 'gopay' ? 'GoPay' : 'ShopeePay';
                 const walletLogo = getLogo(data.payment_type);
@@ -1912,7 +1888,7 @@
                     </div>`;
 
             } else if (data.payment_type === 'cstore') {
-                // Convenience store
+
                 const storeName = data.store?.charAt(0).toUpperCase() + data.store?.slice(1) || 'Retail';
                 const storeLogo = getLogo(data.store);
                 let merchantInfo = '';
@@ -1940,7 +1916,7 @@
                         Tunjukkan kode ini ke kasir <strong>${storeName}</strong> terdekat.
                     </div>`;
 
-                // Metode lain (fallback)
+
             } else {
                 html = `<div style="padding:16px; text-align:center; color:var(--text-secondary);">Instruksi pembayaran tersedia di email Anda.</div>`;
             }
@@ -1948,7 +1924,7 @@
             area.innerHTML = html;
         }
 
-        // =================== POLLING ===================
+
         function startPolling(orderId) {
             if (activePolling) clearInterval(activePolling);
 
@@ -1988,7 +1964,7 @@
         }
 
 
-        // =================== RESET ===================
+
         function resetStep() {
             currentLicenseData = null;
             selectedPaymentMethod = 'qris';
@@ -2008,7 +1984,7 @@
             goToStep(1);
         }
 
-        // =================== UTILITIES ===================
+
         function copyText(text) {
             navigator.clipboard.writeText(text).then(() => {
                 Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Berhasil disalin!', showConfirmButton: false, timer: 1500 });

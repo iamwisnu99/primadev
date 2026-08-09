@@ -1,17 +1,3 @@
-/**
- * ============================================================
- * Netlify Function: validate-license
- * Endpoint: /.netlify/functions/validate-license
- * Method  : POST (validasi) | OPTIONS (CORS preflight)
- *
- * Tujuan  : Validasi license key browser extension Primadev.
- *           Dipanggil langsung oleh browser extension saat
- *           pengguna mengisi form aktivasi.
- *
- * Dibuat  : 2026-07-23
- * Versi   : 1.0.0
- * ============================================================
- */
 
 const admin = require('firebase-admin');
 

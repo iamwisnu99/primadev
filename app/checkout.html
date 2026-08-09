@@ -476,7 +476,6 @@
     </div>
 
     <div class="checkout-container" style="display: none;" id="mainContent">
-        <!-- LEFT PANEL -->
         <div class="checkout-left">
             <div class="header-logo">
                 <a href="/"><img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev"></a>
@@ -490,7 +489,6 @@
                 <span id="bc-step2">Pembayaran</span>
             </div>
 
-            <!-- STEP 1 -->
             <div id="step1" class="step-section active">
                 <h2 class="section-title">Pilih Durasi Paket</h2>
                 <div id="durationList">
@@ -518,7 +516,6 @@
                 </div>
             </div>
 
-            <!-- STEP 2 -->
             <div id="step2" class="step-section">
                 <h2 class="section-title">Pilih Metode Pembayaran</h2>
 
@@ -658,7 +655,6 @@
             </div>
         </div>
 
-        <!-- RIGHT PANEL -->
         <div class="checkout-right">
             <div class="summary-card">
                 <h2 style="font-size: 1.1rem; margin-bottom: 24px;">Ringkasan Pesanan</h2>
@@ -845,7 +841,7 @@
             const buyerName = document.getElementById('buyerName').value.trim();
             const buyerEmail = document.getElementById('buyerEmail').value.trim();
 
-            // Validasi khusus OVO: butuh nomor HP
+
             let buyerPhone = '';
             if (selectedPayment === 'ovo') {
                 buyerPhone = document.getElementById('ovoPhone')?.value?.trim() || '';
@@ -889,7 +885,7 @@
             }
         }
 
-        // ===== SHOW HELP POPUP =====
+
         function showHelp() {
             Swal.fire({
                 title: 'Pusat Bantuan Primadev',

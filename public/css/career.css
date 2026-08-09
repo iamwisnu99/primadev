@@ -26,7 +26,7 @@
             overflow-x: hidden;
         }
 
-        /* Split Screen Layout */
+        
         .layout-container {
             display: flex;
             width: 100%;
@@ -34,7 +34,7 @@
             min-height: 100dvh;
         }
 
-        /* Left Side - Brand Showcase */
+        
         .brand-showcase {
             flex: 1;
             background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
@@ -133,7 +133,7 @@
             color: #38bdf8;
         }
 
-        /* Right Side - Form */
+        
         .form-section {
             width: 550px;
             background: var(--surface);
@@ -219,7 +219,7 @@
             color: #94a3b8;
         }
 
-        /* Input group for prefix */
+        
         .input-group {
             display: flex;
             align-items: stretch;
@@ -246,7 +246,7 @@
             border-radius: 0 12px 12px 0;
         }
 
-        /* Custom Select Styling */
+        
         .custom-select-container {
             position: relative;
             width: 130px;
@@ -387,7 +387,7 @@
             box-shadow: none;
         }
 
-        /* Spinner animation */
+        
         .spinner {
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
@@ -408,7 +408,7 @@
             }
         }
 
-        /* Wizard Progress */
+        
         .wizard-progress {
             display: flex;
             justify-content: space-between;
@@ -473,7 +473,7 @@
             color: var(--primary);
         }
 
-        /* Step Content Transitions */
+        
         .step-content {
             display: none;
             animation: fadeIn 0.4s ease;
@@ -495,7 +495,7 @@
             }
         }
 
-        /* File Upload styling */
+        
         .file-upload-wrapper {
             position: relative;
             border: 2px dashed var(--border);
@@ -539,7 +539,7 @@
             margin-top: 0.5rem;
         }
 
-        /* Checkbox */
+        
         .checkbox-group {
             display: flex;
             align-items: flex-start;
@@ -569,7 +569,7 @@
             cursor: pointer;
         }
 
-        /* Step Buttons */
+        
         .btn-group {
             display: flex;
             gap: 15px;
@@ -623,10 +623,10 @@
         .btn-submit {
             flex: 1.5;
             margin-top: 0;
-            /* Override existing margin */
+            
         }
 
-        /* Responsive Design */
+        
         @media (min-width: 1025px) {
             body {
                 overflow: hidden;
@@ -681,7 +681,7 @@
 
             .features {
                 display: none;
-                /* Hide features on mobile to save space */
+                
             }
 
             .form-section {
@@ -701,7 +701,7 @@
             }
         }
 
-        /* ── Page entrance animation ── */
+        
         @keyframes pageEnter {
             from {
                 opacity: 0;

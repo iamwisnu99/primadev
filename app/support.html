@@ -439,7 +439,6 @@
             <script>document.getElementById('currentYearSupport').textContent = new Date().getFullYear();</script>
         </div>
 
-        <!-- Right Pane: Support Form -->
         <div class="form-pane">
             <div class="top-nav">
                 <a href="/" class="btn-close-form" id="backLink">
@@ -506,14 +505,14 @@
     </div>
 
     <script>
-        // Entrance Animation
+
         document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(() => {
                 document.body.classList.add('page-ready');
             });
         });
 
-        // Smooth Exit
+
         const backLink = document.getElementById('backLink');
         if (backLink) {
             backLink.addEventListener('click', function (e) {
@@ -551,7 +550,7 @@
             const phoneText = data.phone ? `\n- No. WA: ${data.phone}` : '';
 
             if (method === 'wa') {
-                const waNumber = "6283829520561"; // Same number as custom-order
+                const waNumber = "6283829520561";
                 const formattedMessage = `Halo Tim Support Primadev,\n\nSaya ingin menyampaikan Keluhan/Saran/Feedback dengan rincian sebagai berikut:\n\n*Data Pengirim:*\n- Nama: ${data.name}\n- Email: ${data.email}${phoneText}\n\n*Pesan:*\n${data.message}`;
                 const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(formattedMessage)}`;
                 window.open(waUrl, '_blank');

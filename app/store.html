@@ -14,7 +14,6 @@
     <meta name="googlebot" content="index, follow">
     <link rel="canonical" href="https://apps-primadev.netlify.app/app/store" />
 
-    <!-- OpenGraph / Social Media Meta Tags -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Primadev Store — Toko Lisensi Software Digital Resmi" />
     <meta property="og:description"
@@ -24,14 +23,12 @@
     <meta property="og:image" content="https://i.imgur.com/BZ1xLO3.png" />
     <meta property="og:locale" content="id_ID" />
 
-    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Primadev Store — Toko Lisensi Software Digital Resmi" />
     <meta name="twitter:description"
         content="Beli lisensi aplikasi bisnis & marketing original, aktivasi instan otomatis 24/7, bergaransi resmi." />
     <meta name="twitter:image" content="https://i.imgur.com/BZ1xLO3.png" />
 
-    <!-- JSON-LD: WebPage + BreadcrumbList + SoftwareApplication (untuk Sitelinks & Rich Results) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -472,18 +469,13 @@
             border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
-        .app-icon-blue {
+        /* All app-icon-* variants are kept but set to consistent blue palette */
+        .app-icon-blue,
+        .app-icon-green,
+        .app-icon-purple,
+        .app-icon-teal,
+        .app-icon-pink {
             background: linear-gradient(135deg, #1f6cdf, #1456a8);
-            color: #fff;
-        }
-
-        .app-icon-green {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: #fff;
-        }
-
-        .app-icon-purple {
-            background: linear-gradient(135deg, #0ea5e9, #0284c7);
             color: #fff;
         }
 
@@ -492,14 +484,15 @@
             color: #fff;
         }
 
-        .app-icon-teal {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: #fff;
-        }
-
-        .app-icon-pink {
-            background: linear-gradient(135deg, #60a5fa, #3b82f6);
-            color: #fff;
+        /* App icon image (from App Details) */
+        .app-icon-img {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1.5px solid rgba(0,0,0,0.07);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.10);
         }
 
         .app-meta {
@@ -911,7 +904,7 @@
         }
 
         .catalog-tab[data-filter="extension"].active {
-            color: #7c3aed;
+            color: #ea580c;
         }
 
         .catalog-tab:hover:not(.active) {
@@ -939,27 +932,38 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, #7c3aed, #a855f7, #c084fc);
+            background: linear-gradient(90deg, #f97316, #ea580c, #fb923c);
         }
 
         .ext-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 36px rgba(124, 58, 237, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
-            border-color: #c4b5fd;
+            box-shadow: 0 12px 36px rgba(234, 88, 12, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #fdba74;
         }
 
         .ext-icon {
             width: 60px;
             height: 60px;
             border-radius: 14px;
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            background: linear-gradient(135deg, #f97316, #ea580c);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.4rem;
             color: #fff;
             flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+        }
+
+        /* Ext icon image (from App Details) */
+        .ext-icon-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1.5px solid rgba(0,0,0,0.07);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
         .browser-badges {
@@ -999,13 +1003,13 @@
         }
 
         .browser-badge.all {
-            background: #f3e8ff;
-            color: #7c3aed;
-            border-color: #ddd6fe;
+            background: #fff7ed;
+            color: #ea580c;
+            border-color: #fed7aa;
         }
 
         .btn-install-ext {
-            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            background: linear-gradient(135deg, #f97316, #ea580c);
             color: white;
             border: none;
             border-radius: 100px;
@@ -1022,9 +1026,9 @@
         }
 
         .btn-install-ext:hover {
-            background: linear-gradient(135deg, #6d28d9, #5b21b6);
+            background: linear-gradient(135deg, #ea580c, #c2410c);
             transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
         }
     </style>
 </head>
@@ -1032,7 +1036,6 @@
 
 <body>
 
-    <!-- ===== NAVBAR ===== -->
     <nav class="store-navbar">
         <div class="navbar-top">
             <a class="nav-logo" href="/">
@@ -1051,17 +1054,12 @@
         </div>
     </nav>
 
-    <!-- ===== HERO BANNER ===== -->
     <div class="store-banner">
         <div class="banner-inner">
             <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px;">
                 <div class="banner-badge" style="margin-bottom: 0;">
                     <i class="fa-solid fa-store"></i>
                     Official Software Store
-                </div>
-                <div class="banner-badge" style="margin-bottom: 0; background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4);">
-                    <i class="fa-solid fa-shield-check"></i>
-                    Perusahaan Terverifikasi (AHU-A104134.AH.01.30.Tahun 2026)
                 </div>
             </div>
             <h1 class="banner-title">Primadev Digital Store</h1>
@@ -1083,7 +1081,6 @@
         </div>
     </div>
 
-    <!-- ===== TRUST BAR ===== -->
     <div class="trust-bar">
         <div class="trust-bar-inner">
             <div class="trust-item">
@@ -1109,7 +1106,6 @@
         </div>
     </div>
 
-    <!-- ===== MAIN CONTENT ===== -->
     <main class="store-main">
         <div id="catalogSection">
             <div class="catalog-tabs" id="catalogTabs">
@@ -1179,7 +1175,6 @@
 
     </main>
 
-    <!-- FOOTER -->
     <footer class="store-footer">
         <div class="footer-inner">
             <div class="footer-links">
@@ -1188,8 +1183,10 @@
                 <a href="/app/support" class="footer-link">Dukungan</a>
                 <a href="mailto:admin.primadev@gmail.com" class="footer-link">Kontak</a>
             </div>
-            <p class="footer-copy" style="margin-bottom: 6px;">&copy; <span id="currentYear"></span> PT. Primadev Digital Technology | All Rights Reserved.</p>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #16a34a; font-weight: 600;">
+            <p class="footer-copy" style="margin-bottom: 6px;">&copy; <span id="currentYear"></span> PT. Primadev
+                Digital Technology | All Rights Reserved.</p>
+            <div
+                style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #16a34a; font-weight: 600;">
                 <i class="fas fa-shield-check"></i>
                 <span>Terdaftar & Diawasi oleh Kemenkumham RI (AHU-A104134.AH.01.30.Tahun 2026)</span>
             </div>
@@ -1220,16 +1217,33 @@
         });
 
         let SERVER_CATALOG = {};
+        let PORTFOLIO_MAP = {};
         let currentCatalogFilter = 'all';
 
-        const iconColors = ['app-icon-blue', 'app-icon-green', 'app-icon-purple', 'app-icon-orange', 'app-icon-teal', 'app-icon-pink'];
         const badgeTypes = ['badge-popular', 'badge-new', '', '', 'badge-hot', ''];
 
         async function initStore() {
             try {
+
                 const response = await fetch('/.netlify/functions/public_order');
                 const data = await response.json();
                 SERVER_CATALOG = data.catalog;
+
+
+                try {
+                    const fbRes = await fetch('/.netlify/functions/get-config');
+                    const firebaseConfig = await fbRes.json();
+                    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
+                    const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
+                    const existing = getApps().find(a => a.name === 'store-catalog');
+                    const app = existing || initializeApp(firebaseConfig, 'store-catalog');
+                    const db = getDatabase(app);
+                    const snap = await get(ref(db, 'portfolio'));
+                    if (snap.exists()) PORTFOLIO_MAP = snap.val();
+                } catch (fbErr) {
+                    console.warn('Portfolio fetch failed (icon fallback will be used):', fbErr.message);
+                }
+
                 renderCatalog();
 
                 const urlParams = new URLSearchParams(window.location.search);
@@ -1270,17 +1284,28 @@
                 const item = SERVER_CATALOG[key];
                 const itemType = item.type || 'app';
                 if (filter !== 'all' && itemType !== filter) return;
+
+                const portfolio = PORTFOLIO_MAP[key];
+                const linkedAppIcon = portfolio ? portfolio.appIcon : null;
+
                 if (itemType === 'extension') {
                     const platforms = item.platform || ['chrome'];
                     const browserBadges = buildBrowserBadges(platforms);
-                    const minPrice = item.price ? Math.min(...Object.values(item.price).filter(p => p > 0)) : 0;
+                    let minPrice = 0;
+                    if (item.price) {
+                        const validPrices = Object.values(item.price).filter(p => p > 0);
+                        if (validPrices.length > 0) minPrice = Math.min(...validPrices);
+                    }
+
+
+                    const extIconHtml = linkedAppIcon
+                        ? `<img src="${linkedAppIcon}" class="ext-icon-img" alt="${item.name}">`
+                        : `<div class="ext-icon"><i class="fa-solid ${item.icon || 'fa-puzzle-piece'}"></i></div>`;
 
                     container.innerHTML += `
                     <div class="ext-card" style="animation-delay: ${index * 0.07}s;" data-type="extension">
                         <div style="display:flex; align-items:flex-start; gap:14px; margin-bottom:12px;">
-                            <div class="ext-icon">
-                                <i class="fa-solid ${item.icon || 'fa-puzzle-piece'}"></i>
-                            </div>
+                            ${extIconHtml}
                             <div style="flex:1; min-width:0;">
                                 <div style="font-weight:700; font-size:0.97rem; color:var(--text-primary); margin-bottom:2px;">${item.name}</div>
                                 <div style="font-size:0.76rem; color:var(--text-secondary);">Primadev Digital Technology</div>
@@ -1297,7 +1322,7 @@
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:14px; border-top:1px solid var(--border-light);">
                             <div>
                                 <div style="font-size:0.7rem; color:var(--text-tertiary); font-weight:500;">Mulai dari</div>
-                                <div style="font-size:1.05rem; font-weight:800; color:#7c3aed;">Rp ${minPrice.toLocaleString('id-ID')}</div>
+                                <div style="font-size:1.05rem; font-weight:800; color:#ea580c;">Rp ${minPrice.toLocaleString('id-ID')}</div>
                             </div>
                             <button onclick="goToCheckout('${key}')" class="btn-install-ext">
                                 <i class="fa-solid fa-puzzle-piece"></i> Beli Lisensi
@@ -1306,18 +1331,24 @@
                     </div>`;
 
                 } else {
-                    const colorClass = iconColors[index % iconColors.length];
                     const badgeClass = badgeTypes[index % badgeTypes.length];
-                    const minPrice = item.price ? Math.min(...Object.values(item.price)) : 0;
+                    let minPrice = 0;
+                    if (item.price) {
+                        const validPrices = Object.values(item.price).filter(p => p > 0);
+                        if (validPrices.length > 0) minPrice = Math.min(...validPrices);
+                    }
                     const badgeHtml = badgeClass ? `<span class="card-badge ${badgeClass}">${badgeClass === 'badge-popular' ? '🔥 Popular' : badgeClass === 'badge-new' ? '✨ Baru' : '⚡ Hot'}</span>` : '';
+
+
+                    const appIconHtml = linkedAppIcon
+                        ? `<img src="${linkedAppIcon}" class="app-icon-img" alt="${item.name}">`
+                        : `<div class="app-icon app-icon-blue"><i class="fa-solid ${item.icon || 'fa-box'}"></i></div>`;
 
                     container.innerHTML += `
                     <div class="app-card" style="animation-delay: ${index * 0.07}s;" data-type="app">
                         ${badgeHtml}
                         <div class="app-card-header">
-                            <div class="app-icon ${colorClass}">
-                                <i class="fa-solid ${item.icon || 'fa-box'}"></i>
-                            </div>
+                            ${appIconHtml}
                             <div class="app-meta">
                                 <div class="app-name">${item.name}</div>
                                 <div class="app-developer">Primadev Digital Technology</div>

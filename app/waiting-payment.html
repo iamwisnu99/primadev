@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selesaikan Pembayaran - Primadev Digital Technology</title>
-    <!-- Halaman transaksi — tidak boleh diindex oleh mesin pencari -->
     <meta name="robots" content="noindex, nofollow, noarchive">
     <meta name="googlebot" content="noindex, nofollow">
 
@@ -405,7 +404,6 @@
 <body>
 
     <div class="split-container" style="display:none;" id="mainContent">
-        <!-- LEFT: INSTRUCTIONS -->
         <div class="split-left">
             <div class="header-logo">
                 <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev">
@@ -420,13 +418,11 @@
                 diproses otomatis setelah pembayaran terverifikasi.</p>
 
             <div id="instructionBody">
-                <!-- Dynamically populated -->
             </div>
 
             <button class="btn-cancel" onclick="cancelOrder()" style="margin-top: 60px;">Batalkan Transaksi</button>
         </div>
 
-        <!-- RIGHT: SUMMARY -->
         <div class="split-right">
             <div class="summary-card">
                 <div class="summary-title">Ringkasan Pesanan</div>
@@ -503,7 +499,7 @@
             }
 
 
-            // MODE 2: Tab normal (original waiting-payment dari checkout)
+
             const rawData = localStorage.getItem('pending_order_data');
             if (!rawData) {
                 window.location.href = '/app/store';

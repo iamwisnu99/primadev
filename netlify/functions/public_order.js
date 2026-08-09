@@ -132,7 +132,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         return errMsg;
     };
 
-    // 1. VIRTUAL ACCOUNT
     if (['bca', 'bni', 'bri', 'permata', 'mandiri', 'cimb'].includes(paymentMethod)) {
         const bankCode = paymentMethod.toUpperCase();
         const expirationDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
@@ -168,7 +167,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // 2. QRIS
     if (paymentMethod === 'qris') {
         const qrisBody = {
             reference_id: orderId,
@@ -201,7 +199,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // 3. E-WALLET: GoPay
     if (paymentMethod === 'gopay') {
         const ewalletBody = {
             reference_id: orderId,
@@ -251,7 +248,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // 4. E-WALLET: ShopeePay
     if (paymentMethod === 'shopeepay') {
         const ewalletBody = {
             reference_id: orderId,
@@ -301,7 +297,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // 5. E-WALLET: DANA
     if (paymentMethod === 'dana') {
         const ewalletBody = {
             reference_id: orderId,
@@ -346,7 +341,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // 6. E-WALLET: OVO
     if (paymentMethod === 'ovo') {
         if (!buyerPhone || buyerPhone.trim() === '') {
             throw new Error('Nomor HP wajib diisi untuk pembayaran OVO.');
@@ -393,7 +387,6 @@ const executeXenditCharge = async (payload, xenditSecretKey, dynamicWebhookUrl, 
         };
     }
 
-    // 7. GERAI RETAIL
     if (paymentMethod === 'indomaret' || paymentMethod === 'alfamart') {
         const cstoreBody = {
             external_id: orderId,
@@ -975,8 +968,6 @@ exports.handler = async (event, context) => {
                             }
                         }
                     } else if (trxData.gateway === 'xendit') {
-                        // TODO: Implement Xendit active polling if needed. For now just fallback.
-                        // We would need to know the specific Xendit endpoint to check based on payment method.
                     }
                 } catch (e) {
                     console.error("[ACTIVE POLLING] Error:", e.message);

@@ -1,4 +1,3 @@
-// ===== TAB SWITCHING =====
         window.switchTab = (tab) => {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -15,12 +14,10 @@
             closeSidebar();
         };
 
-        // ===== MODAL =====
         window.showModal = (id) => { document.getElementById(id)?.classList.add('show'); };
         window.closeModal = (id) => { document.getElementById(id)?.classList.remove('show'); };
         document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('show'); }));
 
-        // ===== DROPDOWN =====
         window.toggleDD = (id) => {
             const el = document.getElementById(id);
             document.querySelectorAll('.custom-dropdown').forEach(d => { if (d.id !== id) d.classList.remove('open'); });
@@ -44,7 +41,6 @@
             }
         });
 
-        // ===== SIDEBAR MOBILE =====
         window.openSidebar = () => {
             document.getElementById('sidebar').classList.add('open');
             document.getElementById('sidebarOverlay').classList.add('show');
@@ -54,7 +50,6 @@
             document.getElementById('sidebarOverlay').classList.remove('show');
         };
 
-        // ─── SIGNATURE PAD ───────────────────────────────────────────────────
         let signaturePad = null;
 
         function initSignaturePad() {
@@ -72,7 +67,6 @@
                 document.getElementById('sigPlaceholder').style.display = 'none';
             });
 
-            // Resize canvas to match display size
             resizeSigCanvas();
         }
 
@@ -106,7 +100,6 @@
             try {
                 const dataURL = signaturePad.toDataURL('image/png');
 
-                // We need the admin token — fetch it from the existing config pattern
                 const tokenRes = await fetch('/.netlify/functions/get-config');
                 const cfg = await tokenRes.json();
                 const adminToken = cfg.adminToken || '';
@@ -119,7 +112,6 @@
 
                 if (!res.ok) throw new Error('Gagal menyimpan');
 
-                // Update preview
                 showSigPreview(dataURL);
                 Swal.fire({ icon: 'success', title: 'Tersimpan!', text: 'Tanda tangan CEO berhasil disimpan dan siap diterapkan.' });
 
@@ -159,7 +151,6 @@
             }
         }
 
-        // Initialize when signature tab is shown
         const _origSwitchTab = window.switchTab;
         window.switchTab = function (tab) {
             _origSwitchTab(tab);

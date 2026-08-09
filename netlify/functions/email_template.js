@@ -1,4 +1,3 @@
-// File: netlify/functions/email_template.js
 
 const getPremiumTemplate = (data) => {
     const BASE_URL = "https://apps-primadev.netlify.app";

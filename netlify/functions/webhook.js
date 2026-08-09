@@ -250,7 +250,7 @@ exports.handler = async (event) => {
                 if (webhookAmount > 0) {
                     const storedAmount = Number(trxData.amount);
                     const diff = Math.abs(webhookAmount - storedAmount);
-                    if (diff > 1) { // toleransi 1 IDR untuk pembulatan
+                    if (diff > 1) { 
                         console.error(`[WEBHOOK-XENDIT] Jumlah tidak cocok. Database: ${storedAmount}, Webhook: ${webhookAmount}. OrderID: ${orderId}. Webhook ditolak.`);
                         return { statusCode: 200, body: 'Jumlah tidak cocok - webhook diabaikan' };
                     }
@@ -333,7 +333,7 @@ exports.handler = async (event) => {
                 let expiry = new Date();
                 if (duration === 'monthly') expiry.setMonth(expiry.getMonth() + 1);
                 else if (duration === 'yearly') expiry.setFullYear(expiry.getFullYear() + 1);
-                else expiry.setFullYear(expiry.getFullYear() + 100); // Lifetime
+                else expiry.setFullYear(expiry.getFullYear() + 100); 
 
                 const newLicenseData = {
                     key: newKey,

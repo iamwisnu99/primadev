@@ -14,7 +14,6 @@
     <meta name="googlebot" content="index, follow">
     <link rel="canonical" href="https://apps-primadev.netlify.app/app/store" />
 
-    <!-- OpenGraph / Social Media Meta Tags -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Primadev Store — Toko Lisensi Software Digital Resmi" />
     <meta property="og:description"
@@ -24,14 +23,12 @@
     <meta property="og:image" content="https://i.imgur.com/BZ1xLO3.png" />
     <meta property="og:locale" content="id_ID" />
 
-    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Primadev Store — Toko Lisensi Software Digital Resmi" />
     <meta name="twitter:description"
         content="Beli lisensi aplikasi bisnis & marketing original, aktivasi instan otomatis 24/7, bergaransi resmi." />
     <meta name="twitter:image" content="https://i.imgur.com/BZ1xLO3.png" />
 
-    <!-- JSON-LD: WebPage + BreadcrumbList + SoftwareApplication (untuk Sitelinks & Rich Results) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -156,13 +153,19 @@
             background-color: var(--bg-page);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            opacity: 1;
             line-height: 1.5;
         }
 
-        body.loaded {
+        #productDetailContainer {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        #productDetailContainer.loaded {
             opacity: 1;
+            transform: translateY(0);
         }
 
         /* =================== SCROLLBAR =================== */
@@ -1032,7 +1035,6 @@
 
 <body>
 
-    <!-- ===== NAVBAR ===== -->
     <nav class="store-navbar">
         <div class="navbar-top">
             <a class="nav-logo" href="/">
@@ -1051,17 +1053,12 @@
         </div>
     </nav>
 
-    <!-- ===== HERO BANNER ===== -->
     <div class="store-banner">
         <div class="banner-inner">
             <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px;">
                 <div class="banner-badge" style="margin-bottom: 0;">
                     <i class="fa-solid fa-store"></i>
                     Official Software Store
-                </div>
-                <div class="banner-badge" style="margin-bottom: 0; background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4);">
-                    <i class="fa-solid fa-shield-check"></i>
-                    Perusahaan Terverifikasi (AHU-A104134.AH.01.30.Tahun 2026)
                 </div>
             </div>
             <h1 class="banner-title">Primadev Digital Store</h1>
@@ -1083,7 +1080,6 @@
         </div>
     </div>
 
-    <!-- ===== TRUST BAR ===== -->
     <div class="trust-bar">
         <div class="trust-bar-inner">
             <div class="trust-item">
@@ -1104,6 +1100,11 @@
             </div>
             <div class="trust-item">
                 <i class="fa-solid fa-certificate"></i>
+                <span>Lisensi Resmi</span>
+            </div>
+        </div>
+    </div>
+
     <main class="store-main" style="max-width: 1000px; margin: 40px auto; padding: 0 20px;">
         <div id="loadingDetail" style="text-align: center; padding: 80px 0;">
             <i class="fa-solid fa-spinner fa-spin fa-3x" style="color: var(--primary); margin-bottom:16px;"></i>
@@ -1112,27 +1113,36 @@
         <div id="errorDetail" style="display:none; text-align: center; padding: 80px 0;">
             <i class="fa-solid fa-triangle-exclamation fa-4x" style="color: #f59e0b; margin-bottom: 20px;"></i>
             <h3 style="margin-bottom: 10px;">Produk Tidak Ditemukan</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 20px;">Mohon maaf, produk yang Anda cari tidak tersedia.</p>
-            <a href="/app/store" class="btn" style="background:var(--primary); color:#fff; padding: 12px 24px; border-radius: 12px; font-weight: 600; display:inline-block;"><i class="fa-solid fa-arrow-left"></i> Kembali ke Store</a>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Mohon maaf, produk yang Anda cari tidak
+                tersedia.</p>
+            <a href="/app/store" class="btn"
+                style="background:var(--primary); color:#fff; padding: 12px 24px; border-radius: 12px; font-weight: 600; display:inline-block;"><i
+                    class="fa-solid fa-arrow-left"></i> Kembali ke Store</a>
         </div>
-        
-        <div id="productDetailContainer" style="display: none; background: #fff; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 40px;">
-            <div class="row g-0">
-                <div class="col-lg-7 d-flex align-items-center justify-content-center" style="background-color: #f8fafc; min-height: 300px; position:relative;" id="pd-carousel-col">
-                    <div class="w-100 p-lg-4 p-0" id="pd-carousel-container" style="position:relative; width: 100%; overflow:hidden;">
-                        <!-- Carousel -->
+
+        <div id="productDetailContainer"
+            style="display: none; background: #fff; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 40px;">
+            <div style="display: flex; flex-wrap: wrap;">
+                <div style="flex: 1 1 50%; min-width: 320px; display: flex; align-items: center; justify-content: center; background-color: #f1f5f9; min-height: 300px; position:relative; padding: 24px;"
+                    id="pd-carousel-col">
+                    <div style="position:relative; width: 100%; max-width: 600px; overflow:hidden;"
+                        id="pd-carousel-container">
                     </div>
                 </div>
-                <div class="col-lg-5">
+                <div style="flex: 1 1 50%; min-width: 320px;">
                     <div style="padding:32px 28px;">
                         <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;" id="pd-header">
-                            <!-- Icon and Title -->
                         </div>
-                        <p id="pd-desc" style="color:#475569;line-height:1.78;margin-bottom:28px;font-size:0.95rem;"></p>
+                        <p id="pd-desc" style="color:#475569;line-height:1.78;margin-bottom:28px;font-size:0.95rem;">
+                        </p>
                         <div id="pd-features"></div>
-                        <div id="pd-price-section" style="margin-top:20px; padding-top:20px; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+                        <div id="pd-price-section"
+                            style="margin-top:20px; padding-top:20px; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
                         </div>
-                        <button id="pd-buy-btn" onclick="goToCheckoutReal()" class="btn w-100 py-3 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2 mt-4" style="background:var(--primary);border:none;color:#fff;font-size:1rem;box-shadow:0 8px 24px rgba(37,99,235,0.25); cursor:pointer;">
+                        <button id="pd-buy-btn" onclick="goToCheckoutReal()"
+                            style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:24px;padding:14px 24px;background:var(--primary);border:none;border-radius:14px;color:#fff;font-size:1rem;font-weight:700;font-family:'Inter',sans-serif;box-shadow:0 8px 24px rgba(37,99,235,0.25);cursor:pointer;transition:all 0.2s ease;letter-spacing:0.1px;"
+                            onmouseover="this.style.background='var(--primary-dark)';this.style.boxShadow='0 12px 32px rgba(37,99,235,0.35)';this.style.transform='translateY(-1px)';"
+                            onmouseout="this.style.background='var(--primary)';this.style.boxShadow='0 8px 24px rgba(37,99,235,0.25)';this.style.transform='translateY(0)';">
                             <i class="fa-solid fa-bag-shopping"></i> Lanjutkan Pembelian
                         </button>
                     </div>
@@ -1141,7 +1151,6 @@
         </div>
     </main>
 
-    <!-- Support Help & Footer -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module">
         let currentProductId = null;
@@ -1151,17 +1160,17 @@
             const urlParams = new URLSearchParams(window.location.search);
             currentProductId = urlParams.get('id');
             if (!currentProductId) {
-                showError();
+                showError('ID Produk tidak ditemukan dalam URL.');
                 return;
             }
 
             try {
-                // Fetch Pricing DB
+
                 const configRes = await fetch('/.netlify/functions/public_order');
                 const data = await configRes.json();
                 pricingData = data.catalog[currentProductId];
 
-                // Fetch Firebase Config
+
                 const fbRes = await fetch('/.netlify/functions/get-config');
                 const firebaseConfig = await fbRes.json();
 
@@ -1171,31 +1180,53 @@
                 const existing = getApps().find(a => a.name === 'store-reader');
                 const app = existing || initializeApp(firebaseConfig, 'store-reader');
                 const db = getDatabase(app);
-                
+
                 const snap = await get(ref(db, 'portfolio/' + currentProductId));
                 const item = snap.val();
 
-                if (!item && !pricingData) {
-                    showError();
-                    return;
+                if (!item) {
+                    if (pricingData) {
+                        localStorage.setItem('checkout_product_id', currentProductId);
+                        window.location.href = '/app/checkout';
+                        return;
+                    } else {
+                        showError('Item portfolio tidak ditemukan dan tidak ada data harga.');
+                        return;
+                    }
                 }
 
-                renderProductDetail(item || pricingData, pricingData);
+                try {
+                    renderProductDetail(item, pricingData);
+                } catch (renderErr) {
+                    console.error("Render Error", renderErr);
+                    document.getElementById('loadingDetail').style.display = 'none';
+                    document.getElementById('productDetailContainer').innerHTML = `<div style="padding:40px; color:red; text-align:center;">Error Rendering Detail: ${renderErr.message}</div>`;
+                    document.getElementById('productDetailContainer').style.display = 'block';
+                    requestAnimationFrame(() => document.getElementById('productDetailContainer').classList.add('loaded'));
+                }
 
             } catch (err) {
                 console.error("Init Error", err);
-                showError();
+                showError('Gagal memuat data: ' + err.message);
             }
         }
 
-        function showError() {
+        function showError(msg = '') {
             document.getElementById('loadingDetail').style.display = 'none';
-            document.getElementById('errorDetail').style.display = 'block';
+            const ed = document.getElementById('errorDetail');
+            ed.style.display = 'block';
+            if (msg) {
+                const p = ed.querySelector('p');
+                if (p) p.innerHTML += '<br><small style="color:red;">' + msg + '</small>';
+            }
         }
 
         function renderProductDetail(item, pricing) {
             document.getElementById('loadingDetail').style.display = 'none';
-            document.getElementById('productDetailContainer').style.display = 'block';
+            const container = document.getElementById('productDetailContainer');
+            container.style.display = 'block';
+
+            requestAnimationFrame(() => requestAnimationFrame(() => container.classList.add('loaded')));
 
             const type = item.type || 'app';
             const colorMap = { website: '#0ea5e9', app: '#2563eb', extension: '#7c3aed' };
@@ -1207,26 +1238,28 @@
             const icon = item.icon || iconMap[type] || 'fa-box';
             const label = labelMap[type] || type;
             const rgb = rgbMap[type] || '79,70,229';
-            const screenshots = item.screenshots || [];
+            const screenshots = Array.isArray(item.screenshots) ? item.screenshots : (typeof item.screenshots === 'string' ? [item.screenshots] : []);
 
-            // Carousel
+
             let carouselHtml = '';
             if (screenshots.length > 0) {
                 carouselHtml = `
                 <div class="screenshot-carousel" style="position:relative; width:100%; overflow:hidden; border-radius:16px;">
                     <div class="screenshot-track" id="screenshotTrack" style="transform:translateX(0); display:flex; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-                        ${screenshots.map((src, i) => `<div class="screenshot-slide" style="min-width:100%;"><img src="${src}" alt="Screenshot ${i+1}" style="width:100%; max-height:380px; object-fit:contain; display:block;"></div>`).join('')}
+                        ${screenshots.map((src, i) => `<div class="screenshot-slide" style="min-width:100%;"><img src="${src}" alt="Screenshot ${i + 1}" style="width:100%; max-height:380px; object-fit:contain; display:block;"></div>`).join('')}
                     </div>
                     ${screenshots.length > 1 ? `
-                    <button class="carousel-btn prev" onclick="moveCarousel(-1)" style="position:absolute; top:50%; left:16px; transform:translateY(-50%); background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:10;"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="carousel-btn next" onclick="moveCarousel(1)" style="position:absolute; top:50%; right:16px; transform:translateY(-50%); background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:10;"><i class="fa-solid fa-chevron-right"></i></button>` : ''}
-                </div>`;
+                    <button class="carousel-btn prev" onclick="window.moveCarousel(-1)" style="position:absolute; top:50%; left:16px; transform:translateY(-50%); background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:10;"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="carousel-btn next" onclick="window.moveCarousel(1)" style="position:absolute; top:50%; right:16px; transform:translateY(-50%); background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:10;"><i class="fa-solid fa-chevron-right"></i></button>` : ''}
+                </div>
+                ${screenshots.length > 1 ? `<div class="carousel-dots" style="display:flex; gap:6px; justify-content:center; padding:12px 0 4px;">${screenshots.map((_, i) => `<div class="carousel-dot${i === 0 ? ' active' : ''}" onclick="window.goCarousel(${i})" style="width:${i === 0 ? '24px' : '8px'}; height:8px; border-radius:${i === 0 ? '4px' : '50%'}; background:${i === 0 ? '#2563eb' : '#cbd5e1'}; cursor:pointer; transition:all 0.2s;"></div>`).join('')}</div>` : ''}
+                `;
             } else {
                 carouselHtml = `<div style="padding:60px 20px; text-align:center; color:#94a3b8;"><i class="fa-solid ${icon} fa-4x mb-3"></i><p>Tidak ada pratinjau</p></div>`;
             }
             document.getElementById('pd-carousel-container').innerHTML = carouselHtml;
 
-            // Header
+
             document.getElementById('pd-header').innerHTML = `
                 ${item.appIcon
                     ? `<img src="${item.appIcon}" style="width:56px;height:56px;border-radius:16px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,0.12);border:2px solid rgba(0,0,0,0.06);">`
@@ -1236,31 +1269,49 @@
                 }
                 <div>
                     <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${color};margin-bottom:4px;">${label}</div>
-                    <h3 style="font-size:1.4rem;font-weight:800;color:#0f172a;margin:0;line-height:1.2;">${item.name}</h3>
+                    <h3 style="font-size:1.4rem;font-weight:800;color:#0f172a;margin:0;line-height:1.2;">${item.name || ''}</h3>
                 </div>
             `;
 
             document.getElementById('pd-desc').innerHTML = item.longDesc || item.shortDesc || item.description || '';
 
-            if (item.features && item.features.length > 0) {
+            let featuresArray = [];
+            if (Array.isArray(item.features)) {
+                featuresArray = item.features;
+            } else if (typeof item.features === 'string') {
+                featuresArray = item.features.split('\n').map(f => f.trim()).filter(Boolean);
+            } else if (typeof item.features === 'object' && item.features !== null) {
+                featuresArray = Object.values(item.features);
+            }
+
+            if (featuresArray.length > 0) {
                 document.getElementById('pd-features').innerHTML = `
                     <div style="margin-bottom:28px;">
                         <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8;margin-bottom:14px;">Fitur Utama</div>
                         <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;">
-                            ${item.features.map(f => `<li style="display:flex; gap:10px; font-size:0.9rem; color:#334155;"><span style="color:#10b981; margin-top:2px;"><i class="fa-solid fa-check"></i></span>${f}</li>`).join('')}
+                            ${featuresArray.map(f => `<li style="display:flex; gap:10px; font-size:0.9rem; color:#334155;"><span style="width:20px; height:20px; border-radius:50%; background:#2563eb; display:flex; align-items:center; justify-content:center; font-size:0.6rem; color:#fff; flex-shrink:0; margin-top:1px;"><i class="fa-solid fa-check"></i></span>${f}</li>`).join('')}
                         </ul>
                     </div>
                 `;
             }
 
             if (pricing && pricing.price) {
-                const minPrice = Math.min(...Object.values(pricing.price));
-                document.getElementById('pd-price-section').innerHTML = `
-                    <div>
-                        <div style="font-size:0.7rem; color:var(--text-tertiary); font-weight:500;">Mulai dari</div>
-                        <div style="font-size:1.4rem; font-weight:800; color:var(--primary);">Rp ${minPrice.toLocaleString('id-ID')}</div>
-                    </div>
-                `;
+                const validPrices = Object.values(pricing.price).filter(p => p > 0);
+                if (validPrices.length > 0) {
+                    const minPrice = Math.min(...validPrices);
+                    document.getElementById('pd-price-section').innerHTML = `
+                        <div>
+                            <div style="font-size:0.7rem; color:var(--text-tertiary); font-weight:500;">Mulai dari</div>
+                            <div style="font-size:1.4rem; font-weight:800; color:var(--primary);">Rp ${minPrice.toLocaleString('id-ID')}</div>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('pd-price-section').innerHTML = `
+                        <div>
+                            <div style="font-size:1rem; font-weight:700; color:var(--text-secondary);">Harga Khusus</div>
+                        </div>
+                    `;
+                }
             } else {
                 document.getElementById('pd-price-section').innerHTML = `
                     <div>
@@ -1271,15 +1322,55 @@
             }
         }
 
-        let carouselCurrent = 0;
+        window.carouselCurrent = 0;
         window.moveCarousel = (dir) => {
             const track = document.getElementById('screenshotTrack');
             const slides = track.querySelectorAll('.screenshot-slide');
-            if(slides.length === 0) return;
-            carouselCurrent += dir;
-            if(carouselCurrent < 0) carouselCurrent = slides.length - 1;
-            if(carouselCurrent >= slides.length) carouselCurrent = 0;
-            track.style.transform = `translateX(-${carouselCurrent * 100}%)`;
+            if (slides.length === 0) return;
+            window.carouselCurrent += dir;
+            if (window.carouselCurrent < 0) window.carouselCurrent = slides.length - 1;
+            if (window.carouselCurrent >= slides.length) window.carouselCurrent = 0;
+            track.style.transform = `translateX(-${window.carouselCurrent * 100}%)`;
+
+            const dotsContainer = document.querySelector('.carousel-dots');
+            if (dotsContainer) {
+                const dots = dotsContainer.querySelectorAll('.carousel-dot');
+                dots.forEach((dot, i) => {
+                    if (i === window.carouselCurrent) {
+                        dot.style.background = '#2563eb';
+                        dot.style.width = '24px';
+                        dot.style.borderRadius = '4px';
+                    } else {
+                        dot.style.background = '#cbd5e1';
+                        dot.style.width = '8px';
+                        dot.style.borderRadius = '50%';
+                    }
+                });
+            }
+        };
+
+        window.goCarousel = (index) => {
+            const track = document.getElementById('screenshotTrack');
+            const slides = track.querySelectorAll('.screenshot-slide');
+            if (slides.length === 0) return;
+            window.carouselCurrent = index;
+            track.style.transform = `translateX(-${window.carouselCurrent * 100}%)`;
+
+            const dotsContainer = document.querySelector('.carousel-dots');
+            if (dotsContainer) {
+                const dots = dotsContainer.querySelectorAll('.carousel-dot');
+                dots.forEach((dot, i) => {
+                    if (i === window.carouselCurrent) {
+                        dot.style.background = '#2563eb';
+                        dot.style.width = '24px';
+                        dot.style.borderRadius = '4px';
+                    } else {
+                        dot.style.background = '#cbd5e1';
+                        dot.style.width = '8px';
+                        dot.style.borderRadius = '50%';
+                    }
+                });
+            }
         };
 
         window.goToCheckoutReal = () => {
@@ -1287,7 +1378,6 @@
                 localStorage.setItem('checkout_product_id', currentProductId);
                 window.location.href = '/app/checkout';
             } else {
-                // If it's a portfolio item without price, go to custom-order or external URL
                 window.location.href = '/app/custom-order';
             }
         };
@@ -1315,4 +1405,5 @@
         initProductDetail();
     </script>
 </body>
+
 </html>
