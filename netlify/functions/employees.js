@@ -337,16 +337,24 @@ exports.handler = async (event, context) => {
 
             if (action === 'terima') {
                 const allSnapshot = await db.ref(path).once('value');
-                let acceptedCount = 0;
+                let maxId = 0;
                 if (allSnapshot.exists()) {
                     const allData = allSnapshot.val();
                     for (const key in allData) {
-                        if (allData[key].status === 'aktif' || allData[key].employeeId) {
-                            acceptedCount++;
+                        const empId = allData[key].employeeId;
+                        if (empId && empId.startsWith('P')) {
+                            // Extract numeric portion: 'P0001D08V...' -> '0001'
+                            const match = empId.match(/^P(\d{4})/);
+                            if (match) {
+                                const num = parseInt(match[1], 10);
+                                if (num > maxId) {
+                                    maxId = num;
+                                }
+                            }
                         }
                     }
                 }
-                const employeeNumber = (acceptedCount + 1).toString().padStart(4, '0');
+                const employeeNumber = (maxId + 1).toString().padStart(4, '0');
 
                 const employeeType = body.employeeType || 'kontrak';
                 const now = new Date();

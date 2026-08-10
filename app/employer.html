@@ -1238,7 +1238,7 @@
             if (!empId) { showError("ID Karyawan tidak ditemukan di URL."); return; }
 
             try {
-                const res = await fetch(`/.netlify/functions/employees?empId=${empId}`);
+                const res = await fetch(`/.netlify/functions/employees?empId=${empId}&_t=${Date.now()}`);
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || "Karyawan tidak ditemukan.");
 
