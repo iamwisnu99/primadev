@@ -682,6 +682,7 @@ exports.handler = async (event, context) => {
 
     const db = getDb();
     let PRICING_DB = {};
+    let PORTFOLIO_DB = {};
 
     const host = event.headers.host || event.headers.Host || 'apps-primadev.netlify.app';
     const proto = event.headers['x-forwarded-proto'] || 'https';
