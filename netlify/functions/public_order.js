@@ -719,12 +719,32 @@ exports.handler = async (event, context) => {
 
     if (event.httpMethod === 'GET') {
         const activeGw = await getActiveGateway(db);
+
+        // Buang properti berat (base64, source_code, dsb) agar tidak melebihi 6MB Netlify limit
+        const safeCatalog = {};
+        for (const [key, val] of Object.entries(PRICING_DB)) {
+            const safeVal = { ...val };
+            delete safeVal.source_code;
+            delete safeVal.screenshots;
+            delete safeVal.base64;
+            safeCatalog[key] = safeVal;
+        }
+
+        const safePortfolio = {};
+        for (const [key, val] of Object.entries(PORTFOLIO_DB)) {
+            const safeVal = { ...val };
+            delete safeVal.images; 
+            delete safeVal.screenshots;
+            delete safeVal.base64;
+            safePortfolio[key] = safeVal;
+        }
+
         return {
             statusCode: 200,
             headers,
             body: JSON.stringify({
-                catalog: PRICING_DB,
-                portfolio: PORTFOLIO_DB,
+                catalog: safeCatalog,
+                portfolio: safePortfolio,
                 xenditPublicKey: XENDIT_PUBLIC_KEY,
                 midtransClientKey: process.env.MIDTRANS_CLIENT_KEY || '',
                 activeGateway: activeGw
