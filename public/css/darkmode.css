@@ -1,0 +1,1006 @@
+/* ============================================================
+   PRIMADEV — Global Dark Mode
+   Menggunakan @media (prefers-color-scheme: dark)
+   File ini di-link dari semua halaman.
+   ============================================================ */
+
+@media (prefers-color-scheme: dark) {
+
+    /* ================================================================
+       GLOBAL — Custom Properties & Base
+    ================================================================ */
+    :root {
+        --primary:        #3b82f6;
+        --primary-dark:   #2563eb;
+        --primary-light:  rgba(59, 130, 246, 0.15);
+        --primary-glow:   rgba(59, 130, 246, 0.15);
+        --accent:         #60a5fa;
+        --accent-light:   rgba(96, 165, 250, 0.12);
+
+        /* backgrounds */
+        --bg-page:        #0f172a;
+        --bg:             #0f172a;
+        --bg-card:        #1e293b;
+        --surface:        #1e293b;
+
+        /* text */
+        --text-primary:   #f1f5f9;
+        --text-main:      #f1f5f9;
+        --text-secondary: #94a3b8;
+        --text-muted:     #94a3b8;
+        --text-tertiary:  #64748b;
+
+        /* borders */
+        --border:         #334155;
+        --border-light:   #263346;
+
+        /* states */
+        --success-light:  rgba(22, 163, 74, 0.15);
+        --warning-light:  rgba(217, 119, 6, 0.15);
+        --danger-light:   rgba(220, 38, 38, 0.15);
+
+        /* shadows */
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+        --shadow-md: 0 4px 16px rgba(0,0,0,0.45);
+        --shadow-lg: 0 20px 48px rgba(0,0,0,0.5);
+
+        /* card glass (index.html) */
+        --card-glass: rgba(30, 41, 59, 0.9);
+        --muted:      #64748b;
+        --slate:      #94a3b8;
+        --dark:       #f1f5f9;
+
+        /* legal pages */
+        --bg-color:      #0f172a;
+        --paper-bg:      #1e293b;
+        --text-color:    #f1f5f9;
+        --heading-color: #f1f5f9;
+        --border-color:  #334155;
+        --link-color:    #60a5fa;
+
+        /* light-bg (support.html) */
+        --light-bg:      #0f172a;
+        --slate-text:    #f1f5f9;
+    }
+
+    html, body {
+        background-color: #0f172a !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar-track {
+        background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-color: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #3b82f6;
+    }
+    * {
+        scrollbar-color: #334155 #0f172a;
+    }
+
+    /* ================================================================
+       BOOTSTRAP OVERRIDES (common across pages)
+    ================================================================ */
+    .text-muted,
+    p.text-muted {
+        color: #94a3b8 !important;
+    }
+    .text-dark {
+        color: #f1f5f9 !important;
+    }
+    .bg-light,
+    .bg-white {
+        background-color: #1e293b !important;
+    }
+    .border,
+    .border-top,
+    .border-bottom {
+        border-color: #334155 !important;
+    }
+    .card {
+        background-color: #1e293b !important;
+        border: 1px solid #334155 !important;
+        color: #f1f5f9 !important;
+    }
+    .card-title  { color: #f1f5f9 !important; }
+    .card-text   { color: #cbd5e1 !important; }
+    .card-body   { background-color: transparent !important; }
+
+    /* Form inputs (Bootstrap) */
+    .form-control,
+    .form-select {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+        border-color: #334155 !important;
+    }
+    .form-control:focus,
+    .form-select:focus {
+        background-color: #263346 !important;
+        color: #f1f5f9 !important;
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+    }
+    .form-control::placeholder { color: #64748b !important; }
+
+    /* Modal (Bootstrap) */
+    .modal-content {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        color: #f1f5f9;
+    }
+    .modal-header,
+    .modal-footer {
+        border-color: #334155;
+    }
+
+    /* Badges */
+    .badge.bg-primary.bg-opacity-10 {
+        background-color: rgba(59, 130, 246, 0.15) !important;
+        color: #60a5fa !important;
+    }
+
+    /* btn-outline-dark (index hero) */
+    .btn-outline-dark {
+        color: #f1f5f9 !important;
+        border-color: #334155 !important;
+    }
+    .btn-outline-dark:hover {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* ================================================================
+       INDEX.HTML
+    ================================================================ */
+
+    /* Navbar */
+    .navbar {
+        background: rgba(15, 23, 42, 0.92) !important;
+        border-bottom: 1px solid #334155;
+    }
+    .navbar.scrolled {
+        background: rgba(15, 23, 42, 0.98) !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+    }
+    .navbar-brand,
+    .nav-link {
+        color: #f1f5f9 !important;
+    }
+    .navbar-toggler i {
+        color: #f1f5f9;
+    }
+    .navbar-collapse {
+        background: rgba(15, 23, 42, 0.98);
+    }
+
+    /* Hero */
+    .hero {
+        background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent 40%),
+                    radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.07), transparent 40%);
+    }
+    .hero-subtitle {
+        color: #94a3b8;
+    }
+    .stat-number { color: #f1f5f9; }
+    .stat-label  { color: #94a3b8; }
+
+    /* Trust bar (index) */
+    .trust-bar {
+        border-top-color: #1e293b !important;
+        border-bottom-color: #1e293b !important;
+        background-color: #0f172a;
+    }
+    .trust-logo {
+        filter: brightness(0) invert(1) opacity(0.55) !important;
+    }
+    .trust-logo:hover {
+        filter: brightness(0) invert(1) opacity(0.9) !important;
+    }
+
+    /* Feature Cards */
+    .card-modern {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    .card-modern:hover {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5) !important;
+    }
+    .icon-box {
+        background: rgba(59, 130, 246, 0.12);
+    }
+
+    /* Portfolio Section */
+    .sw-tab-btn {
+        background: #1e293b;
+        border-color: #334155;
+        color: #94a3b8;
+    }
+    .sw-tab-btn:hover {
+        border-color: #3b82f6;
+        color: #60a5fa;
+    }
+    .sw-tab-btn.active {
+        background: #1865ca;
+        border-color: #1865ca;
+        color: #fff;
+    }
+    .portfolio-item-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .portfolio-item-card:hover {
+        box-shadow: 0 20px 50px rgba(59, 130, 246, 0.18);
+        border-color: rgba(59, 130, 246, 0.4);
+    }
+    .portfolio-thumb {
+        background: linear-gradient(135deg, #1e3a8a 0%, #263346 100%);
+    }
+    .portfolio-card-title { color: #f1f5f9; }
+    .portfolio-card-desc  { color: #94a3b8; }
+    .portfolio-card-footer {
+        border-top-color: #334155;
+    }
+
+    /* Badge variants (portfolio) */
+    .badge-website {
+        background: rgba(14, 165, 233, 0.12) !important;
+        color: #38bdf8 !important;
+        border-color: rgba(14, 165, 233, 0.25) !important;
+    }
+    .badge-app {
+        background: rgba(59, 130, 246, 0.12) !important;
+        color: #60a5fa !important;
+        border-color: rgba(59, 130, 246, 0.25) !important;
+    }
+    .badge-extension {
+        background: rgba(139, 92, 246, 0.12) !important;
+        color: #a78bfa !important;
+        border-color: rgba(139, 92, 246, 0.25) !important;
+    }
+
+    /* Portfolio Modal */
+    .portfolio-modal-box {
+        background: #1e293b;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    }
+    .pmodal-close {
+        background: #334155;
+        color: #94a3b8;
+    }
+    .pmodal-close:hover {
+        background: #475569;
+        color: #f1f5f9;
+    }
+    .feature-list li {
+        color: #cbd5e1;
+    }
+    .carousel-dot {
+        background: #475569;
+    }
+
+    /* FAQ */
+    .faq-button,
+    details > summary {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+        border-bottom: 1px solid #334155 !important;
+    }
+    details[open] > summary {
+        background-color: #263346 !important;
+    }
+    details > div,
+    .faq-answer {
+        background-color: #1a2638;
+        color: #94a3b8;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        color: #f1f5f9;
+    }
+
+    /* Footer */
+    .footer,
+    footer {
+        background: #020617 !important;
+        border-top: 1px solid #1e293b !important;
+        color: #94a3b8;
+    }
+    .footer-title { color: #f1f5f9; }
+    .footer-link  { color: #94a3b8; }
+    .footer-link:hover { color: #60a5fa; }
+
+    /* h tags global */
+    h1, h2, h3, h4, h5, h6 {
+        color: #f1f5f9;
+    }
+
+    /* ================================================================
+       STORE.HTML & PRODUCT-DETAIL.HTML
+    ================================================================ */
+
+    /* Store Navbar */
+    .store-navbar {
+        background: #0f172a !important;
+        border-bottom-color: #334155;
+    }
+    .nav-search input {
+        background: #1e293b;
+        color: #f1f5f9;
+        border-color: #334155;
+    }
+    .nav-search input:focus {
+        background: #263346;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    .nav-search input::placeholder { color: #64748b; }
+    .btn-help {
+        background: transparent;
+        border-color: #334155;
+        color: #94a3b8;
+    }
+    .btn-help:hover {
+        background: #1e293b;
+        border-color: #64748b;
+        color: #f1f5f9;
+    }
+    .search-icon { color: #64748b; }
+
+    /* Trust bar (store — different from index trust-bar) */
+    .trust-bar {
+        background: #1e293b !important;
+        border-bottom-color: #334155 !important;
+    }
+    .trust-item { color: #94a3b8; }
+
+    /* App Cards */
+    .app-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .app-card:hover {
+        border-color: #475569;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .app-name    { color: #f1f5f9; }
+    .app-desc    { color: #94a3b8; }
+    .app-package {
+        background: #0f172a;
+        color: #64748b;
+    }
+    .rating-text { color: #94a3b8; }
+    .app-price-section { border-top-color: #334155; }
+
+    /* Features list */
+    .app-features { border-top-color: #334155; }
+    .feature-item { color: #94a3b8; }
+
+    /* Section title */
+    .section-title { color: #f1f5f9; }
+    .section-title::after { background: #334155; }
+
+    /* Store / Product Modal */
+    .detail-modal-backdrop {
+        background: rgba(2, 6, 23, 0.85);
+    }
+    .detail-modal-box,
+    .product-modal,
+    .modal-box {
+        background: #1e293b;
+        border: 1px solid #334155;
+        color: #f1f5f9;
+    }
+    .modal-close-btn {
+        background: #334155;
+        color: #94a3b8;
+    }
+    .modal-close-btn:hover {
+        background: #475569;
+        color: #f1f5f9;
+    }
+    .modal-section-title,
+    .modal-product-name { color: #f1f5f9; }
+    .modal-desc,
+    .modal-product-desc { color: #94a3b8; }
+
+    /* Plan cards */
+    .plan-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .plan-card.featured {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59,130,246,0.25);
+    }
+    .plan-name  { color: #f1f5f9; }
+    .plan-price { color: #f1f5f9; }
+    .plan-desc  { color: #94a3b8; }
+    .plan-features li { color: #cbd5e1; }
+
+    /* Product Detail Tabs */
+    .detail-tabs { border-bottom-color: #334155; }
+    .detail-tab-btn {
+        color: #94a3b8;
+    }
+    .detail-tab-btn.active {
+        color: #3b82f6;
+        border-bottom-color: #3b82f6;
+    }
+
+    /* Review cards */
+    .review-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .review-author { color: #f1f5f9; }
+    .review-text   { color: #94a3b8; }
+
+    /* ================================================================
+       CHECKOUT.HTML
+    ================================================================ */
+
+    .checkout-container {
+        background-color: #0f172a;
+    }
+
+    /* Left panel */
+    .checkout-left {
+        background: #0f172a;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb { color: #94a3b8; }
+    .breadcrumb span.active { color: #60a5fa; }
+
+    /* Form inputs (custom) */
+    .form-input {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+        border-color: #334155 !important;
+    }
+    .form-input:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.2) !important;
+        background-color: #263346 !important;
+    }
+    .form-input::placeholder { color: #64748b !important; }
+    .form-label { color: #94a3b8 !important; }
+
+    /* Duration boxes */
+    .duration-box {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .duration-box:hover { border-color: #475569; }
+    .duration-box.selected {
+        border-color: #3b82f6;
+        background: rgba(59, 130, 246, 0.1);
+    }
+    .dur-title { color: #f1f5f9; }
+    .dur-desc  { color: #94a3b8; }
+    .dur-price { color: #f1f5f9; }
+    .dur-price small { color: #94a3b8; }
+    .radio-circle { border-color: #334155; }
+
+    /* Payment methods */
+    .payment-group {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .payment-header { background: #1e293b; }
+    .payment-header:hover { background: #263346; }
+    .payment-title { color: #f1f5f9; }
+    .payment-body {
+        background: #0f172a;
+        border-top-color: #334155;
+    }
+    .pm-option {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .pm-option:hover { background: #263346; }
+    .pm-option.selected {
+        border-color: #3b82f6;
+        background: rgba(59,130,246,0.1);
+    }
+    .pm-name { color: #f1f5f9; }
+
+    /* Summary (right) */
+    .checkout-right {
+        background: #0f172a;
+        border-left-color: #334155;
+    }
+    .summary-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .summary-title { color: #f1f5f9; }
+    .summary-line  { color: #94a3b8; }
+    .product-info h3 { color: #f1f5f9; }
+    .product-info p  { color: #94a3b8; }
+
+    /* Btn outline (checkout) */
+    .btn-outline {
+        background: #1e293b;
+        color: #f1f5f9;
+        border-color: #334155;
+    }
+    .btn-outline:hover { background: #263346; }
+
+    /* Footer links */
+    .footer-links { color: #64748b; }
+    .footer-links a { color: #3b82f6; }
+
+    /* ================================================================
+       RENEW.HTML
+    ================================================================ */
+
+    .renew-nav {
+        background: #0f172a !important;
+        border-bottom-color: #334155;
+    }
+    .nav-divider { background: #334155; }
+    .nav-title   { color: #94a3b8; }
+    .nav-back {
+        color: #94a3b8;
+        border-color: #334155;
+    }
+    .nav-back:hover {
+        color: #3b82f6;
+        border-color: #3b82f6;
+        background: rgba(59,130,246,0.1);
+    }
+
+    /* Page background */
+    body {
+        background: #0f172a !important;
+    }
+
+    /* Main card */
+    .main-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .card-body-inner,
+    .card-body {
+        color: #f1f5f9;
+    }
+
+    /* Step track */
+    .step-circle {
+        background: #1e293b;
+        border-color: #334155;
+        color: #64748b;
+    }
+    .step-node.done .step-circle {
+        background: rgba(59,130,246,0.15);
+        border-color: #3b82f6;
+        color: #60a5fa;
+    }
+    .step-label { color: #64748b; }
+    .step-line  { background: #334155; }
+    .step-line.done { background: #3b82f6; }
+
+    /* Form fields (renew) */
+    .field-group label,
+    .field-label { color: #94a3b8; }
+    .field-input {
+        background: #1e293b !important;
+        color: #f1f5f9 !important;
+        border-color: #334155 !important;
+    }
+    .field-input:focus {
+        border-color: #3b82f6 !important;
+        background: #263346 !important;
+    }
+
+    /* Product info box */
+    .product-info-box {
+        background: #0f172a;
+        border-color: #334155;
+        color: #f1f5f9;
+    }
+
+    /* License result */
+    .result-card,
+    .license-result-card {
+        background: #0f172a;
+        border-color: #334155;
+        color: #f1f5f9;
+    }
+
+    /* Side summary */
+    .side-summary {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    /* ================================================================
+       WAITING-PAYMENT.HTML
+    ================================================================ */
+
+    .split-left {
+        background: #0f172a !important;
+    }
+    .split-right {
+        background: #0f172a !important;
+        border-left-color: #334155 !important;
+    }
+
+    /* Timer */
+    .timer-container {
+        background: rgba(217, 119, 6, 0.12) !important;
+        color: #fbbf24 !important;
+    }
+
+    /* Page title / subtitle */
+    .page-title   { color: #f1f5f9; }
+    .page-subtitle { color: #94a3b8; }
+
+    /* VA box */
+    .va-box {
+        background: #1e293b !important;
+        border-color: #3b82f6 !important;
+    }
+    .va-number { color: #60a5fa; }
+
+    /* QRIS box */
+    .qris-box {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+    }
+
+    /* Summary card */
+    .summary-card {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    .summary-title { color: #f1f5f9; }
+    .summary-line  { color: #94a3b8; }
+    .total-amount  { border-bottom-color: #334155; }
+
+    .order-id-box {
+        background: rgba(59,130,246,0.12) !important;
+        color: #60a5fa !important;
+    }
+    .polling-indicator {
+        background: #1e293b !important;
+        border-color: rgba(59,130,246,0.3) !important;
+        color: #60a5fa !important;
+    }
+    .secure-badge { color: #64748b; }
+
+    /* ================================================================
+       CUSTOM-ORDER.HTML & SUPPORT.HTML — Split Layout
+    ================================================================ */
+
+    .fullscreen-wrapper,
+    .layout-container {
+        background: #0f172a;
+    }
+
+    /* Form pane (right side) */
+    .form-pane,
+    .form-panel,
+    .right-pane,
+    .right-form-pane {
+        background: #0f172a !important;
+    }
+
+    /* Form card */
+    .form-card,
+    .card-container,
+    .step-content,
+    .form-container {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* Step indicators */
+    .step-indicator {
+        background: #334155 !important;
+        color: #94a3b8 !important;
+        border-color: #475569 !important;
+    }
+    .step-indicator.active {
+        background: #3b82f6 !important;
+        color: #fff !important;
+        border-color: #3b82f6 !important;
+    }
+
+    /* Step connector lines */
+    .step-connector { background: #334155; }
+    .step-connector.done { background: #3b82f6; }
+    .step-text,
+    .step-name { color: #94a3b8; }
+
+    /* Custom inputs (non-Bootstrap) */
+    .custom-select-trigger {
+        background: #1e293b !important;
+        color: #f1f5f9 !important;
+        border-color: #334155 !important;
+    }
+    .custom-select-dropdown {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    .custom-select-option { color: #f1f5f9; }
+    .custom-select-option:hover { background: #263346; }
+
+    /* Checkboxes / Radio groups */
+    .checkbox-group label,
+    .radio-group label {
+        color: #cbd5e1 !important;
+    }
+
+    /* File upload */
+    .file-upload-wrapper,
+    .file-upload-area {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #94a3b8 !important;
+    }
+    .file-upload-area:hover {
+        border-color: #3b82f6 !important;
+        background: rgba(59,130,246,0.06) !important;
+    }
+
+    /* Input hints */
+    .input-hint,
+    .form-hint { color: #64748b !important; }
+
+    /* ================================================================
+       CAREER.HTML
+    ================================================================ */
+
+    /* The brand-showcase keeps its dark gradient — already readable */
+    .form-container {
+        background: #1e293b !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* ================================================================
+       THANKYOU.HTML
+    ================================================================ */
+
+    .success-card {
+        background: #1e293b !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.4) !important;
+        color: #f1f5f9 !important;
+    }
+    .order-details {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+    }
+    .detail-row { color: #94a3b8; }
+    .detail-row:last-child {
+        color: #f1f5f9;
+        border-top-color: #334155;
+    }
+    .text-label { color: #94a3b8; }
+    .text-value { color: #f1f5f9; }
+
+    /* ================================================================
+       CAREER-SUCCESS.HTML
+    ================================================================ */
+
+    .info-box {
+        background: rgba(37, 99, 235, 0.12) !important;
+        border-left-color: #3b82f6 !important;
+        color: #93c5fd !important;
+    }
+
+    /* ================================================================
+       SUPPORT.HTML
+    ================================================================ */
+
+    /* Contact option cards */
+    .contact-option,
+    .contact-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .contact-option:hover,
+    .contact-card:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 16px rgba(59,130,246,0.15);
+    }
+    .contact-title { color: #f1f5f9; }
+    .contact-desc  { color: #94a3b8; }
+
+    /* ================================================================
+       GENERAL INPUTS (catch-all for all pages)
+    ================================================================ */
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="password"],
+    input[type="search"],
+    textarea,
+    select {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+        border-color: #334155 !important;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    input[type="number"]:focus,
+    input[type="password"]:focus,
+    textarea:focus,
+    select:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.2) !important;
+        outline: none;
+    }
+    input::placeholder,
+    textarea::placeholder { color: #64748b !important; }
+
+    label {
+        color: #94a3b8;
+    }
+
+    /* ================================================================
+       STORE.HTML — EXTRA ELEMENTS
+    ================================================================ */
+
+    /* Catalog Tabs */
+    .catalog-tabs {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .catalog-tab {
+        color: #94a3b8;
+    }
+    .catalog-tab.active {
+        background: #263346;
+        color: #60a5fa;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .catalog-tab:hover:not(.active) {
+        background: rgba(255,255,255,0.06);
+        color: #f1f5f9;
+    }
+
+    /* Extension Card */
+    .ext-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .ext-card:hover {
+        border-color: #f97316;
+        box-shadow: 0 12px 36px rgba(234, 88, 12, 0.15);
+    }
+    .ext-card .ext-name { color: #f1f5f9; }
+    .ext-card .ext-desc { color: #94a3b8; }
+
+    /* Browser badges (dark-safe, keep colors readable) */
+    .browser-badge.chrome {
+        background: rgba(26, 86, 219, 0.15);
+        color: #93c5fd;
+        border-color: rgba(26, 86, 219, 0.3);
+    }
+    .browser-badge.edge {
+        background: rgba(0, 120, 212, 0.15);
+        color: #7dd3fc;
+        border-color: rgba(0, 120, 212, 0.3);
+    }
+    .browser-badge.firefox {
+        background: rgba(230, 81, 0, 0.12);
+        color: #fdba74;
+        border-color: rgba(230, 81, 0, 0.25);
+    }
+    .browser-badge.all {
+        background: rgba(234, 88, 12, 0.12);
+        color: #fb923c;
+        border-color: rgba(234, 88, 12, 0.25);
+    }
+
+    /* Skeleton loader */
+    .skeleton-card {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    .skeleton {
+        background: linear-gradient(90deg, #1e293b 25%, #263346 50%, #1e293b 75%);
+        background-size: 200% 100%;
+    }
+
+    /* Store footer */
+    .store-footer {
+        border-top-color: #334155;
+        background: #0f172a;
+        color: #64748b;
+    }
+    .footer-link  { color: #64748b; }
+    .footer-link:hover { color: #f1f5f9; }
+    .footer-copy  { color: #475569; }
+
+    /* ================================================================
+       LEGAL PAGES (syarat-ketentuan, kebijakan-privasi, penafian)
+    ================================================================ */
+
+    /* These pages use --bg-color / --paper-bg vars, override them */
+    body {
+        background-color: #0f172a;
+        color: #f1f5f9;
+    }
+
+    /* Paper card container */
+    .paper,
+    .legal-paper,
+    .document-paper {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* Section titles */
+    .section-heading,
+    .legal-section h2,
+    .legal-section h3 {
+        color: #f1f5f9 !important;
+    }
+
+    /* Back button / breadcrumb nav */
+    .back-btn,
+    .legal-nav {
+        background: #1e293b;
+        border-color: #334155;
+        color: #94a3b8;
+    }
+    .back-btn:hover { color: #f1f5f9; }
+
+    /* Legal highlight boxes */
+    .highlight-box,
+    .info-highlight {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+        color: #93c5fd;
+    }
+
+    /* Table of contents */
+    .toc-item,
+    .toc-link {
+        color: #94a3b8;
+    }
+    .toc-link:hover { color: #60a5fa; }
+
+    /* Horizontal rules */
+    hr {
+        border-color: #334155;
+    }
+
+    /* ================================================================
+       EMPLOYER.HTML (ID Card)
+    ================================================================ */
+
+    /* The ID card itself is gradient-based, keep as is.
+       Just handle the surrounding UI */
+    .employer-wrapper,
+    .page-wrapper-employer {
+        background: #0f172a;
+    }
+
+    /* Download/action buttons area */
+    .action-bar,
+    .btn-download-area {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+}
+/* ============================================================
+   END OF DARK MODE
+   ============================================================ */

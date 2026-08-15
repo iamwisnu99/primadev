@@ -263,35 +263,10 @@ exports.handler = async (event, context) => {
 
         if (event.httpMethod === 'POST') {
             const body = JSON.parse(event.body || '{}');
-            const { name, email, whatsapp, portfolio, keahlian, dokumenUrl, turnstileResponse } = body;
+            const { name, email, whatsapp, portfolio, keahlian, dokumenUrl } = body;
 
             if (!name || !email) {
                 return respond(400, { error: 'Nama dan Email wajib diisi' });
-            }
-
-            if (!turnstileResponse) {
-                return respond(400, { error: 'Verifikasi keamanan (CAPTCHA) gagal.' });
-            }
-
-            try {
-                const secret = process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA';
-                const verifyUrl = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-                const verifyFormData = new URLSearchParams();
-                verifyFormData.append('secret', secret);
-                verifyFormData.append('response', turnstileResponse);
-
-                const verifyRes = await fetch(verifyUrl, {
-                    method: 'POST',
-                    body: verifyFormData,
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                });
-
-                const verifyData = await verifyRes.json();
-                if (!verifyData.success) {
-                    return respond(400, { error: 'Validasi Turnstile gagal. Silakan muat ulang halaman.' });
-                }
-            } catch (err) {
-                return respond(500, { error: 'Terjadi kesalahan saat memverifikasi Turnstile.' });
             }
 
             const applicationId = `APP-${Date.now()}-${Math.floor(Math.random() * 1000)}`;

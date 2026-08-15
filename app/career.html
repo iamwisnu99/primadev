@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <link rel="stylesheet" href="/public/css/career.css">
+    <link rel="stylesheet" href="/public/css/darkmode.css">
 </head>
 
 <body>
@@ -162,8 +162,6 @@
                                 onchange="handleFileSelect(event)">
                         </div>
                     </div>
-
-                    <div class="cf-turnstile" style="margin: 10px 0;" data-sitekey="0x4AAAAAAEFPhchiX7_LTna_"></div>
 
                     <div class="checkbox-group">
                         <input type="checkbox" id="kejujuranCheck" required>
@@ -374,8 +372,6 @@
             let portfolioRaw = document.getElementById('portfolio').value.trim();
             const portfolio = portfolioRaw ? `https://${portfolioRaw.replace(/^https?:\/\//i, '')}` : '';
 
-            const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value;
-
             submitBtn.disabled = true;
             btnText.textContent = 'Memproses...';
             spinner.style.display = 'block';
@@ -414,7 +410,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name, email, whatsapp, portfolio, keahlian, dokumenUrl, turnstileResponse
+                        name, email, whatsapp, portfolio, keahlian, dokumenUrl
                     })
                 });
 
