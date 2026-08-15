@@ -75,6 +75,13 @@
 
             <form id="careerForm">
                 <div class="step-content active" id="step1">
+                    <div class="alert alert-info"
+                        style="background-color: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem;">
+                        <i class="fas fa-info-circle me-2"></i> Anda melamar untuk posisi: <strong
+                            id="displayPosition">...</strong>
+                    </div>
+                    <input type="hidden" id="selectedPosition" name="position" required>
+
                     <div class="form-group">
                         <label for="name">Nama Lengkap <span>*</span></label>
                         <input type="text" id="name" name="name" class="form-control" placeholder="Contoh: BUDI SANTOSO"
@@ -357,6 +364,18 @@
             submitBtn.disabled = !this.checked;
         });
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const positionParam = urlParams.get('position');
+
+            if (!positionParam) {
+                window.location.href = '/app/vacancies';
+            } else {
+                document.getElementById('selectedPosition').value = positionParam;
+                document.getElementById('displayPosition').textContent = positionParam;
+            }
+        });
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -375,10 +394,10 @@
             btnText.textContent = 'Memproses...';
             spinner.style.display = 'block';
 
+            const position = document.getElementById('selectedPosition').value;
+            let dokumenUrl = '';
+
             try {
-                let dokumenUrl = '';
-
-
                 if (selectedFile && supabaseClient) {
                     btnText.textContent = 'Mengunggah Dokumen...';
                     const fileExt = selectedFile.name.split('.').pop();
@@ -409,7 +428,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name, email, whatsapp, portfolio, keahlian, dokumenUrl
+                        name, email, whatsapp, portfolio, keahlian, dokumenUrl, position
                     })
                 });
 

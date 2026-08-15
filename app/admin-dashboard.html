@@ -60,6 +60,9 @@
                         style="font-size: 0.7rem; width: auto; margin-left: auto;"></i>
                 </a>
                 <div class="nav-submenu" id="submenu-karyawan">
+                    <a class="nav-item" data-tab="vacancies" onclick="switchTab('vacancies')">
+                        <i class="fa-solid fa-briefcase"></i> Lowongan
+                    </a>
                     <a class="nav-item" data-tab="emp-lamaran" onclick="showEmployeeTab('lamaran')">
                         <i class="fa-solid fa-envelope-open-text"></i> Lamaran
                     </a>
@@ -394,6 +397,32 @@
                         <tbody id="employeesTableBody">
                             <tr>
                                 <td colspan="6" class="text-center py-4">Memuat data karyawan...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="tab-vacancies">
+            <div class="card">
+                <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);"><i class="fa-solid fa-briefcase"></i> Kelola Lowongan Kerja</h3>
+                    <button class="btn btn-primary" onclick="openAddVacancyModal()"><i class="fas fa-plus"></i> Tambah Lowongan</button>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>POSISI</th>
+                                <th>DESKRIPSI</th>
+                                <th>STATUS</th>
+                                <th class="text-right">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vacanciesTableBody">
+                            <tr>
+                                <td colspan="4" class="text-center py-4">Memuat data lowongan...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -2501,6 +2530,7 @@
                             <td data-label="NAMA / ID">
                                 <div class="font-medium">${emp.name}</div>
                                 <div class="text-sm text-muted">${emp.employeeId || 'ID Belum Dibuat'}</div>
+                                ${emp.position && emp.position !== '-' ? `<div style="margin-top:4px;"><span class="badge" style="font-size:0.7rem; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;">${emp.position}</span></div>` : ''}
                             </td>
                             <td data-label="KONTAK">
                                 <div><i class="fas fa-envelope text-muted"></i> ${emp.email}</div>
@@ -2726,6 +2756,177 @@
         })();
     </script>
 
+    <!-- Modal Kelola Lowongan -->
+    <div class="modal-overlay" id="vacancyModal">
+        <div class="modal-box" style="max-width: 500px;">
+            <div class="modal-header">
+                <div class="modal-title" id="vacancyModalTitle">Tambah Lowongan</div>
+                <button class="modal-close" onclick="closeVacancyModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="vacancyId">
+                <div class="form-group">
+                    <label class="form-label">Posisi Pekerjaan</label>
+                    <input type="text" id="vacancyTitle" class="form-input" placeholder="Contoh: AI Prompting" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Deskripsi</label>
+                    <textarea id="vacancyDesc" class="form-input" rows="3" placeholder="Tugas utama..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <div class="custom-dropdown" id="ddVacancyStatus">
+                        <input type="hidden" id="vacancyStatus" value="true">
+                        <div class="dropdown-trigger" onclick="toggleDD('ddVacancyStatus')">
+                            <div>
+                                <span class="trigger-label" id="vacancyStatusLabel">Buka (Aktif)</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down trigger-chevron"></i>
+                        </div>
+                        <div class="dropdown-options">
+                            <div class="opt-item" onclick="setVacancyStatus('true', 'Buka (Aktif)')">
+                                <div><span class="opt-title">Buka (Aktif)</span></div>
+                            </div>
+                            <div class="opt-item" onclick="setVacancyStatus('false', 'Tutup (Nonaktif)')">
+                                <div><span class="opt-title">Tutup (Nonaktif)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn btn-outline" onclick="closeVacancyModal()">Batal</button>
+                <button class="btn btn-primary" onclick="saveVacancy()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentVacancies = [];
+        
+        async function fetchVacanciesAdmin() {
+            const tbody = document.getElementById('vacanciesTableBody');
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Memuat data...</td></tr>';
+            try {
+                const res = await fetch('/.netlify/functions/vacancies');
+                const data = await res.json();
+                currentVacancies = Array.isArray(data) ? data : [];
+                renderVacanciesAdmin();
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">Gagal memuat lowongan.</td></tr>';
+            }
+        }
+
+        function renderVacanciesAdmin() {
+            const tbody = document.getElementById('vacanciesTableBody');
+            if (currentVacancies.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Belum ada lowongan terdaftar.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = currentVacancies.map(v => `
+                <tr>
+                    <td style="font-weight:600;">${v.title}</td>
+                    <td><div style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${v.description}">${v.description}</div></td>
+                    <td>
+                        <span class="badge ${v.active ? 'badge-active' : 'badge-banned'}">${v.active ? 'Buka' : 'Tutup'}</span>
+                    </td>
+                    <td style="text-align:right;">
+                        <button class="action-btn btn-edit" onclick="editVacancy('${v.id}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="action-btn btn-delete" onclick="deleteVacancy('${v.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openAddVacancyModal() {
+            document.getElementById('vacancyModalTitle').textContent = 'Tambah Lowongan';
+            document.getElementById('vacancyId').value = '';
+            document.getElementById('vacancyTitle').value = '';
+            document.getElementById('vacancyDesc').value = '';
+            setVacancyStatus('true', 'Buka (Aktif)');
+            showModal('vacancyModal');
+        }
+
+        function editVacancy(id) {
+            const v = currentVacancies.find(x => x.id === id);
+            if (!v) return;
+            document.getElementById('vacancyModalTitle').textContent = 'Edit Lowongan';
+            document.getElementById('vacancyId').value = v.id;
+            document.getElementById('vacancyTitle').value = v.title;
+            document.getElementById('vacancyDesc').value = v.description;
+            setVacancyStatus(v.active ? 'true' : 'false', v.active ? 'Buka (Aktif)' : 'Tutup (Nonaktif)');
+            showModal('vacancyModal');
+        }
+
+        function closeVacancyModal() {
+            closeModal('vacancyModal');
+        }
+
+        function setVacancyStatus(val, label) {
+            document.getElementById('vacancyStatus').value = val;
+            document.getElementById('vacancyStatusLabel').textContent = label;
+            if (typeof closeDD === 'function') {
+                closeDD('ddVacancyStatus');
+            }
+        }
+
+        async function saveVacancy() {
+            const id = document.getElementById('vacancyId').value;
+            const title = document.getElementById('vacancyTitle').value.trim();
+            const description = document.getElementById('vacancyDesc').value.trim();
+            const active = document.getElementById('vacancyStatus').value === 'true';
+
+            if (!title || !description) {
+                Swal.fire('Error', 'Judul dan deskripsi wajib diisi', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('/.netlify/functions/vacancies', {
+                    method: 'POST',
+                    body: JSON.stringify({ id, title, description, active })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    Swal.fire('Sukses', 'Lowongan berhasil disimpan', 'success');
+                    closeVacancyModal();
+                    fetchVacanciesAdmin();
+                } else {
+                    Swal.fire('Error', result.error || 'Gagal menyimpan', 'error');
+                }
+            } catch(e) {
+                Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
+            }
+        }
+
+        async function deleteVacancy(id) {
+            const result = await Swal.fire({
+                title: 'Hapus Lowongan?',
+                text: "Lowongan ini akan dihapus secara permanen.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, Hapus!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetch('/.netlify/functions/vacancies?id=' + id, { method: 'DELETE' });
+                    const out = await res.json();
+                    if (out.success) {
+                        Swal.fire('Dihapus!', 'Lowongan berhasil dihapus.', 'success');
+                        fetchVacanciesAdmin();
+                    }
+                } catch(e) {
+                    Swal.fire('Error', 'Gagal menghapus lowongan', 'error');
+                }
+            }
+        }
+        
+        // Auto fetch when tab is clicked
+        document.querySelector('[data-tab="vacancies"]').addEventListener('click', fetchVacanciesAdmin);
+    </script>
     <script src="/public/js/admin.js"></script>
 </body>
 

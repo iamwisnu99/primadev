@@ -87,9 +87,10 @@ const getAdminNotificationTemplate = (data) => {
             </div>
             <div class="content">
                 <p>Halo Admin,</p>
-                <p>Terdapat pengajuan lamaran baru untuk bergabung dengan PT. Primadev Digital Technology. Berikut adalah rincian data pelamar:</p>
+                <p>Terdapat pengajuan lamaran baru untuk posisi <strong>${data.position || '-'}</strong>. Berikut adalah rincian data pelamar:</p>
                 <table class="details-table">
-                    <tr><td style="color: #64748b; width: 40%;">Nama Lengkap</td><td style="font-weight: bold;">${data.name}</td></tr>
+                    <tr><td style="color: #64748b; width: 40%;">Posisi Dilamar</td><td style="font-weight: bold;">${data.position || '-'}</td></tr>
+                    <tr><td style="color: #64748b;">Nama Lengkap</td><td style="font-weight: bold;">${data.name}</td></tr>
                     <tr><td style="color: #64748b;">Email</td><td style="font-weight: bold;">${data.email}</td></tr>
                     <tr><td style="color: #64748b;">WhatsApp</td><td style="font-weight: bold;">${data.whatsapp || '-'}</td></tr>
                     <tr><td style="color: #64748b;">Portofolio</td><td style="font-weight: bold;">${data.portfolio && data.portfolio !== '-' ? `<a href="${data.portfolio}" style="color: #2563eb;">Lihat Portofolio</a>` : '-'}</td></tr>
@@ -140,7 +141,7 @@ const getAcceptanceTemplate = (data) => {
             </div>
             <div class="content">
                 <p>Halo <strong>${data.name}</strong>,</p>
-                <p>Kami sangat senang menginformasikan bahwa Anda telah <strong>DITERIMA</strong> untuk bergabung bersama PT. Primadev Digital Technology sebagai <strong>${data.employeeType === 'tetap' ? 'Karyawan Tetap (PKWTT)' : 'Karyawan Kontrak (PKWT)'}</strong>.</p>
+                <p>Kami sangat senang menginformasikan bahwa Anda telah <strong>DITERIMA</strong> untuk bergabung bersama PT. Primadev Digital Technology untuk menempati posisi <strong>${data.position || '-'}</strong> sebagai <strong>${data.employeeType === 'tetap' ? 'Karyawan Tetap (PKWTT)' : 'Karyawan Kontrak (PKWT)'}</strong>.</p>
                 <div class="key-box">
                     <span class="label-key">ID KARYAWAN ANDA</span>
                     <span class="license-key">${data.empId}</span>
@@ -190,8 +191,8 @@ const getRejectionTemplate = (data) => {
             </div>
             <div class="content">
                 <p>Halo <strong>${data.name}</strong>,</p>
-                <p>Terima kasih banyak atas ketertarikan Anda untuk bergabung dan berkembang bersama PT. Primadev Digital Technology.</p>
-                <p>Setelah meninjau kualifikasi dan portofolio Anda secara saksama, dengan berat hati kami sampaikan bahwa saat ini kami belum dapat melanjutkan proses lamaran Anda ke tahap berikutnya. Kami harus mengambil keputusan sulit mengingat tingginya kualitas kandidat yang mendaftar pada periode ini.</p>
+                <p>Terima kasih banyak atas ketertarikan Anda untuk bergabung mengisi posisi <strong>${data.position || '-'}</strong> di PT. Primadev Digital Technology.</p>
+                <p>Setelah meninjau kualifikasi dan portofolio Anda secara saksama, dengan berat hati kami sampaikan bahwa saat ini kami belum dapat melanjutkan proses lamaran Anda ke tahap berikutnya. Kami harus mengambil keputusan sulit mengingat tingginya kualitas kandidat yang mendaftar pada posisi tersebut di periode ini.</p>
                 <p>Kami sangat menghargai waktu dan antusiasme Anda. Kami akan menyimpan data Anda dan mungkin akan menghubungi Anda kembali apabila ada posisi yang sesuai di masa mendatang.</p>
                 <p>Semoga sukses untuk perjalanan karir Anda ke depannya!</p>
                 <p style="margin-top: 30px;">Hormat kami,<br><strong>Tim HR PT. Primadev Digital Technology</strong></p>
@@ -263,7 +264,7 @@ exports.handler = async (event, context) => {
 
         if (event.httpMethod === 'POST') {
             const body = JSON.parse(event.body || '{}');
-            const { name, email, whatsapp, portfolio, keahlian, dokumenUrl } = body;
+            const { name, email, whatsapp, portfolio, keahlian, dokumenUrl, position } = body;
 
             if (!name || !email) {
                 return respond(400, { error: 'Nama dan Email wajib diisi' });
@@ -278,6 +279,7 @@ exports.handler = async (event, context) => {
                 portfolio: portfolio || '-',
                 keahlian: keahlian || '-',
                 dokumenUrl: dokumenUrl || '-',
+                position: position || '-',
                 status: 'lamaran',
                 createdAt: Date.now()
             };
@@ -285,8 +287,8 @@ exports.handler = async (event, context) => {
             await db.ref(`${path}/${applicationId}`).set(newApplication);
 
             const adminEmail = process.env.EMAIL_USER;
-            const subjectAdmin = `Lamaran Baru Masuk - ${name}`;
-            const htmlAdmin = getAdminNotificationTemplate({ name, email, whatsapp, portfolio, keahlian, dokumenUrl });
+            const subjectAdmin = `Lamaran Baru Masuk - ${position || 'Posisi Baru'} - ${name}`;
+            const htmlAdmin = getAdminNotificationTemplate({ name, email, whatsapp, portfolio, keahlian, dokumenUrl, position });
             await sendEmail(adminEmail, subjectAdmin, htmlAdmin);
 
             return respond(201, { message: 'Pengajuan lamaran berhasil terkirim', id: applicationId });
@@ -347,7 +349,7 @@ exports.handler = async (event, context) => {
                 };
 
                 subjectUser = `Selamat! Lamaran Anda Diterima di PT. Primadev Digital Technology`;
-                htmlUser = getAcceptanceTemplate({ name: employeeData.name, empId: empId, employeeType: updates.employeeType });
+                htmlUser = getAcceptanceTemplate({ name: employeeData.name, empId: empId, employeeType: updates.employeeType, position: employeeData.position });
             } else if (action === 'tolak') {
                 updates = {
                     status: 'ditolak',
@@ -355,7 +357,7 @@ exports.handler = async (event, context) => {
                 };
 
                 subjectUser = `Pemberitahuan Lamaran Kerja - PT. Primadev Digital Technology`;
-                htmlUser = getRejectionTemplate({ name: employeeData.name });
+                htmlUser = getRejectionTemplate({ name: employeeData.name, position: employeeData.position });
             } else if (action === 'resign') {
                 updates = {
                     status: 'resign',
