@@ -1,4 +1,5 @@
 {
+  "cleanUrls": true,
   "functions": {
     "api/invoice.js": {
       "includeFiles": "public/logo.png"
