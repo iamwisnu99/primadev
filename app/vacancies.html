@@ -64,7 +64,7 @@
         async function fetchVacancies() {
             const container = document.getElementById('vacanciesContainer');
             try {
-                const res = await fetch('/.netlify/functions/vacancies');
+                const res = await fetch('/api/vacancies');
                 const data = await res.json();
 
                 let vacancies = Array.isArray(data) ? data : [];
@@ -76,7 +76,7 @@
                         { id: 'v4', title: 'Security & Analytics', description: 'Bertugas memeriksa keamanan website dan menganalisis trafik.', active: true }
                     ];
                     for (let v of defaults) {
-                        await fetch('/.netlify/functions/vacancies', { method: 'POST', body: JSON.stringify(v) });
+                        await fetch('/api/vacancies', { method: 'POST', body: JSON.stringify(v) });
                     }
                     vacancies = defaults;
                 }

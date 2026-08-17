@@ -572,7 +572,7 @@
 
         let auth;
         try {
-            const configRes = await fetch('/.netlify/functions/get-config');
+            const configRes = await fetch('/api/get-config');
             if (!configRes.ok) throw new Error('Failed to load config');
             const firebaseConfig = await configRes.json();
             if (!firebaseConfig?.apiKey) throw new Error('Firebase API Key missing');

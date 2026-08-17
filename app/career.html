@@ -283,7 +283,7 @@
 
         async function initSupabase() {
             try {
-                const res = await fetch('/.netlify/functions/get-config');
+                const res = await fetch('/api/get-config');
                 const config = await res.json();
                 if (config.SUPABASE_URL && config.SUPABASE_ANON_KEY) {
                     supabaseClient = supabase.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
@@ -424,7 +424,7 @@
                 }
 
                 btnText.textContent = 'Mengirim Data...';
-                const response = await fetch('/.netlify/functions/employees', {
+                const response = await fetch('/api/employees', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

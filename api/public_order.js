@@ -2,7 +2,7 @@ const admin = require('firebase-admin');
 const fetch = require('node-fetch');
 
 const XENDIT_PUBLIC_KEY = process.env.XENDIT_PUBLIC_KEY || '';
-const { getPremiumTemplate, getRenewalTemplate } = require('./email_template');
+const { getPremiumTemplate, getRenewalTemplate } = require('../utils/email_template');
 
 console.log("[INIT] Mode gateway ganda aktif: Xendit + Midtrans");
 console.log("[INIT] Status XENDIT_SECRET_KEY:", !!process.env.XENDIT_SECRET_KEY);
@@ -662,7 +662,7 @@ const executeMidtransCharge = async (payload, serverKey, isProduction, finishUrl
     throw new Error(`Metode pembayaran "${paymentMethod}" belum didukung oleh Midtrans.`);
 };
 
-exports.handler = async (event, context) => {
+const netlifyHandler = async (event, context) => {
     const allowedOrigins = [
         'https://apps-primadev.netlify.app',
         'https://primadev.netlify.app',
@@ -1110,5 +1110,26 @@ exports.handler = async (event, context) => {
     } catch (error) {
         console.error("[BACKEND] Terjadi kesalahan server:", error);
         return { statusCode: 500, headers, body: JSON.stringify({ error: error.message || "Internal error" }) };
+    }
+};
+
+module.exports = async (req, res) => {
+    const event = {
+        httpMethod: req.method,
+        path: req.url.split('?')[0],
+        queryStringParameters: req.query || {},
+        body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
+        headers: req.headers
+    };
+    
+    try {
+        const result = await netlifyHandler(event, {});
+        if (result.headers) {
+            Object.keys(result.headers).forEach(k => res.setHeader(k, result.headers[k]));
+        }
+        res.status(result.statusCode || 200).send(result.body);
+    } catch (err) {
+        console.error("Wrapper Error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };

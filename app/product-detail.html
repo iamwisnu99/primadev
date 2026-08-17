@@ -1167,12 +1167,12 @@
 
             try {
 
-                const configRes = await fetch('/.netlify/functions/public_order');
+                const configRes = await fetch('/api/public_order');
                 const data = await configRes.json();
                 pricingData = data.catalog[currentProductId];
 
 
-                const fbRes = await fetch('/.netlify/functions/get-config');
+                const fbRes = await fetch('/api/get-config');
                 const firebaseConfig = await fbRes.json();
 
                 const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');

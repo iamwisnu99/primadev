@@ -1,7 +1,7 @@
 const admin = require('firebase-admin');
 const fetch = require('node-fetch');
 const crypto = require('crypto');
-const { getPremiumTemplate, getRenewalTemplate } = require('./email_template');
+const { getPremiumTemplate, getRenewalTemplate } = require('../utils/email_template');
 
 let PRICING_DB;
 try { PRICING_DB = require('../../products.json'); } catch (e) { PRICING_DB = {}; }
@@ -116,7 +116,7 @@ const normalizeMidtransStatus = (notification) => {
     return 'pending';
 };
 
-exports.handler = async (event) => {
+const netlifyHandler = async (event) => {
     const isProductionEnv = !!process.env.NETLIFY;
 
     try {
@@ -377,5 +377,25 @@ exports.handler = async (event) => {
     } catch (err) {
         console.error('[WEBHOOK] Terjadi kesalahan saat memproses webhook:', err);
         return { statusCode: 500, body: err.message };
+    }
+};
+module.exports = async (req, res) => {
+    const event = {
+        httpMethod: req.method,
+        path: req.url.split('?')[0],
+        queryStringParameters: req.query || {},
+        body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
+        headers: req.headers
+    };
+    
+    try {
+        const result = await netlifyHandler(event, {});
+        if (result.headers) {
+            Object.keys(result.headers).forEach(k => res.setHeader(k, result.headers[k]));
+        }
+        res.status(result.statusCode || 200).send(result.body);
+    } catch (err) {
+        console.error("Wrapper Error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };

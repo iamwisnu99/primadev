@@ -1615,7 +1615,7 @@
             btn.disabled = true;
 
             try {
-                const res = await fetch(`/.netlify/functions/licenses?id=${key}`);
+                const res = await fetch(`/api/licenses?id=${key}`);
                 const data = await res.json();
 
                 if (res.ok && data) {
@@ -1744,7 +1744,7 @@
 
             try {
 
-                const res = await fetch('/.netlify/functions/public_order', {
+                const res = await fetch('/api/public_order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1931,7 +1931,7 @@
 
             activePolling = setInterval(async () => {
                 try {
-                    const res = await fetch('/.netlify/functions/public_order', {
+                    const res = await fetch('/api/public_order', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

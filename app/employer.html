@@ -1239,7 +1239,7 @@
             if (!empId) { showError("ID Karyawan tidak ditemukan di URL."); return; }
 
             try {
-                const res = await fetch(`/.netlify/functions/employees?empId=${empId}&_t=${Date.now()}`);
+                const res = await fetch(`/api/employees?empId=${empId}&_t=${Date.now()}`);
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || "Karyawan tidak ditemukan.");
 
@@ -1407,7 +1407,7 @@
 
         async function loadLegalAssets() {
             try {
-                const res = await fetch('/.netlify/functions/signature');
+                const res = await fetch('/api/signature');
                 const data = await res.json();
                 _ceoSignature = data.signature || null;
                 _docCounters = data.counters || {};
@@ -1823,7 +1823,7 @@
             try {
                 let officialNumber = previewDocNumber(_currentDoc);
                 try {
-                    const res = await fetch('/.netlify/functions/signature', {
+                    const res = await fetch('/api/signature', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

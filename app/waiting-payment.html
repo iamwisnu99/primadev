@@ -769,7 +769,7 @@
             const poll = async () => {
                 attempts++;
                 try {
-                    const res = await fetch('/.netlify/functions/public_order', {
+                    const res = await fetch('/api/public_order', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ action: 'verify_payment', orderId })
@@ -832,7 +832,7 @@
         function startPolling(orderId, orderInfo) {
             pollingInterval = setInterval(async () => {
                 try {
-                    const res = await fetch('/.netlify/functions/public_order', {
+                    const res = await fetch('/api/public_order', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

@@ -213,7 +213,7 @@ const getRejectionTemplate = (data) => {
     `;
 };
 
-exports.handler = async (event, context) => {
+const netlifyHandler = async (event, context) => {
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
@@ -395,5 +395,26 @@ exports.handler = async (event, context) => {
     } catch (error) {
         console.error("Backend Employees Error:", error);
         return respond(500, { error: error.message });
+    }
+};
+
+module.exports = async (req, res) => {
+    const event = {
+        httpMethod: req.method,
+        path: req.url.split('?')[0],
+        queryStringParameters: req.query || {},
+        body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
+        headers: req.headers
+    };
+    
+    try {
+        const result = await netlifyHandler(event, {});
+        if (result.headers) {
+            Object.keys(result.headers).forEach(k => res.setHeader(k, result.headers[k]));
+        }
+        res.status(result.statusCode || 200).send(result.body);
+    } catch (err) {
+        console.error("Wrapper Error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };

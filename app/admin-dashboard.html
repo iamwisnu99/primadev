@@ -556,7 +556,7 @@
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <code id="midtransWebhookUrl"
                                         style="flex: 1; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: 0.82rem; color: var(--text); word-break: break-all;">
-                                        https://apps-primadev.netlify.app/.netlify/functions/webhook
+                                        https://apps-primadev.netlify.app/api/webhook
                                     </code>
                                     <button class="btn btn-secondary" onclick="copyWebhookUrl()"
                                         style="flex-shrink: 0; padding: 8px 14px;">
@@ -637,7 +637,7 @@
                                 <span>Webhook URL Xendit (atur di Dashboard):
                                     <code
                                         style="display: block; margin-top: 5px; padding: 8px 10px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border);">
-                                        https://apps-primadev.netlify.app/.netlify/functions/webhook
+                                        https://apps-primadev.netlify.app/api/webhook
                                     </code>
                                 </span>
                             </div>
@@ -1343,7 +1343,7 @@
 
 
         try {
-            const configRes = await fetch('/.netlify/functions/get-config');
+            const configRes = await fetch('/api/get-config');
             if (!configRes.ok) throw new Error('Failed to load config');
             const firebaseConfig = await configRes.json();
             if (!firebaseConfig?.apiKey) throw new Error('Firebase API Key missing');
@@ -1636,7 +1636,7 @@
                 <td data-label="Status">${statusBadge}</td>
                 <td data-label="Expired" style="font-size:0.82rem;">${item.expiryDate || '—'}</td>
                 <td data-label="Aksi" style="text-align:right;">
-                    <a href="/.netlify/functions/invoice?id=${item.id}" target="_blank" class="action-btn btn-invoice" title="Invoice"><i class="fa-solid fa-file-invoice"></i></a>
+                    <a href="/api/invoice?id=${item.id}" target="_blank" class="action-btn btn-invoice" title="Invoice"><i class="fa-solid fa-file-invoice"></i></a>
                     <button class="action-btn btn-edit" onclick="openEditFunc('${item.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
                     <button class="action-btn btn-delete" onclick="deleteFunc('${item.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
                 </td>
@@ -2438,7 +2438,7 @@
 
 
 
-        const EMP_API = '/.netlify/functions/employees';
+        const EMP_API = '/api/employees';
 
         window.toggleSubmenu = (id) => {
             document.getElementById(id)?.classList.toggle('open');
@@ -2809,7 +2809,7 @@
             const tbody = document.getElementById('vacanciesTableBody');
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Memuat data...</td></tr>';
             try {
-                const res = await fetch('/.netlify/functions/vacancies');
+                const res = await fetch('/api/vacancies');
                 const data = await res.json();
                 currentVacancies = Array.isArray(data) ? data : [];
                 renderVacanciesAdmin();
@@ -2884,7 +2884,7 @@
             }
 
             try {
-                const res = await fetch('/.netlify/functions/vacancies', {
+                const res = await fetch('/api/vacancies', {
                     method: 'POST',
                     body: JSON.stringify({ id, title, description, active })
                 });
@@ -2913,7 +2913,7 @@
 
             if (result.isConfirmed) {
                 try {
-                    const res = await fetch('/.netlify/functions/vacancies?id=' + id, { method: 'DELETE' });
+                    const res = await fetch('/api/vacancies?id=' + id, { method: 'DELETE' });
                     const out = await res.json();
                     if (out.success) {
                         Swal.fire('Dihapus!', 'Lowongan berhasil dihapus.', 'success');

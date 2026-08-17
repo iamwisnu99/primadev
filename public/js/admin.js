@@ -100,11 +100,11 @@
             try {
                 const dataURL = signaturePad.toDataURL('image/png');
 
-                const tokenRes = await fetch('/.netlify/functions/get-config');
+                const tokenRes = await fetch('/api/get-config');
                 const cfg = await tokenRes.json();
                 const adminToken = cfg.adminToken || '';
 
-                const res = await fetch('/.netlify/functions/signature', {
+                const res = await fetch('/api/signature', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
                     body: JSON.stringify({ type: 'signature', data: dataURL })
@@ -143,7 +143,7 @@
 
         async function loadSavedSignature() {
             try {
-                const res = await fetch('/.netlify/functions/signature');
+                const res = await fetch('/api/signature');
                 const data = await res.json();
                 showSigPreview(data.signature || null);
             } catch (e) {

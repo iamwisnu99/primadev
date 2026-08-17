@@ -64,7 +64,7 @@ const getPremiumTemplate = (data) => {
                 </table>
 
                 <div style="text-align: center; margin-top: 40px;">
-                    <a href="${BASE_URL}/.netlify/functions/invoice?id=${data.key}" class="btn-invoice">
+                    <a href="${BASE_URL}/api/invoice?id=${data.key}" class="btn-invoice">
                         Lihat INVOICE
                     </a>
                     <p style="margin-top: 15px; font-size: 12px; color: #94a3b8;">

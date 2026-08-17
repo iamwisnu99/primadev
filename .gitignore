@@ -8,3 +8,5 @@ dist/
 3d.png
 # Local Netlify folder
 .netlify
+.vercel
+.env*

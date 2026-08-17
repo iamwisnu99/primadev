@@ -44,7 +44,7 @@ const respond = (statusCode, body) => ({
     body: JSON.stringify(body)
 });
 
-exports.handler = async (event) => {
+const netlifyHandler = async (event) => {
 
     if (event.httpMethod === 'OPTIONS') {
         return { statusCode: 204, headers: CORS_HEADERS, body: '' };
@@ -155,4 +155,25 @@ exports.handler = async (event) => {
         licenseType: lic.type || 'extension',
         message: 'Lisensi valid. Extension berhasil diaktifkan.'
     });
+};
+
+module.exports = async (req, res) => {
+    const event = {
+        httpMethod: req.method,
+        path: req.url.split('?')[0],
+        queryStringParameters: req.query || {},
+        body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
+        headers: req.headers
+    };
+    
+    try {
+        const result = await netlifyHandler(event, {});
+        if (result.headers) {
+            Object.keys(result.headers).forEach(k => res.setHeader(k, result.headers[k]));
+        }
+        res.status(result.statusCode || 200).send(result.body);
+    } catch (err) {
+        console.error("Wrapper Error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 };

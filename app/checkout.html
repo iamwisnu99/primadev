@@ -701,7 +701,7 @@
             }
 
             try {
-                const res = await fetch('/.netlify/functions/public_order');
+                const res = await fetch('/api/public_order');
                 const data = await res.json();
                 CATALOG = data.catalog;
                 if (data.portfolio) PORTFOLIO_MAP = data.portfolio;
@@ -862,7 +862,7 @@
             }
 
             try {
-                const res = await fetch('/.netlify/functions/public_order', {
+                const res = await fetch('/api/public_order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

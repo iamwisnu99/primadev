@@ -59,7 +59,7 @@ if (!admin.apps.length) {
 
 const db = admin.database();
 
-exports.handler = async (event, context) => {
+const netlifyHandler = async (event, context) => {
   const { id } = event.queryStringParameters;
   if (!id) return { statusCode: 400, body: "Mana ID-nya bos?" };
 
@@ -236,4 +236,24 @@ exports.handler = async (event, context) => {
     console.error("Invoice Error:", error);
     return { statusCode: 500, body: "Error Backend: " + error.message };
   }
+};
+module.exports = async (req, res) => {
+    const event = {
+        httpMethod: req.method,
+        path: req.url.split('?')[0],
+        queryStringParameters: req.query || {},
+        body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
+        headers: req.headers
+    };
+    
+    try {
+        const result = await netlifyHandler(event, {});
+        if (result.headers) {
+            Object.keys(result.headers).forEach(k => res.setHeader(k, result.headers[k]));
+        }
+        res.status(result.statusCode || 200).send(result.body);
+    } catch (err) {
+        console.error("Wrapper Error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 };
