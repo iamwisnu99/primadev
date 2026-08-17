@@ -1,8 +1,14 @@
 {
   "cleanUrls": true,
+  "outputDirectory": ".",
   "functions": {
     "api/invoice.js": {
       "includeFiles": "public/logo.png"
     }
-  }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/(.*)", "destination": "/$1" }
+  ]
 }
+
