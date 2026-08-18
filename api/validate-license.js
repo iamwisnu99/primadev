@@ -139,7 +139,7 @@ const netlifyHandler = async (event) => {
             }
             return respond(200, {
                 valid: false,
-                error: 'Lisensi Anda sudah kedaluwarsa. Silakan perpanjang di primadev.store.'
+                error: 'Lisensi Anda sudah kedaluwarsa. Silakan perpanjang di primadev store.'
             });
         }
     }
@@ -165,7 +165,7 @@ module.exports = async (req, res) => {
         body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
         headers: req.headers
     };
-    
+
     try {
         const result = await netlifyHandler(event, {});
         if (result.headers) {

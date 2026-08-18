@@ -33,13 +33,12 @@ const db = admin.database();
 
 const netlifyHandler = async (event, context) => {
     const allowedOrigins = [
-        'https://apps-primadev.netlify.app',
-        'https://primadev.netlify.app',
+        'https://primadev.id',
         process.env.ALLOWED_ORIGIN || ''
     ].filter(Boolean);
     const requestOrigin = event.headers.origin || event.headers.Origin || '';
-    const corsOrigin = (allowedOrigins.includes(requestOrigin) || !requestOrigin) 
-        ? (requestOrigin || allowedOrigins[0]) 
+    const corsOrigin = (allowedOrigins.includes(requestOrigin) || !requestOrigin)
+        ? (requestOrigin || allowedOrigins[0])
         : allowedOrigins[0];
 
     const headers = {
@@ -121,7 +120,7 @@ module.exports = async (req, res) => {
         body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
         headers: req.headers
     };
-    
+
     try {
         const result = await netlifyHandler(event, {});
         if (result.headers) {

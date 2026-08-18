@@ -19,4 +19,4 @@ Disallow: /app/thankyou
 Disallow: /netlify/
 Disallow: /.netlify/
 
-Sitemap: https://apps-primadev.netlify.app/sitemap.xml
+Sitemap: https://primadev.id/sitemap.xml

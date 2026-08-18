@@ -105,8 +105,8 @@ const getAdminNotificationTemplate = (data) => {
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
                     &copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.<br>
-                    <a href="https://apps-primadev.netlify.app" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
-                    <a href="https://apps-primadev.netlify.app/app/legal/syarat-ketentuan" style="color: #6366f1; text-decoration: none;">Syarat & Ketentuan</a>
+                    <a href="https://primadev.id" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
+                    <a href="https://primadev.id/app/legal/syarat-ketentuan" style="color: #6366f1; text-decoration: none;">Syarat & Ketentuan</a>
                 </p>
             </div>
         </div>
@@ -147,7 +147,7 @@ const getAcceptanceTemplate = (data) => {
                     <span class="license-key">${data.empId}</span>
                 </div>
                 <div style="text-align: center; margin-top: 30px; margin-bottom: 30px;">
-                    <a href="https://apps-primadev.netlify.app/app/employer?id=${data.empId}" style="background-color: #10b981; color: #ffffff; padding: 14px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);">Lihat Detail</a>
+                    <a href="https://primadev.id/app/employer?id=${data.empId}" style="background-color: #10b981; color: #ffffff; padding: 14px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);">Lihat Detail</a>
                 </div>
                 <p>Tim HR kami akan segera menghubungi Anda melalui WhatsApp atau Email untuk menginformasikan proses onboarding dan tahap selanjutnya.</p>
                 <p>Sekali lagi, selamat! Kami tidak sabar melihat kontribusi luar biasa Anda di Primadev.</p>
@@ -158,8 +158,8 @@ const getAcceptanceTemplate = (data) => {
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
                     &copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.<br>
-                    <a href="https://apps-primadev.netlify.app" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
-                    <a href="https://apps-primadev.netlify.app/app/legal/syarat-ketentuan" style="color: #6366f1; text-decoration: none;">Syarat & Ketentuan</a>
+                    <a href="https://primadev.id" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
+                    <a href="https://primadev.id/app/legal/syarat-ketentuan" style="color: #6366f1; text-decoration: none;">Syarat & Ketentuan</a>
                 </p>
             </div>
         </div>
@@ -203,8 +203,8 @@ const getRejectionTemplate = (data) => {
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
                     &copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.<br>
-                    <a href="https://apps-primadev.netlify.app" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
-                    <a href="https://apps-primadev.netlify.app/app/legal/syarat-ketentuan" style="color: #6366f1; text-decoration: none;">Syarat & Ketentuan</a>
+                    <a href="https://primadev.id" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
+                    <a href="https://primadev.id/app/legal/syarat-ketentuan" style="color: #6366f1; text-decoration: none;">Syarat & Ketentuan</a>
                 </p>
             </div>
         </div>

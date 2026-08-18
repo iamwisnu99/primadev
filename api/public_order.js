@@ -461,7 +461,7 @@ const executeMidtransCharge = async (payload, serverKey, isProduction, finishUrl
     const customerDetails = {
         first_name: nameParts[0] || 'Pelanggan',
         last_name: nameParts.slice(1).join(' ') || '',
-        email: buyerEmail || 'customer@primadev.com',
+        email: buyerEmail || 'customer@primadev.id',
         phone: buyerPhone || ''
     };
 
@@ -664,8 +664,7 @@ const executeMidtransCharge = async (payload, serverKey, isProduction, finishUrl
 
 const netlifyHandler = async (event, context) => {
     const allowedOrigins = [
-        'https://apps-primadev.netlify.app',
-        'https://primadev.netlify.app',
+        'https://primadev.id',
         process.env.ALLOWED_ORIGIN || ''
     ].filter(Boolean);
     const requestOrigin = event.headers.origin || event.headers.Origin || '';
@@ -684,13 +683,13 @@ const netlifyHandler = async (event, context) => {
     let PRICING_DB = {};
     let PORTFOLIO_DB = {};
 
-    const host = event.headers.host || event.headers.Host || 'apps-primadev.netlify.app';
+    const host = event.headers.host || event.headers.Host || 'primadev.id';
     const proto = event.headers['x-forwarded-proto'] || 'https';
     const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
     const originUrl = `${proto}://${host}`;
 
     const publicOriginForWebhook = isLocalhost
-        ? (process.env.PUBLIC_ORIGIN_URL || 'https://apps-primadev.netlify.app')
+        ? (process.env.PUBLIC_ORIGIN_URL || 'https://primadev.id')
         : originUrl;
     const dynamicWebhookUrl = `${publicOriginForWebhook}/.netlify/functions/webhook`;
     const successRedirectUrl = `${originUrl}/app/thankyou`;
@@ -700,7 +699,7 @@ const netlifyHandler = async (event, context) => {
         try {
             const prodSnap = await db.ref('products').once('value');
             if (prodSnap.exists()) PRICING_DB = prodSnap.val();
-            
+
             const portSnap = await db.ref('portfolio').once('value');
             if (portSnap.exists()) PORTFOLIO_DB = portSnap.val();
         } catch (e) {
@@ -733,7 +732,7 @@ const netlifyHandler = async (event, context) => {
         const safePortfolio = {};
         for (const [key, val] of Object.entries(PORTFOLIO_DB)) {
             const safeVal = { ...val };
-            delete safeVal.images; 
+            delete safeVal.images;
             delete safeVal.screenshots;
             delete safeVal.base64;
             safePortfolio[key] = safeVal;
@@ -1052,7 +1051,7 @@ const netlifyHandler = async (event, context) => {
             const duration = trxData.duration || 'monthly';
             const product = PRICING_DB[appId] || { name: 'Aplikasi', price: {} };
             const finalBuyerName = trxData.customerName || 'Customer';
-            const finalBuyerEmail = trxData.customerEmail || 'no-reply@primadev.com';
+            const finalBuyerEmail = trxData.customerEmail || 'no-reply@primadev.id';
 
             const key = generateRandomKey();
             const expiry = new Date();
@@ -1121,7 +1120,7 @@ module.exports = async (req, res) => {
         body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
         headers: req.headers
     };
-    
+
     try {
         const result = await netlifyHandler(event, {});
         if (result.headers) {
