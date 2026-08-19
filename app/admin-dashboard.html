@@ -18,7 +18,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/public/css/admin.css">
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 </head>
 
 <body>
@@ -1168,14 +1171,21 @@
                         <input type="text" class="form-input" id="pShortDesc" required placeholder="Deskripsi singkat (1-2 kalimat)">
                     </div>
 
+                    <div class="form-group">
+                        <label class="form-label">Gambar Kustom / Thumbnail Utama (Opsional)</label>
+                        <input type="file" id="pCustomImageFile" accept="image/*" class="form-input" onchange="onCustomImageSelected(event)">
+                        <img id="pCustomImagePreview" src="" style="display:none; width:100%; max-width:400px; margin-top:10px; border-radius:8px; border:1px solid var(--border);">
+                    </div>
+
                     <div id="pWebsiteFields">
                         <div class="form-group">
-                            <label class="form-label">URL Website <span style="color:var(--text-3);font-weight:400;">(dipakai untuk auto-thumbnail)</span></label>
+                            <label class="form-label">URL Website <span style="color:var(--text-3);font-weight:400;">(dipakai untuk auto-thumbnail jika gambar kustom tidak ada)</span></label>
                             <input type="url" class="form-input" id="pWebsiteUrl" placeholder="https://example.com">
                         </div>
+                        
                         <div style="padding:12px;background:#eff6ff;border-radius:10px;border:1px solid #bfdbfe;font-size:0.8rem;color:#1e40af;margin-bottom:16px;">
                             <i class="fa-solid fa-circle-info" style="margin-right:6px;"></i>
-                            Thumbnail akan otomatis diambil dari URL website menggunakan layanan screenshot gratis.
+                            Jika gambar kustom dikosongkan, thumbnail akan otomatis diambil dari URL website.
                         </div>
                     </div>
 
@@ -2134,7 +2144,9 @@
                 const badgeText = isDraft ? 'Draft' : typeLabel;
 
                 let thumbHtml = '';
-                if (type === 'website' && item.url) {
+                if (item.customImage) {
+                    thumbHtml = `<div class="portfolio-card-thumb"><img src="${item.customImage}" alt="${item.name}" onerror="this.parentElement.innerHTML='<i class=\"fa-solid fa-image\"></i>'"></div>`;
+                } else if (type === 'website' && item.url) {
                     const thumbUrl = `https://s0.wp.com/mshots/v1/${encodeURIComponent(item.url)}?w=400&h=220`;
                     thumbHtml = `<div class="portfolio-card-thumb"><img src="${thumbUrl}" alt="${item.name}" onerror="this.parentElement.innerHTML='<i class=\"fa-solid fa-globe\"></i>'"></div>`;
                 } else if ((type === 'app' || type === 'extension') && item.screenshots && item.screenshots.length > 0) {
@@ -2189,13 +2201,18 @@
             editPortfolioKey = null;
             portfolioScreenshots = [];
             portfolioIcon = null;
+            customPortfolioImage = null; // Clear cropper image
+            
             document.getElementById('portfolioForm').reset();
             document.getElementById('portfolioFormId').value = '';
             document.getElementById('pLinkedAppId').value = '';
             document.getElementById('portfolioAppLabel').textContent = 'Pilih Aplikasi dari App Manager';
             document.getElementById('portfolioModalTitle').innerHTML = '<i class="fa-solid fa-plus" style="color:var(--primary);margin-right:8px;"></i>Tambah Portfolio Item';
             document.getElementById('portfolioSubmitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan';
-
+            
+            const previewEl = document.getElementById('pCustomImagePreview');
+            if (previewEl) { previewEl.src = ''; previewEl.style.display = 'none'; }
+            
             document.querySelector('input[name="portfolioType"][value="website"]').checked = true;
             onPortfolioTypeChange();
             renderScreenshotPreviews();
@@ -2209,6 +2226,7 @@
             editPortfolioKey = key;
             portfolioScreenshots = item.screenshots ? [...item.screenshots] : [];
             portfolioIcon = item.appIcon || null;
+            customPortfolioImage = item.customImage || null;
 
             document.getElementById('portfolioFormId').value = key;
             document.getElementById('pName').value = item.name || '';
@@ -2217,7 +2235,17 @@
             document.getElementById('pFeatures').value = (item.features || []).join('\n');
             document.getElementById('pStoreUrl').value = item.storeUrl || '';
             document.getElementById('pWebsiteUrl').value = item.url || '';
-
+            
+            const previewEl = document.getElementById('pCustomImagePreview');
+            if (previewEl) { 
+                if (customPortfolioImage) {
+                    previewEl.src = customPortfolioImage;
+                    previewEl.style.display = 'block';
+                } else {
+                    previewEl.src = '';
+                    previewEl.style.display = 'none';
+                }
+            }
 
             if (productsData && productsData[key]) {
                 document.getElementById('pLinkedAppId').value = key;
@@ -2227,11 +2255,9 @@
                 document.getElementById('portfolioAppLabel').textContent = 'Tidak Dihubungkan';
             }
 
-
             const typeInput = document.querySelector(`input[name="portfolioType"][value="${item.type || 'website'}"]`);
             if (typeInput) typeInput.checked = true;
             onPortfolioTypeChange();
-
 
             const statusInput = document.querySelector(`input[name="pStatus"][value="${item.status || 'published'}"]`);
             if (statusInput) statusInput.checked = true;
@@ -2278,6 +2304,8 @@
                     shortDesc: document.getElementById('pShortDesc').value.trim(),
                     updatedAt: Date.now()
                 };
+
+                if (customPortfolioImage) data.customImage = customPortfolioImage;
 
                 if (type === 'website') {
                     data.url = document.getElementById('pWebsiteUrl').value.trim();
@@ -2928,7 +2956,72 @@
         // Auto fetch when tab is clicked
         document.querySelector('[data-tab="vacancies"]').addEventListener('click', fetchVacanciesAdmin);
     </script>
+    <!-- Modal Cropper -->
+    <div class="modal-overlay" id="cropModal">
+        <div class="modal-box" style="max-width: 600px;">
+            <div class="modal-header">
+                <div class="modal-title">Sesuaikan Gambar</div>
+                <button class="modal-close" onclick="closeModal('cropModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div style="max-height: 400px; overflow: hidden; display: flex; justify-content: center; align-items: center; background: #f3f4f6; border-radius: 8px;">
+                    <img id="cropperImage" src="" style="max-width: 100%; display: block;">
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn btn-outline" onclick="closeModal('cropModal')">Batal</button>
+                <button class="btn btn-primary" onclick="applyCrop()">Terapkan Crop</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+        let cropperInstance = null;
+        let customPortfolioImage = null; // Holds the base64
+
+        function onCustomImageSelected(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('cropperImage').src = e.target.result;
+                showModal('cropModal');
+                
+                if (cropperInstance) cropperInstance.destroy();
+                cropperInstance = new Cropper(document.getElementById('cropperImage'), {
+                    aspectRatio: 16 / 9,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function applyCrop() {
+            if (!cropperInstance) return;
+            const canvas = cropperInstance.getCroppedCanvas({
+                width: 800,
+                height: 450,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high',
+            });
+            
+            customPortfolioImage = canvas.toDataURL('image/jpeg', 0.85);
+            
+            // Tampilkan preview di form portfolio
+            const previewEl = document.getElementById('pCustomImagePreview');
+            if (previewEl) {
+                previewEl.src = customPortfolioImage;
+                previewEl.style.display = 'block';
+            }
+            
+            closeModal('cropModal');
+        }
+    </script>
     <script src="/public/js/admin.js"></script>
 </body>
 
 </html>
+
