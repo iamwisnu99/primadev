@@ -10,5 +10,8 @@
     "node-fetch": "^2.7.0",
     "nodemailer": "^9.0.3",
     "pdfkit": "^0.12.3"
+  },
+  "allowScripts": {
+    "protobufjs": true
   }
 }
