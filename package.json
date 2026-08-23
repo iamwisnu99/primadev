@@ -6,6 +6,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.93.3",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "firebase-admin": "^12.7.0",
     "node-fetch": "^2.7.0",
     "nodemailer": "^9.0.3",
