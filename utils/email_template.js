@@ -74,11 +74,11 @@ const getPremiumTemplate = (data) => {
             </div>
 
             <div class="footer">
-                <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PT. PRIMADEV DIGITAL TECHNOLOGY</p>
+                <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PRIMADEV DIGITAL TECHNOLOGY</p>
                 <p>Wangon<br>Kelurahan Wangon, Kecamatan Wangon<br>Kabupaten Banyumas, Jawa Tengah, Indonesia<br>53176</p>
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
-                    &copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.<br>
+                    &copy; ${new Date().getFullYear()} Primadev Digital Technology. All rights reserved.<br>
                     <a href="${HOME_URL}" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
                     <a href="${LEGAL_URL}" style="color: #6366f1; text-decoration: none;">Privacy Policy</a>
                 </p>
@@ -138,7 +138,7 @@ const getRenewalTemplate = (data) => {
                 </div>
             </div>
             <div class="footer">
-                <p>&copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.</p>
+                <p>&copy; ${new Date().getFullYear()} Primadev Digital Technology. All rights reserved.</p>
             </div>
         </div>
     </body>

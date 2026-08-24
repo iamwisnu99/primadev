@@ -38,7 +38,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev">
-            <div class="sidebar-company-title">PT. Primadev Digital Technology</div>
+            <div class="sidebar-company-title">Primadev Digital Technology</div>
         </div>
 
         <nav class="sidebar-nav">
@@ -413,8 +413,10 @@
         <div class="section" id="tab-vacancies">
             <div class="card">
                 <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);"><i class="fa-solid fa-briefcase"></i> Kelola Lowongan Kerja</h3>
-                    <button class="btn btn-primary" onclick="openAddVacancyModal()"><i class="fas fa-plus"></i> Tambah Lowongan</button>
+                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);"><i
+                            class="fa-solid fa-briefcase"></i> Kelola Lowongan Kerja</h3>
+                    <button class="btn btn-primary" onclick="openAddVacancyModal()"><i class="fas fa-plus"></i> Tambah
+                        Lowongan</button>
                 </div>
                 <div class="table-container">
                     <table class="table">
@@ -737,14 +739,18 @@
 
         <div class="section" id="tab-app-details">
 
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
+            <div
+                style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
                 <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #0ea5e9, #2563eb); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <div
+                        style="width: 44px; height: 44px; background: linear-gradient(135deg, #0ea5e9, #2563eb); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa-solid fa-layer-group" style="color: #fff; font-size: 1.1rem;"></i>
                     </div>
                     <div>
-                        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0;">App Details Manager</h2>
-                        <p style="font-size: 0.85rem; color: var(--text-2); margin: 2px 0 0;">Kelola portfolio Website, Aplikasi, dan Extension yang tampil di halaman utama.</p>
+                        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0;">App Details
+                            Manager</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-2); margin: 2px 0 0;">Kelola portfolio Website,
+                            Aplikasi, dan Extension yang tampil di halaman utama.</p>
                     </div>
                 </div>
                 <button class="btn btn-primary" onclick="openCreatePortfolioModal()">
@@ -767,7 +773,8 @@
                 </button>
             </div>
 
-            <div id="portfolioGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px;">
+            <div id="portfolioGrid"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px;">
                 <div class="empty-state">
                     <i class="fa-solid fa-layer-group"></i>
                     <h4>Belum Ada Item</h4>
@@ -1142,7 +1149,8 @@
                 <div class="modal-title" id="portfolioModalTitle">
                     <i class="fa-solid fa-plus" style="color:var(--primary);margin-right:8px;"></i>Tambah Portfolio
                 </div>
-                <button class="modal-close" onclick="closeModal('portfolioModal')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" onclick="closeModal('portfolioModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <form id="portfolioForm" onsubmit="handlePortfolioSubmit(event)">
@@ -1151,41 +1159,57 @@
                     <div class="form-group">
                         <label class="form-label">Tipe Item</label>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <label id="ptype-website" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.87rem;font-weight:600;transition:all 0.2s;">
-                                <input type="radio" name="portfolioType" value="website" onchange="onPortfolioTypeChange()" style="accent-color:var(--primary);"> <i class="fa-solid fa-globe" style="color:#0ea5e9;"></i> Website
+                            <label id="ptype-website"
+                                style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.87rem;font-weight:600;transition:all 0.2s;">
+                                <input type="radio" name="portfolioType" value="website"
+                                    onchange="onPortfolioTypeChange()" style="accent-color:var(--primary);"> <i
+                                    class="fa-solid fa-globe" style="color:#0ea5e9;"></i> Website
                             </label>
-                            <label id="ptype-app" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.87rem;font-weight:600;transition:all 0.2s;">
-                                <input type="radio" name="portfolioType" value="app" onchange="onPortfolioTypeChange()" style="accent-color:var(--primary);"> <i class="fa-solid fa-mobile-screen-button" style="color:#1865ca;"></i> Aplikasi
+                            <label id="ptype-app"
+                                style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.87rem;font-weight:600;transition:all 0.2s;">
+                                <input type="radio" name="portfolioType" value="app" onchange="onPortfolioTypeChange()"
+                                    style="accent-color:var(--primary);"> <i class="fa-solid fa-mobile-screen-button"
+                                    style="color:#1865ca;"></i> Aplikasi
                             </label>
-                            <label id="ptype-extension" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.87rem;font-weight:600;transition:all 0.2s;">
-                                <input type="radio" name="portfolioType" value="extension" onchange="onPortfolioTypeChange()" style="accent-color:var(--primary);"> <i class="fa-solid fa-puzzle-piece" style="color:#7c3aed;"></i> Extension
+                            <label id="ptype-extension"
+                                style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.87rem;font-weight:600;transition:all 0.2s;">
+                                <input type="radio" name="portfolioType" value="extension"
+                                    onchange="onPortfolioTypeChange()" style="accent-color:var(--primary);"> <i
+                                    class="fa-solid fa-puzzle-piece" style="color:#7c3aed;"></i> Extension
                             </label>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Nama</label>
-                        <input type="text" class="form-input" id="pName" required placeholder="Nama website / aplikasi / extension">
+                        <input type="text" class="form-input" id="pName" required
+                            placeholder="Nama website / aplikasi / extension">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Deskripsi Singkat</label>
-                        <input type="text" class="form-input" id="pShortDesc" required placeholder="Deskripsi singkat (1-2 kalimat)">
+                        <input type="text" class="form-input" id="pShortDesc" required
+                            placeholder="Deskripsi singkat (1-2 kalimat)">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Gambar Kustom / Thumbnail Utama (Opsional)</label>
-                        <input type="file" id="pCustomImageFile" accept="image/*" class="form-input" onchange="onCustomImageSelected(event)">
-                        <img id="pCustomImagePreview" src="" style="display:none; width:100%; max-width:400px; margin-top:10px; border-radius:8px; border:1px solid var(--border);">
+                        <input type="file" id="pCustomImageFile" accept="image/*" class="form-input"
+                            onchange="onCustomImageSelected(event)">
+                        <img id="pCustomImagePreview" src=""
+                            style="display:none; width:100%; max-width:400px; margin-top:10px; border-radius:8px; border:1px solid var(--border);">
                     </div>
 
                     <div id="pWebsiteFields">
                         <div class="form-group">
-                            <label class="form-label">URL Website <span style="color:var(--text-3);font-weight:400;">(dipakai untuk auto-thumbnail jika gambar kustom tidak ada)</span></label>
+                            <label class="form-label">URL Website <span
+                                    style="color:var(--text-3);font-weight:400;">(dipakai untuk auto-thumbnail jika
+                                    gambar kustom tidak ada)</span></label>
                             <input type="url" class="form-input" id="pWebsiteUrl" placeholder="https://example.com">
                         </div>
-                        
-                        <div style="padding:12px;background:#eff6ff;border-radius:10px;border:1px solid #bfdbfe;font-size:0.8rem;color:#1e40af;margin-bottom:16px;">
+
+                        <div
+                            style="padding:12px;background:#eff6ff;border-radius:10px;border:1px solid #bfdbfe;font-size:0.8rem;color:#1e40af;margin-bottom:16px;">
                             <i class="fa-solid fa-circle-info" style="margin-right:6px;"></i>
                             Jika gambar kustom dikosongkan, thumbnail akan otomatis diambil dari URL website.
                         </div>
@@ -1198,7 +1222,8 @@
                                 <input type="hidden" id="pLinkedAppId" value="">
                                 <div class="dropdown-trigger" onclick="toggleDD('ddPortfolioApp')">
                                     <div>
-                                        <span class="trigger-label" id="portfolioAppLabel">Pilih Aplikasi dari App Manager</span>
+                                        <span class="trigger-label" id="portfolioAppLabel">Pilih Aplikasi dari App
+                                            Manager</span>
                                     </div>
                                     <i class="fa-solid fa-chevron-down trigger-chevron"></i>
                                 </div>
@@ -1208,17 +1233,21 @@
 
                         <div class="form-group">
                             <label class="form-label">Deskripsi Lengkap</label>
-                            <textarea class="form-input" id="pLongDesc" rows="4" placeholder="Deskripsi detail fitur dan manfaat..."></textarea>
+                            <textarea class="form-input" id="pLongDesc" rows="4"
+                                placeholder="Deskripsi detail fitur dan manfaat..."></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Fitur Utama <span style="color:var(--text-3);font-weight:400;">(satu per baris)</span></label>
-                            <textarea class="form-input" id="pFeatures" rows="4" placeholder="Kirim pesan massal\nAutomasi reply\nAnti-block system"></textarea>
+                            <label class="form-label">Fitur Utama <span
+                                    style="color:var(--text-3);font-weight:400;">(satu per baris)</span></label>
+                            <textarea class="form-input" id="pFeatures" rows="4"
+                                placeholder="Kirim pesan massal\nAutomasi reply\nAnti-block system"></textarea>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Link Download / Store URL</label>
-                            <input type="url" class="form-input" id="pStoreUrl" placeholder="https://play.google.com/... atau https://chromewebstore...">
+                            <input type="url" class="form-input" id="pStoreUrl"
+                                placeholder="https://play.google.com/... atau https://chromewebstore...">
                         </div>
 
                         <div class="form-group">
@@ -1227,31 +1256,46 @@
                                 <span style="color:var(--text-3);font-weight:400;"> (opsional, maks 1MB)</span>
                             </label>
                             <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-                                <label style="display:flex;align-items:center;gap:10px;padding:10px 18px;border:2px dashed var(--border);border-radius:12px;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--text-2);background:var(--bg);transition:all 0.2s;"
+                                <label
+                                    style="display:flex;align-items:center;gap:10px;padding:10px 18px;border:2px dashed var(--border);border-radius:12px;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--text-2);background:var(--bg);transition:all 0.2s;"
                                     onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)';"
                                     onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-2)';">
                                     <i class="fa-solid fa-image" style="font-size:1.1rem;"></i>
                                     Upload Icon
-                                    <input type="file" accept="image/*" style="display:none;" onchange="handleIconFile(this)">
+                                    <input type="file" accept="image/*" style="display:none;"
+                                        onchange="handleIconFile(this)">
                                 </label>
                                 <div id="pIconPreview"></div>
                             </div>
                             <div style="margin-top:8px;font-size:0.75rem;color:var(--text-3);">
                                 <i class="fa-solid fa-circle-info" style="margin-right:4px;"></i>
-                                Icon akan ditampilkan di card dengan sudut membulat (rounded corner). Disarankan 1:1 (persegi).
+                                Icon akan ditampilkan di card dengan sudut membulat (rounded corner). Disarankan 1:1
+                                (persegi).
                             </div>
                         </div>
 
 
                         <div class="form-group">
-                            <label class="form-label">Screenshot Aplikasi <span style="color:var(--text-3);font-weight:400;">(max 5 gambar, maks 1MB/gambar)</span></label>
-                            <div id="pScreenshotUploadArea" style="border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);" onclick="document.getElementById('pScreenshotInput').click()" ondragover="event.preventDefault();this.style.borderColor='var(--primary)';" ondragleave="this.style.borderColor='var(--border)';" ondrop="handleScreenshotDrop(event)">
-                                <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem;color:var(--text-3);margin-bottom:8px;"></i>
-                                <div style="font-size:0.88rem;color:var(--text-2);font-weight:600;">Klik atau drag & drop gambar di sini</div>
-                                <div style="font-size:0.75rem;color:var(--text-3);margin-top:4px;">PNG, JPG, WEBP — maks 1MB per gambar</div>
+                            <label class="form-label">Screenshot Aplikasi <span
+                                    style="color:var(--text-3);font-weight:400;">(max 5 gambar, maks
+                                    1MB/gambar)</span></label>
+                            <div id="pScreenshotUploadArea"
+                                style="border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);"
+                                onclick="document.getElementById('pScreenshotInput').click()"
+                                ondragover="event.preventDefault();this.style.borderColor='var(--primary)';"
+                                ondragleave="this.style.borderColor='var(--border)';"
+                                ondrop="handleScreenshotDrop(event)">
+                                <i class="fa-solid fa-cloud-arrow-up"
+                                    style="font-size:2rem;color:var(--text-3);margin-bottom:8px;"></i>
+                                <div style="font-size:0.88rem;color:var(--text-2);font-weight:600;">Klik atau drag &
+                                    drop gambar di sini</div>
+                                <div style="font-size:0.75rem;color:var(--text-3);margin-top:4px;">PNG, JPG, WEBP — maks
+                                    1MB per gambar</div>
                             </div>
-                            <input type="file" id="pScreenshotInput" multiple accept="image/*" style="display:none;" onchange="handleScreenshotFiles(this.files)">
-                            <div id="pScreenshotPreviews" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;"></div>
+                            <input type="file" id="pScreenshotInput" multiple accept="image/*" style="display:none;"
+                                onchange="handleScreenshotFiles(this.files)">
+                            <div id="pScreenshotPreviews" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
+                            </div>
                         </div>
                     </div>
 
@@ -1259,15 +1303,18 @@
                         <label class="form-label">Status Tampil</label>
                         <div style="display:flex;gap:10px;">
                             <label style="display:flex;align-items:center;gap:6px;font-size:0.87rem;cursor:pointer;">
-                                <input type="radio" name="pStatus" value="published" checked style="accent-color:var(--primary);"> Published
+                                <input type="radio" name="pStatus" value="published" checked
+                                    style="accent-color:var(--primary);"> Published
                             </label>
                             <label style="display:flex;align-items:center;gap:6px;font-size:0.87rem;cursor:pointer;">
-                                <input type="radio" name="pStatus" value="draft" style="accent-color:var(--primary);"> Draft
+                                <input type="radio" name="pStatus" value="draft" style="accent-color:var(--primary);">
+                                Draft
                             </label>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" id="portfolioSubmitBtn">
+                    <button type="submit" class="btn btn-primary"
+                        style="width:100%;justify-content:center;padding:13px;" id="portfolioSubmitBtn">
                         <i class="fa-solid fa-floppy-disk"></i> Simpan
                     </button>
                 </form>
@@ -1294,47 +1341,135 @@
     <style>
         /* ===== PORTFOLIO FILTER BUTTONS ===== */
         .portfolio-filter-btn {
-            display: inline-flex; align-items: center; gap: 7px;
-            padding: 9px 18px; border-radius: 100px;
-            border: 1.5px solid var(--border); background: var(--surface);
-            font-size: 0.85rem; font-weight: 600; color: var(--text-2);
-            cursor: pointer; transition: all 0.2s; font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 18px;
+            border-radius: 100px;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-2);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
         }
-        .portfolio-filter-btn:hover { border-color: var(--primary); color: var(--primary); }
-        .portfolio-filter-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+        .portfolio-filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .portfolio-filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
 
         /* ===== PORTFOLIO CARD ===== */
         .portfolio-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 16px; overflow: hidden; transition: all 0.25s;
-            display: flex; flex-direction: column;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.25s;
+            display: flex;
+            flex-direction: column;
         }
-        .portfolio-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.1); transform: translateY(-3px); }
+
+        .portfolio-card:hover {
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
         .portfolio-card-thumb {
-            width: 100%; height: 160px;
+            width: 100%;
+            height: 160px;
             background: linear-gradient(135deg, #e0e7ef, #c7d2fe);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.5rem; color: #94a3b8;
-            overflow: hidden; position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #94a3b8;
+            overflow: hidden;
+            position: relative;
         }
+
         .portfolio-card-thumb img {
-            width: 100%; height: 100%; object-fit: cover;
-            display: block; position: absolute; top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
-        .portfolio-card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+
+        .portfolio-card-body {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
         .portfolio-card-type {
-            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.06em; padding: 3px 9px; border-radius: 100px;
-            display: inline-block; width: fit-content;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 3px 9px;
+            border-radius: 100px;
+            display: inline-block;
+            width: fit-content;
         }
-        .ptype-website { background: #e0f2fe; color: #0369a1; }
-        .ptype-app { background: #dbeafe; color: #1d4ed8; }
-        .ptype-extension { background: #f3e8ff; color: #7c3aed; }
-        .ptype-draft { background: #f1f5f9; color: #64748b; }
-        .portfolio-card-title { font-weight: 700; font-size: 0.95rem; color: var(--text); }
-        .portfolio-card-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.5; flex: 1; }
-        .portfolio-card-actions { display: flex; gap: 8px; margin-top: 10px; border-top: 1px solid var(--border); padding-top: 12px; }
-        .portfolio-card-actions button { flex: 1; font-size: 0.8rem; }
+
+        .ptype-website {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .ptype-app {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .ptype-extension {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .ptype-draft {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .portfolio-card-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        .portfolio-card-desc {
+            font-size: 0.8rem;
+            color: var(--text-2);
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .portfolio-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+        }
+
+        .portfolio-card-actions button {
+            flex: 1;
+            font-size: 0.8rem;
+        }
     </style>
 
     <script type="module">
@@ -1541,17 +1676,17 @@
             const opt = document.getElementById('appDropdownOptions');
             const portOpt = document.getElementById('portfolioAppDropdownOptions');
 
-                        if (opt) opt.innerHTML = '';
+            if (opt) opt.innerHTML = '';
             if (portOpt) portOpt.innerHTML = `
                 <div class="opt-item" onclick="document.getElementById('pLinkedAppId').value=''; document.getElementById('portfolioAppLabel').textContent='Pilih Aplikasi dari App Manager'; closeDD('ddPortfolioApp');">
                     <div><span class="opt-title">Tidak Dihubungkan</span><span class="opt-desc">Biarkan Kosong</span></div>
                 </div>
             `;
 
-                        Object.keys(productsData).forEach(key => {
+            Object.keys(productsData).forEach(key => {
                 const a = productsData[key];
 
-                                if (opt) {
+                if (opt) {
                     const div = document.createElement('div');
                     div.className = 'opt-item';
                     div.innerHTML = `<div><span class="opt-title">${a.name}</span><span class="opt-desc">${key}</span></div><i class="fa-solid fa-check opt-check"></i>`;
@@ -1564,7 +1699,7 @@
                     opt.appendChild(div);
                 }
 
-                                if (portOpt) {
+                if (portOpt) {
                     const pDiv = document.createElement('div');
                     pDiv.className = 'opt-item';
                     pDiv.innerHTML = `<div><span class="opt-title">${a.name}</span><span class="opt-desc">${key}</span></div><i class="fa-solid fa-check opt-check"></i>`;
@@ -1572,13 +1707,13 @@
                         document.getElementById('pLinkedAppId').value = key;
                         document.getElementById('portfolioAppLabel').textContent = a.name;
 
-                                                const nameField = document.getElementById('pName');
+                        const nameField = document.getElementById('pName');
                         if (!nameField.value) nameField.value = a.name;
 
-                                                const descField = document.getElementById('pShortDesc');
+                        const descField = document.getElementById('pShortDesc');
                         if (!descField.value && a.description) descField.value = a.description;
 
-                                                closeDD('ddPortfolioApp');
+                        closeDD('ddPortfolioApp');
                     };
                     portOpt.appendChild(pDiv);
                 }
@@ -2204,17 +2339,17 @@
             portfolioScreenshots = [];
             portfolioIcon = null;
             customPortfolioImage = null; // Clear cropper image
-            
+
             document.getElementById('portfolioForm').reset();
             document.getElementById('portfolioFormId').value = '';
             document.getElementById('pLinkedAppId').value = '';
             document.getElementById('portfolioAppLabel').textContent = 'Pilih Aplikasi dari App Manager';
             document.getElementById('portfolioModalTitle').innerHTML = '<i class="fa-solid fa-plus" style="color:var(--primary);margin-right:8px;"></i>Tambah Portfolio Item';
             document.getElementById('portfolioSubmitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan';
-            
+
             const previewEl = document.getElementById('pCustomImagePreview');
             if (previewEl) { previewEl.src = ''; previewEl.style.display = 'none'; }
-            
+
             document.querySelector('input[name="portfolioType"][value="website"]').checked = true;
             onPortfolioTypeChange();
             renderScreenshotPreviews();
@@ -2237,9 +2372,9 @@
             document.getElementById('pFeatures').value = (item.features || []).join('\n');
             document.getElementById('pStoreUrl').value = item.storeUrl || '';
             document.getElementById('pWebsiteUrl').value = item.url || '';
-            
+
             const previewEl = document.getElementById('pCustomImagePreview');
-            if (previewEl) { 
+            if (previewEl) {
                 if (customPortfolioImage) {
                     previewEl.src = customPortfolioImage;
                     previewEl.style.display = 'block';
@@ -2276,7 +2411,7 @@
             document.getElementById('pWebsiteFields').style.display = type === 'website' ? 'block' : 'none';
             document.getElementById('pAppExtFields').style.display = type !== 'website' ? 'block' : 'none';
 
-            ['website','app','extension'].forEach(t => {
+            ['website', 'app', 'extension'].forEach(t => {
                 const lbl = document.getElementById(`ptype-${t}`);
                 if (!lbl) return;
                 if (t === type) {
@@ -2802,7 +2937,8 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Deskripsi</label>
-                    <textarea id="vacancyDesc" class="form-input" rows="3" placeholder="Tugas utama..." required></textarea>
+                    <textarea id="vacancyDesc" class="form-input" rows="3" placeholder="Tugas utama..."
+                        required></textarea>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Status</label>
@@ -2825,7 +2961,8 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" style="padding: 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px;">
+            <div class="modal-footer"
+                style="padding: 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px;">
                 <button class="btn btn-outline" onclick="closeVacancyModal()">Batal</button>
                 <button class="btn btn-primary" onclick="saveVacancy()">Simpan</button>
             </div>
@@ -2834,7 +2971,7 @@
 
     <script>
         let currentVacancies = [];
-        
+
         async function fetchVacanciesAdmin() {
             const tbody = document.getElementById('vacanciesTableBody');
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Memuat data...</td></tr>';
@@ -2854,7 +2991,7 @@
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Belum ada lowongan terdaftar.</td></tr>';
                 return;
             }
-            
+
             tbody.innerHTML = currentVacancies.map(v => `
                 <tr>
                     <td style="font-weight:600;">${v.title}</td>
@@ -2926,7 +3063,7 @@
                 } else {
                     Swal.fire('Error', result.error || 'Gagal menyimpan', 'error');
                 }
-            } catch(e) {
+            } catch (e) {
                 Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
             }
         }
@@ -2949,12 +3086,12 @@
                         Swal.fire('Dihapus!', 'Lowongan berhasil dihapus.', 'success');
                         fetchVacanciesAdmin();
                     }
-                } catch(e) {
+                } catch (e) {
                     Swal.fire('Error', 'Gagal menghapus lowongan', 'error');
                 }
             }
         }
-        
+
         // Auto fetch when tab is clicked
         document.querySelector('[data-tab="vacancies"]').addEventListener('click', fetchVacanciesAdmin);
     </script>
@@ -2966,11 +3103,13 @@
                 <button class="modal-close" onclick="closeModal('cropModal')"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="text-align: center;">
-                <div style="max-height: 400px; overflow: hidden; display: flex; justify-content: center; align-items: center; background: #f3f4f6; border-radius: 8px;">
+                <div
+                    style="max-height: 400px; overflow: hidden; display: flex; justify-content: center; align-items: center; background: #f3f4f6; border-radius: 8px;">
                     <img id="cropperImage" src="" style="max-width: 100%; display: block;">
                 </div>
             </div>
-            <div class="modal-footer" style="padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px;">
+            <div class="modal-footer"
+                style="padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px;">
                 <button class="btn btn-outline" onclick="closeModal('cropModal')">Batal</button>
                 <button class="btn btn-primary" onclick="applyCrop()">Terapkan Crop</button>
             </div>
@@ -2990,7 +3129,7 @@
             reader.onload = (e) => {
                 document.getElementById('cropperImage').src = e.target.result;
                 showModal('cropModal');
-                
+
                 if (cropperInstance) cropperInstance.destroy();
                 cropperInstance = new Cropper(document.getElementById('cropperImage'), {
                     aspectRatio: 16 / 9,
@@ -3009,16 +3148,16 @@
                 imageSmoothingEnabled: true,
                 imageSmoothingQuality: 'high',
             });
-            
+
             customPortfolioImage = canvas.toDataURL('image/jpeg', 0.85);
-            
+
             // Tampilkan preview di form portfolio
             const previewEl = document.getElementById('pCustomImagePreview');
             if (previewEl) {
                 previewEl.src = customPortfolioImage;
                 previewEl.style.display = 'block';
             }
-            
+
             closeModal('cropModal');
         }
     </script>
@@ -3026,4 +3165,3 @@
 </body>
 
 </html>
-

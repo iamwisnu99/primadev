@@ -96,7 +96,7 @@ const sendEmail = async (data, isRenewal = false) => {
 
     try {
         const info = await transporter.sendMail({
-            from: `"PT. Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
+            from: `"Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
             to: data.email,
             subject: subject,
             html: messageHtml

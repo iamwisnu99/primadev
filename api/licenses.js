@@ -75,7 +75,7 @@ const sendEmail = async (data, contextMethod) => {
 
   try {
     const info = await transporter.sendMail({
-      from: `"PT. Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
+      from: `"Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
       to: data.email,
       subject: subject,
       html: messageHtml
@@ -213,22 +213,22 @@ const netlifyHandler = async (event, context) => {
   }
 };
 module.exports = async (req, res) => {
-    const event = {
-        httpMethod: req.method,
-        path: req.url.split('?')[0],
-        queryStringParameters: req.query || {},
-        body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
-        headers: req.headers
-    };
-    
-    try {
-        const result = await netlifyHandler(event, {});
-        if (result.headers) {
-            Object.keys(result.headers).forEach(k => res.setHeader(k, result.headers[k]));
-        }
-        res.status(result.statusCode || 200).send(result.body);
-    } catch (err) {
-        console.error("Wrapper Error:", err);
-        res.status(500).json({ error: "Internal Server Error" });
+  const event = {
+    httpMethod: req.method,
+    path: req.url.split('?')[0],
+    queryStringParameters: req.query || {},
+    body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
+    headers: req.headers
+  };
+
+  try {
+    const result = await netlifyHandler(event, {});
+    if (result.headers) {
+      Object.keys(result.headers).forEach(k => res.setHeader(k, result.headers[k]));
     }
+    res.status(result.statusCode || 200).send(result.body);
+  } catch (err) {
+    console.error("Wrapper Error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };

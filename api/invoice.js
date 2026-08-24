@@ -98,7 +98,7 @@ const netlifyHandler = async (event, context) => {
         doc.fillColor('#2563eb').fontSize(24).font('Helvetica-Bold').text('PRIMADEV', 50, 50);
       }
 
-      doc.fillColor('#1e293b').fontSize(8).font('Helvetica-Bold').text('PT PRIMADEV DIGITAL TECHNOLOGY', 50, 95);
+      doc.fillColor('#1e293b').fontSize(8).font('Helvetica-Bold').text('PRIMADEV DIGITAL TECHNOLOGY', 50, 95);
       doc.fillColor('#64748b').font('Helvetica').fontSize(7)
         .text('Dusun Pecikalan RT 001/RW 010\nKecamatan Wangon, Kabupaten Banyumas\nJawa Tengah, Indonesia 53176\nEmail: admin.primadev@gmail.com', 50, 107, { lineGap: 2 });
       doc.fillColor('#2563eb').fontSize(26).font('Helvetica-Bold').text('INVOICE', 350, 45, { align: 'right', width: 200 });
@@ -223,7 +223,7 @@ const netlifyHandler = async (event, context) => {
       }
 
       doc.fillColor('#2563eb').fontSize(7).font('Helvetica-Bold')
-        .text('PT PRIMADEV DIGITAL TECHNOLOGY', stampX + 5, stampY + 38, { width: stampW - 10, align: 'center' });
+        .text('PRIMADEV DIGITAL TECHNOLOGY', stampX + 5, stampY + 38, { width: stampW - 10, align: 'center' });
 
       doc.restore();
 

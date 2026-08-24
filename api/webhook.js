@@ -86,7 +86,7 @@ const sendEmail = async (data, isRenewal = false) => {
 
     try {
         const info = await transporter.sendMail({
-            from: `"PT. Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
+            from: `"Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
             to: data.email,
             subject: subject,
             html: messageHtml
@@ -250,7 +250,7 @@ const netlifyHandler = async (event) => {
                 if (webhookAmount > 0) {
                     const storedAmount = Number(trxData.amount);
                     const diff = Math.abs(webhookAmount - storedAmount);
-                    if (diff > 1) { 
+                    if (diff > 1) {
                         console.error(`[WEBHOOK-XENDIT] Jumlah tidak cocok. Database: ${storedAmount}, Webhook: ${webhookAmount}. OrderID: ${orderId}. Webhook ditolak.`);
                         return { statusCode: 200, body: 'Jumlah tidak cocok - webhook diabaikan' };
                     }
@@ -333,7 +333,7 @@ const netlifyHandler = async (event) => {
                 let expiry = new Date();
                 if (duration === 'monthly') expiry.setMonth(expiry.getMonth() + 1);
                 else if (duration === 'yearly') expiry.setFullYear(expiry.getFullYear() + 1);
-                else expiry.setFullYear(expiry.getFullYear() + 100); 
+                else expiry.setFullYear(expiry.getFullYear() + 100);
 
                 const newLicenseData = {
                     key: newKey,
@@ -387,7 +387,7 @@ module.exports = async (req, res) => {
         body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
         headers: req.headers
     };
-    
+
     try {
         const result = await netlifyHandler(event, {});
         if (result.headers) {

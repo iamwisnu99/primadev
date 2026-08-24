@@ -49,7 +49,7 @@ const sendEmail = async (to, subject, htmlContent) => {
         }
 
         const info = await transporter.sendMail({
-            from: `"PT. Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
+            from: `"Primadev Digital Technology" <${process.env.EMAIL_USER}>`,
             to: to,
             subject: subject,
             html: htmlContent
@@ -100,11 +100,11 @@ const getAdminNotificationTemplate = (data) => {
                 <p style="margin-top: 30px; font-size: 14px;">Silakan login ke Dashboard Admin untuk meninjau dan menindaklanjuti lamaran ini.</p>
             </div>
             <div class="footer">
-                <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PT. PRIMADEV DIGITAL TECHNOLOGY</p>
+                <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PRIMADEV DIGITAL TECHNOLOGY</p>
                 <p>Wangon<br>Kelurahan Wangon, Kecamatan Wangon<br>Kabupaten Banyumas, Jawa Tengah, Indonesia<br>53176</p>
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
-                    &copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.<br>
+                    &copy; ${new Date().getFullYear()} Primadev Digital Technology. All rights reserved.<br>
                     <a href="https://primadev.id" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
                     <a href="https://primadev.id/app/legal/syarat-ketentuan" style="color: #6366f1; text-decoration: none;">Syarat & Ketentuan</a>
                 </p>
@@ -141,7 +141,7 @@ const getAcceptanceTemplate = (data) => {
             </div>
             <div class="content">
                 <p>Halo <strong>${data.name}</strong>,</p>
-                <p>Kami sangat senang menginformasikan bahwa Anda telah <strong>DITERIMA</strong> untuk bergabung bersama PT. Primadev Digital Technology untuk menempati posisi <strong>${data.position || '-'}</strong> sebagai <strong>${data.employeeType === 'tetap' ? 'Karyawan Tetap (PKWTT)' : 'Karyawan Kontrak (PKWT)'}</strong>.</p>
+                <p>Kami sangat senang menginformasikan bahwa Anda telah <strong>DITERIMA</strong> untuk bergabung bersama Primadev Digital Technology untuk menempati posisi <strong>${data.position || '-'}</strong> sebagai <strong>${data.employeeType === 'tetap' ? 'Karyawan Tetap (PKWTT)' : 'Karyawan Kontrak (PKWT)'}</strong>.</p>
                 <div class="key-box">
                     <span class="label-key">ID KARYAWAN ANDA</span>
                     <span class="license-key">${data.empId}</span>
@@ -153,11 +153,11 @@ const getAcceptanceTemplate = (data) => {
                 <p>Sekali lagi, selamat! Kami tidak sabar melihat kontribusi luar biasa Anda di Primadev.</p>
             </div>
             <div class="footer">
-                <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PT. PRIMADEV DIGITAL TECHNOLOGY</p>
+                <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PRIMADEV DIGITAL TECHNOLOGY</p>
                 <p>Wangon<br>Kelurahan Wangon, Kecamatan Wangon<br>Kabupaten Banyumas, Jawa Tengah, Indonesia<br>53176</p>
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
-                    &copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.<br>
+                    &copy; ${new Date().getFullYear()} Primadev Digital Technology. All rights reserved.<br>
                     <a href="https://primadev.id" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
                     <a href="https://primadev.id/app/legal/syarat-ketentuan" style="color: #6366f1; text-decoration: none;">Syarat & Ketentuan</a>
                 </p>
@@ -191,18 +191,18 @@ const getRejectionTemplate = (data) => {
             </div>
             <div class="content">
                 <p>Halo <strong>${data.name}</strong>,</p>
-                <p>Terima kasih banyak atas ketertarikan Anda untuk bergabung mengisi posisi <strong>${data.position || '-'}</strong> di PT. Primadev Digital Technology.</p>
+                <p>Terima kasih banyak atas ketertarikan Anda untuk bergabung mengisi posisi <strong>${data.position || '-'}</strong> di Primadev Digital Technology.</p>
                 <p>Setelah meninjau kualifikasi dan portofolio Anda secara saksama, dengan berat hati kami sampaikan bahwa saat ini kami belum dapat melanjutkan proses lamaran Anda ke tahap berikutnya. Kami harus mengambil keputusan sulit mengingat tingginya kualitas kandidat yang mendaftar pada posisi tersebut di periode ini.</p>
                 <p>Kami sangat menghargai waktu dan antusiasme Anda. Kami akan menyimpan data Anda dan mungkin akan menghubungi Anda kembali apabila ada posisi yang sesuai di masa mendatang.</p>
                 <p>Semoga sukses untuk perjalanan karir Anda ke depannya!</p>
-                <p style="margin-top: 30px;">Hormat kami,<br><strong>Tim HR PT. Primadev Digital Technology</strong></p>
+                <p style="margin-top: 30px;">Hormat kami,<br><strong>Tim HR Primadev Digital Technology</strong></p>
             </div>
             <div class="footer">
-                <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PT. PRIMADEV DIGITAL TECHNOLOGY</p>
+                <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PRIMADEV DIGITAL TECHNOLOGY</p>
                 <p>Wangon<br>Kelurahan Wangon, Kecamatan Wangon<br>Kabupaten Banyumas, Jawa Tengah, Indonesia<br>53176</p>
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
-                    &copy; ${new Date().getFullYear()} PT. Primadev Digital Technology. All rights reserved.<br>
+                    &copy; ${new Date().getFullYear()} Primadev Digital Technology. All rights reserved.<br>
                     <a href="https://primadev.id" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
                     <a href="https://primadev.id/app/legal/syarat-ketentuan" style="color: #6366f1; text-decoration: none;">Syarat & Ketentuan</a>
                 </p>
@@ -348,7 +348,7 @@ const netlifyHandler = async (event, context) => {
                     employeeType: body.employeeType || 'kontrak'
                 };
 
-                subjectUser = `Selamat! Lamaran Anda Diterima di PT. Primadev Digital Technology`;
+                subjectUser = `Selamat! Lamaran Anda Diterima di Primadev Digital Technology`;
                 htmlUser = getAcceptanceTemplate({ name: employeeData.name, empId: empId, employeeType: updates.employeeType, position: employeeData.position });
             } else if (action === 'tolak') {
                 updates = {
@@ -356,7 +356,7 @@ const netlifyHandler = async (event, context) => {
                     rejectedAt: Date.now()
                 };
 
-                subjectUser = `Pemberitahuan Lamaran Kerja - PT. Primadev Digital Technology`;
+                subjectUser = `Pemberitahuan Lamaran Kerja - Primadev Digital Technology`;
                 htmlUser = getRejectionTemplate({ name: employeeData.name, position: employeeData.position });
             } else if (action === 'resign') {
                 updates = {
@@ -406,7 +406,7 @@ module.exports = async (req, res) => {
         body: typeof req.body === 'object' ? JSON.stringify(req.body) : (req.body || null),
         headers: req.headers
     };
-    
+
     try {
         const result = await netlifyHandler(event, {});
         if (result.headers) {
