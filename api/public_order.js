@@ -27,12 +27,12 @@ if (!admin.apps.length) {
                 clientEmail: raw.client_email,
                 privateKey: raw.private_key.replace(/\\n/g, '\n')
             };
-        } else if (!process.env.NETLIFY) {
+        } else {
             try {
-                const localKey = '../../strukmaker-3327d110-firebase-adminsdk-fbsvc-28cd459e84.json';
+                const localKey = '../strukmaker-3327d110-firebase-adminsdk-fbsvc-28cd459e84.json';
                 serviceAccount = require(localKey);
             } catch (e) {
-                console.log("[INIT] File konfigurasi Firebase lokal tidak ditemukan.");
+                // Konfigurasi lokal tidak ada, menggunakan env vars
             }
         }
     } catch (err) {
@@ -679,6 +679,10 @@ const netlifyHandler = async (event, context) => {
         'Vary': 'Origin'
     };
 
+    if (event.httpMethod === 'OPTIONS') {
+        return { statusCode: 200, headers, body: '' };
+    }
+
     const db = getDb();
     let PRICING_DB = {};
     let PORTFOLIO_DB = {};
@@ -695,36 +699,37 @@ const netlifyHandler = async (event, context) => {
     const successRedirectUrl = `${originUrl}/app/thankyou`;
     const failedRedirectUrl = `${originUrl}/app/checkout`;
 
-    if (db) {
-        try {
-            const prodSnap = await db.ref('products').once('value');
-            if (prodSnap.exists()) PRICING_DB = prodSnap.val();
-
-            const portSnap = await db.ref('portfolio').once('value');
-            if (portSnap.exists()) PORTFOLIO_DB = portSnap.val();
-        } catch (e) {
-            console.error("[BACKEND] Gagal memuat data dari Firebase:", e.message);
-        }
-    }
-
-    if (Object.keys(PRICING_DB).length === 0) {
-        try {
-            PRICING_DB = require('../../products.json');
-            console.log("[BACKEND] Menggunakan fallback products.json dari lokal.");
-        } catch (e) {
-            console.error("[BACKEND] Gagal memuat fallback products.json:", e.message);
-        }
-    }
-
     if (event.httpMethod === 'GET') {
-        const activeGw = await getActiveGateway(db);
+        let activeGw = 'xendit';
+        if (db) {
+            try {
+                // Ambil data products, portfolio, dan active gateway secara paralel
+                const [prodSnap, portSnap, gwResult] = await Promise.all([
+                    db.ref('products').once('value'),
+                    db.ref('portfolio').once('value'),
+                    getActiveGateway(db)
+                ]);
+                if (prodSnap.exists()) PRICING_DB = prodSnap.val() || {};
+                if (portSnap.exists()) PORTFOLIO_DB = portSnap.val() || {};
+                activeGw = gwResult;
+            } catch (e) {
+                console.error("[BACKEND] Gagal memuat data paralel dari Firebase:", e.message);
+            }
+        }
 
-        // Buang properti berat (base64, source_code, dsb) agar tidak melebihi 6MB Netlify limit
+        if (Object.keys(PRICING_DB).length === 0) {
+            try {
+                PRICING_DB = require('../products.json');
+                console.log("[BACKEND] Menggunakan fallback products.json dari lokal.");
+            } catch (e) {
+                console.error("[BACKEND] Gagal memuat fallback products.json:", e.message);
+            }
+        }
+
         const safeCatalog = {};
         for (const [key, val] of Object.entries(PRICING_DB)) {
             const safeVal = { ...val };
             delete safeVal.source_code;
-            delete safeVal.screenshots;
             delete safeVal.base64;
             safeCatalog[key] = safeVal;
         }
@@ -732,15 +737,26 @@ const netlifyHandler = async (event, context) => {
         const safePortfolio = {};
         for (const [key, val] of Object.entries(PORTFOLIO_DB)) {
             const safeVal = { ...val };
-            delete safeVal.images;
-            delete safeVal.screenshots;
+            delete safeVal.source_code;
             delete safeVal.base64;
+            // Pertahankan URL screenshot yang valid dan buang base64 mentah yang terlalu besar
+            if (Array.isArray(safeVal.screenshots)) {
+                safeVal.screenshots = safeVal.screenshots.map(s => {
+                    if (typeof s === 'string' && s.length > 8000 && s.startsWith('data:')) {
+                        return '';
+                    }
+                    return s;
+                }).filter(Boolean);
+            }
             safePortfolio[key] = safeVal;
         }
 
         return {
             statusCode: 200,
-            headers,
+            headers: {
+                ...headers,
+                'Cache-Control': 'public, max-age=60, s-maxage=120, stale-while-revalidate=300'
+            },
             body: JSON.stringify({
                 catalog: safeCatalog,
                 portfolio: safePortfolio,
@@ -751,8 +767,21 @@ const netlifyHandler = async (event, context) => {
         };
     }
 
-    if (event.httpMethod === 'OPTIONS') {
-        return { statusCode: 200, headers, body: '' };
+    if (db) {
+        try {
+            const prodSnap = await db.ref('products').once('value');
+            if (prodSnap.exists()) PRICING_DB = prodSnap.val() || {};
+        } catch (e) {
+            console.error("[BACKEND] Gagal memuat data products dari Firebase:", e.message);
+        }
+    }
+
+    if (Object.keys(PRICING_DB).length === 0) {
+        try {
+            PRICING_DB = require('../products.json');
+        } catch (e) {
+            console.error("[BACKEND] Gagal memuat fallback products.json:", e.message);
+        }
     }
 
     if (event.httpMethod !== 'POST') {

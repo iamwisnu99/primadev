@@ -1157,9 +1157,10 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="module">
+    <script>
         let currentProductId = null;
         let pricingData = null;
+        let hasRendered = false;
 
         async function initProductDetail() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1169,50 +1170,67 @@
                 return;
             }
 
+            // 1. Coba baca dari cache lokal (SWR) untuk instan render (<5ms)
             try {
-
-                const configRes = await fetch('/api/public_order');
-                const data = await configRes.json();
-                pricingData = data.catalog[currentProductId];
-
-
-                const fbRes = await fetch('/api/get-config');
-                const firebaseConfig = await fbRes.json();
-
-                const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
-                const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
-
-                const existing = getApps().find(a => a.name === 'store-reader');
-                const app = existing || initializeApp(firebaseConfig, 'store-reader');
-                const db = getDatabase(app);
-
-                const snap = await get(ref(db, 'portfolio/' + currentProductId));
-                const item = snap.val();
-
-                if (!item) {
-                    if (pricingData) {
-                        localStorage.setItem('checkout_product_id', currentProductId);
-                        window.location.href = '/app/checkout';
-                        return;
-                    } else {
-                        showError('Item portfolio tidak ditemukan dan tidak ada data harga.');
-                        return;
+                const cached = sessionStorage.getItem('primadev_public_data');
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    const cPricing = parsed?.catalog ? parsed.catalog[currentProductId] : null;
+                    const cPortfolio = parsed?.portfolio ? parsed.portfolio[currentProductId] : null;
+                    
+                    if (cPricing || cPortfolio) {
+                        pricingData = cPricing;
+                        const itemToRender = cPortfolio || {
+                            name: cPricing?.name || currentProductId,
+                            shortDesc: cPricing?.description || '',
+                            longDesc: cPricing?.description || '',
+                            type: cPricing?.type || 'app',
+                            icon: cPricing?.icon || 'fa-box',
+                            appIcon: cPricing?.iconUrl || null,
+                            screenshots: cPricing?.screenshots || [],
+                            features: cPricing?.features || []
+                        };
+                        renderProductDetail(itemToRender, pricingData);
+                        hasRendered = true;
                     }
                 }
+            } catch (cacheErr) {
+                console.warn('Product detail cache read error:', cacheErr);
+            }
 
-                try {
-                    renderProductDetail(item, pricingData);
-                } catch (renderErr) {
-                    console.error("Render Error", renderErr);
-                    document.getElementById('loadingDetail').style.display = 'none';
-                    document.getElementById('productDetailContainer').innerHTML = `<div style="padding:40px; color:red; text-align:center;">Error Rendering Detail: ${renderErr.message}</div>`;
-                    document.getElementById('productDetailContainer').style.display = 'block';
-                    requestAnimationFrame(() => document.getElementById('productDetailContainer').classList.add('loaded'));
+            // 2. Fetch data terbaru dari API yang teroptimasi & edge-cached
+            try {
+                const configRes = await fetch('/api/public_order');
+                if (!configRes.ok) throw new Error(`HTTP ${configRes.status}`);
+                const data = await configRes.json();
+                
+                sessionStorage.setItem('primadev_public_data', JSON.stringify(data));
+                pricingData = data?.catalog ? data.catalog[currentProductId] : null;
+                const item = data?.portfolio ? data.portfolio[currentProductId] : null;
+
+                if (!item && !pricingData) {
+                    if (!hasRendered) showError('Item produk tidak ditemukan dan tidak ada data harga.');
+                    return;
                 }
 
+                const finalItem = item || {
+                    name: pricingData?.name || currentProductId,
+                    shortDesc: pricingData?.description || '',
+                    longDesc: pricingData?.description || '',
+                    type: pricingData?.type || 'app',
+                    icon: pricingData?.icon || 'fa-box',
+                    appIcon: pricingData?.iconUrl || null,
+                    screenshots: pricingData?.screenshots || [],
+                    features: pricingData?.features || []
+                };
+
+                renderProductDetail(finalItem, pricingData);
+                hasRendered = true;
             } catch (err) {
                 console.error("Init Error", err);
-                showError('Gagal memuat data: ' + err.message);
+                if (!hasRendered) {
+                    showError('Gagal memuat data: ' + err.message);
+                }
             }
         }
 

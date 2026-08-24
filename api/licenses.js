@@ -4,7 +4,7 @@ const { getPremiumTemplate } = require('../utils/email_template');
 
 let PRICING_DB;
 try {
-  PRICING_DB = require('../../products.json');
+  PRICING_DB = require('../products.json');
 } catch (e) {
   console.log("Using Default Pricing");
   PRICING_DB = {

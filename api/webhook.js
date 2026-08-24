@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const { getPremiumTemplate, getRenewalTemplate } = require('../utils/email_template');
 
 let PRICING_DB;
-try { PRICING_DB = require('../../products.json'); } catch (e) { PRICING_DB = {}; }
+try { PRICING_DB = require('../products.json'); } catch (e) { PRICING_DB = {}; }
 
 if (!admin.apps.length) {
     let serviceAccount = null;
@@ -22,11 +22,11 @@ if (!admin.apps.length) {
                 clientEmail: raw.client_email,
                 privateKey: raw.private_key.replace(/\\n/g, '\n')
             };
-        } else if (!process.env.NETLIFY) {
+        } else {
             try {
-                serviceAccount = require('../../strukmaker-3327d110-firebase-adminsdk-fbsvc-28cd459e84.json');
+                serviceAccount = require('../strukmaker-3327d110-firebase-adminsdk-fbsvc-28cd459e84.json');
             } catch (e) {
-                console.log("[INIT] File JSON lokal tidak ditemukan.");
+                // Gunakan environment variables
             }
         }
     } catch (err) {

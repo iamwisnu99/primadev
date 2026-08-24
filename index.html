@@ -1486,22 +1486,37 @@
 
         async function loadPortfolioHome() {
             const container = document.getElementById('portfolioHomeContainer');
+            
+            // 1. Coba baca dari cache lokal (SWR) untuk instan render (<5ms)
             try {
-                const configRes = await fetch('/api/get-config');
-                const firebaseConfig = await configRes.json();
+                const cached = sessionStorage.getItem('primadev_public_data');
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    if (parsed && parsed.portfolio && Object.keys(parsed.portfolio).length > 0) {
+                        portfolioHomeData = parsed.portfolio;
+                        renderPortfolioHome();
+                    }
+                }
+            } catch (cacheErr) {
+                console.warn('Portfolio cache read error:', cacheErr);
+            }
 
-                const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
-                const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
-
-                const existing = getApps().find(a => a.name === 'portfolio-reader');
-                const app = existing || initializeApp(firebaseConfig, 'portfolio-reader');
-                const db = getDatabase(app);
-                const snap = await get(ref(db, 'portfolio'));
-                portfolioHomeData = snap.val() || {};
-                renderPortfolioHome();
+            // 2. Fetch data terbaru dari endpoint API yang teroptimasi & edge-cached
+            try {
+                const configRes = await fetch('/api/public_order');
+                if (!configRes.ok) throw new Error(`HTTP ${configRes.status}`);
+                const data = await configRes.json();
+                
+                if (data && data.portfolio) {
+                    portfolioHomeData = data.portfolio;
+                    sessionStorage.setItem('primadev_public_data', JSON.stringify(data));
+                    renderPortfolioHome();
+                }
             } catch (err) {
                 console.error('Portfolio load error:', err);
-                container.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Portfolio akan segera tersedia.</p></div>';
+                if (!portfolioHomeData || Object.keys(portfolioHomeData).length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Portfolio akan segera tersedia.</p></div>';
+                }
             }
         }
 

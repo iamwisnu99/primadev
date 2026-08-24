@@ -1229,42 +1229,52 @@
         const badgeTypes = ['badge-popular', 'badge-new', '', '', 'badge-hot', ''];
 
         async function initStore() {
+            // 1. Coba baca dari cache lokal (SWR) untuk instan render (<5ms)
             try {
-
-                const response = await fetch('/api/public_order');
-                const data = await response.json();
-                SERVER_CATALOG = data.catalog;
-
-
-                try {
-                    const fbRes = await fetch('/api/get-config');
-                    const firebaseConfig = await fbRes.json();
-                    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
-                    const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
-                    const existing = getApps().find(a => a.name === 'store-catalog');
-                    const app = existing || initializeApp(firebaseConfig, 'store-catalog');
-                    const db = getDatabase(app);
-                    const snap = await get(ref(db, 'portfolio'));
-                    if (snap.exists()) PORTFOLIO_MAP = snap.val();
-                } catch (fbErr) {
-                    console.warn('Portfolio fetch failed (icon fallback will be used):', fbErr.message);
+                const cached = sessionStorage.getItem('primadev_public_data');
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    if (parsed.catalog && Object.keys(parsed.catalog).length > 0) {
+                        SERVER_CATALOG = parsed.catalog;
+                        PORTFOLIO_MAP = parsed.portfolio || {};
+                        renderCatalog();
+                        handleInitialUrlTab();
+                    }
                 }
+            } catch (cacheErr) {
+                console.warn('Store cache read error:', cacheErr);
+            }
+
+            // 2. Fetch data katalog & portfolio terbaru dari API yang teroptimasi & edge-cached
+            try {
+                const response = await fetch('/api/public_order');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                SERVER_CATALOG = data.catalog || {};
+                PORTFOLIO_MAP = data.portfolio || {};
+                sessionStorage.setItem('primadev_public_data', JSON.stringify(data));
 
                 renderCatalog();
-
-                const urlParams = new URLSearchParams(window.location.search);
-                const tabParam = urlParams.get('tab');
-                if (tabParam === 'extension') {
-                    const extBtn = document.querySelector('[data-filter="extension"]');
-                    if (extBtn) switchCatalogTab(extBtn, 'extension');
-                }
+                handleInitialUrlTab();
             } catch (error) {
                 console.error("Init Error", error);
-                document.getElementById('appsGrid').innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
-                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 16px; display:block;"></i>
-                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Gagal memuat katalog. <a href="javascript:location.reload()" style="color:var(--accent); font-weight:600;">Coba lagi</a></p>
-                    </div>`;
+                if (!SERVER_CATALOG || Object.keys(SERVER_CATALOG).length === 0) {
+                    document.getElementById('appsGrid').innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 16px; display:block;"></i>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Gagal memuat katalog. <a href="javascript:location.reload()" style="color:var(--accent); font-weight:600;">Coba lagi</a></p>
+                        </div>`;
+                }
+            }
+        }
+
+        function handleInitialUrlTab() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tabParam = urlParams.get('tab');
+            if (tabParam === 'extension') {
+                const extBtn = document.querySelector('[data-filter="extension"]');
+                if (extBtn && currentCatalogFilter !== 'extension') switchCatalogTab(extBtn, 'extension');
             }
         }
 
