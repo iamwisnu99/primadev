@@ -730,7 +730,6 @@ const netlifyHandler = async (event, context) => {
         for (const [key, val] of Object.entries(PRICING_DB)) {
             const safeVal = { ...val };
             delete safeVal.source_code;
-            delete safeVal.base64;
             safeCatalog[key] = safeVal;
         }
 
@@ -738,16 +737,7 @@ const netlifyHandler = async (event, context) => {
         for (const [key, val] of Object.entries(PORTFOLIO_DB)) {
             const safeVal = { ...val };
             delete safeVal.source_code;
-            delete safeVal.base64;
-            // Pertahankan URL screenshot yang valid dan buang base64 mentah yang terlalu besar
-            if (Array.isArray(safeVal.screenshots)) {
-                safeVal.screenshots = safeVal.screenshots.map(s => {
-                    if (typeof s === 'string' && s.length > 8000 && s.startsWith('data:')) {
-                        return '';
-                    }
-                    return s;
-                }).filter(Boolean);
-            }
+            // Pertahankan screenshots, appIcon, customImage, dan semua metadata portofolio
             safePortfolio[key] = safeVal;
         }
 

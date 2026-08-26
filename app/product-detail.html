@@ -1162,6 +1162,31 @@
         let pricingData = null;
         let hasRendered = false;
 
+        function saveToLocalCache(key, data) {
+            try {
+                sessionStorage.setItem(key, JSON.stringify(data));
+            } catch (quotaErr) {
+                try {
+                    const lightData = {
+                        catalog: data.catalog || {},
+                        portfolio: {}
+                    };
+                    if (data.portfolio) {
+                        for (const k in data.portfolio) {
+                            const p = { ...data.portfolio[k] };
+                            if (Array.isArray(p.screenshots) && p.screenshots.length > 1) {
+                                p.screenshots = [p.screenshots[0]];
+                            }
+                            lightData.portfolio[k] = p;
+                        }
+                    }
+                    sessionStorage.setItem(key, JSON.stringify(lightData));
+                } catch (e2) {
+                    // In-memory cache is sufficient
+                }
+            }
+        }
+
         async function initProductDetail() {
             const urlParams = new URLSearchParams(window.location.search);
             currentProductId = urlParams.get('id');
@@ -1172,7 +1197,7 @@
 
             // 1. Coba baca dari cache lokal (SWR) untuk instan render (<5ms)
             try {
-                const cached = sessionStorage.getItem('primadev_public_data');
+                const cached = sessionStorage.getItem('primadev_public_data_v2');
                 if (cached) {
                     const parsed = JSON.parse(cached);
                     const cPricing = parsed?.catalog ? parsed.catalog[currentProductId] : null;
@@ -1204,7 +1229,6 @@
                 if (!configRes.ok) throw new Error(`HTTP ${configRes.status}`);
                 const data = await configRes.json();
                 
-                sessionStorage.setItem('primadev_public_data', JSON.stringify(data));
                 pricingData = data?.catalog ? data.catalog[currentProductId] : null;
                 const item = data?.portfolio ? data.portfolio[currentProductId] : null;
 
@@ -1226,6 +1250,7 @@
 
                 renderProductDetail(finalItem, pricingData);
                 hasRendered = true;
+                saveToLocalCache('primadev_public_data_v2', data);
             } catch (err) {
                 console.error("Init Error", err);
                 if (!hasRendered) {
@@ -1251,18 +1276,20 @@
 
             requestAnimationFrame(() => requestAnimationFrame(() => container.classList.add('loaded')));
 
-            const type = item.type || 'app';
+            const type = item.type || (pricing ? pricing.type : 'app');
             const colorMap = { website: '#0ea5e9', app: '#2563eb', extension: '#7c3aed' };
             const iconMap = { website: 'fa-globe', app: 'fa-mobile-screen-button', extension: 'fa-puzzle-piece' };
             const labelMap = { website: 'Website', app: 'Aplikasi', extension: 'Extension' };
             const rgbMap = { website: '14,165,233', app: '37,99,235', extension: '124,58,237' };
 
             const color = colorMap[type] || '#4f46e5';
-            const icon = item.icon || iconMap[type] || 'fa-box';
+            const icon = item.icon || (pricing ? pricing.icon : null) || iconMap[type] || 'fa-box';
             const label = labelMap[type] || type;
             const rgb = rgbMap[type] || '79,70,229';
-            const screenshots = Array.isArray(item.screenshots) ? item.screenshots : (typeof item.screenshots === 'string' ? [item.screenshots] : []);
-
+            let screenshots = Array.isArray(item.screenshots) ? [...item.screenshots] : (typeof item.screenshots === 'string' ? [item.screenshots] : []);
+            if (screenshots.length === 0 && item.customImage) {
+                screenshots.push(item.customImage);
+            }
 
             let carouselHtml = '';
             if (screenshots.length > 0) {
@@ -1282,17 +1309,18 @@
             }
             document.getElementById('pd-carousel-container').innerHTML = carouselHtml;
 
+            const displayIcon = item.appIcon || item.customImage || (pricing ? pricing.iconUrl : null);
 
             document.getElementById('pd-header').innerHTML = `
-                ${item.appIcon
-                    ? `<img src="${item.appIcon}" style="width:56px;height:56px;border-radius:16px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,0.12);border:2px solid rgba(0,0,0,0.06);">`
+                ${displayIcon
+                    ? `<img src="${displayIcon}" style="width:56px;height:56px;border-radius:16px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,0.12);border:2px solid rgba(0,0,0,0.06);">`
                     : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(${rgb},0.1);color:${color};display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">
                            <i class="fa-solid ${icon}"></i>
                        </div>`
                 }
                 <div>
                     <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${color};margin-bottom:4px;">${label}</div>
-                    <h3 style="font-size:1.4rem;font-weight:800;color:#0f172a;margin:0;line-height:1.2;">${item.name || ''}</h3>
+                    <h3 style="font-size:1.4rem;font-weight:800;color:#0f172a;margin:0;line-height:1.2;">${item.name || (pricing ? pricing.name : '')}</h3>
                 </div>
             `;
 

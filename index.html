@@ -1484,12 +1484,37 @@
         let carouselCurrent = 0;
         let carouselKey = null;
 
+        function saveToLocalCache(key, data) {
+            try {
+                sessionStorage.setItem(key, JSON.stringify(data));
+            } catch (quotaErr) {
+                try {
+                    const lightData = {
+                        catalog: data.catalog || {},
+                        portfolio: {}
+                    };
+                    if (data.portfolio) {
+                        for (const k in data.portfolio) {
+                            const p = { ...data.portfolio[k] };
+                            if (Array.isArray(p.screenshots) && p.screenshots.length > 1) {
+                                p.screenshots = [p.screenshots[0]];
+                            }
+                            lightData.portfolio[k] = p;
+                        }
+                    }
+                    sessionStorage.setItem(key, JSON.stringify(lightData));
+                } catch (e2) {
+                    // In-memory cache is sufficient
+                }
+            }
+        }
+
         async function loadPortfolioHome() {
             const container = document.getElementById('portfolioHomeContainer');
             
             // 1. Coba baca dari cache lokal (SWR) untuk instan render (<5ms)
             try {
-                const cached = sessionStorage.getItem('primadev_public_data');
+                const cached = sessionStorage.getItem('primadev_public_data_v2');
                 if (cached) {
                     const parsed = JSON.parse(cached);
                     if (parsed && parsed.portfolio && Object.keys(parsed.portfolio).length > 0) {
@@ -1509,8 +1534,8 @@
                 
                 if (data && data.portfolio) {
                     portfolioHomeData = data.portfolio;
-                    sessionStorage.setItem('primadev_public_data', JSON.stringify(data));
                     renderPortfolioHome();
+                    saveToLocalCache('primadev_public_data_v2', data);
                 }
             } catch (err) {
                 console.error('Portfolio load error:', err);
@@ -1554,15 +1579,15 @@
                 const label = labelMap[type] || type;
                 const badgeCls = badgeMap[type] || 'badge-app';
 
-
                 let thumbHtml = `<div class="portfolio-thumb-icon"><i class="fa-solid ${icon}"></i></div>`;
-                if (type === 'website' && item.url) {
+                if (item.customImage) {
+                    thumbHtml = `<img src="${item.customImage}" alt="${item.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'portfolio-thumb-icon\\'><i class=\\'fa-solid ${icon}\\'></i></div>'">`;
+                } else if (type === 'website' && item.url) {
                     const tu = `https://s0.wp.com/mshots/v1/${encodeURIComponent(item.url)}?w=600&h=380`;
                     thumbHtml = `<img src="${tu}" alt="${item.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'portfolio-thumb-icon\\'><i class=\\'fa-solid ${icon}\\'></i></div>'">`;
                 } else if (item.screenshots && item.screenshots.length > 0) {
                     thumbHtml = `<img src="${item.screenshots[0]}" alt="${item.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'portfolio-thumb-icon\\'><i class=\\'fa-solid ${icon}\\'></i></div>'">`;
                 }
-
 
                 const ctaBtn = type === 'website'
                     ? `<a href="${item.url || '#'}" target="_blank" rel="noopener"
@@ -1579,7 +1604,6 @@
                             onmouseout="this.style.background='transparent';this.style.color='${color}';">
                             Lihat Detail <i class="fa-solid fa-arrow-right"></i>
                         </button>`;
-
 
                 const appIconOverlay = (type === 'app' || type === 'extension') && item.appIcon
                     ? `<div style="position:absolute;bottom:-18px;left:16px;width:44px;height:44px;border-radius:12px;overflow:hidden;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.15);z-index:3;">
@@ -1632,8 +1656,10 @@
             const icon = iconMap[type] || 'fa-box';
             const label = labelMap[type] || type;
             const rgb = rgbMap[type] || '79,70,229';
-            const screenshots = item.screenshots || [];
-
+            let screenshots = item.screenshots ? [...item.screenshots] : [];
+            if (screenshots.length === 0 && item.customImage) {
+                screenshots.push(item.customImage);
+            }
 
             let carouselHtml = '';
             if (screenshots.length > 0) {
