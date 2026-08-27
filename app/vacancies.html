@@ -72,20 +72,7 @@
                 const data = await res.json();
 
                 let vacancies = Array.isArray(data) ? data : [];
-                if (vacancies.length === 0) {
-                    const defaults = [
-                        { id: 'v1', title: 'AI Prompting', description: 'Bertugas memandu AI Agent dalam pembuatan Website/Aplikasi agar hasil akurat.', active: true },
-                        { id: 'v2', title: 'UI/UX Production', description: 'Bertugas membuat design UI/UX menggunakan Figma/Stitch yang akan diterapkan ke aplikasi.', active: true },
-                        { id: 'v3', title: 'SEO & Deployment', description: 'Bertugas menerapkan logika SEO dan konfigurasi deployment ke hosting production.', active: true },
-                        { id: 'v4', title: 'Security & Analytics', description: 'Bertugas memeriksa keamanan website dan menganalisis trafik.', active: true }
-                    ];
-                    for (let v of defaults) {
-                        await fetch('/api/vacancies', { method: 'POST', body: JSON.stringify(v) });
-                    }
-                    vacancies = defaults;
-                }
-
-                const activeVacancies = vacancies.filter(v => v.active !== false);
+                const activeVacancies = vacancies.filter(v => v && (v.active === true || v.active === 'true' || (v.active !== false && v.active !== 'false' && typeof v.active !== 'undefined')));
 
                 if (activeVacancies.length === 0) {
                     container.innerHTML = `
