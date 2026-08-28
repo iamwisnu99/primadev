@@ -103,6 +103,9 @@
     }
     </script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
     <link rel="shortcut icon" href="/public/favicon.ico" />
@@ -112,9 +115,10 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <style>
@@ -155,13 +159,7 @@
             background-color: var(--bg-page);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
-            opacity: 0;
-            transition: opacity 0.4s ease;
             line-height: 1.5;
-        }
-
-        body.loaded {
-            opacity: 1;
         }
 
         /* =================== SCROLLBAR =================== */
@@ -431,7 +429,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            height: 100%;
             cursor: default;
             transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
             position: relative;
@@ -556,9 +554,12 @@
             color: var(--text-secondary);
             line-height: 1.6;
             display: -webkit-box;
+            -webkit-line-clamp: 2;
             line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            margin-bottom: 12px;
+            min-height: 2.7em;
         }
 
         .app-card-screenshots {
@@ -590,7 +591,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-top: 4px;
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-light);
         }
 
         .price-tag {
@@ -925,6 +928,9 @@
             position: relative;
             overflow: hidden;
             animation: fadeInUp 0.5s both;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .ext-card::before {
@@ -1032,6 +1038,15 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
         }
+
+        .ext-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-light);
+        }
     </style>
     <script defer src="/_vercel/insights/script.js"></script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
@@ -1045,7 +1060,7 @@
     <nav class="store-navbar">
         <div class="navbar-top">
             <a class="nav-logo" href="/">
-                <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev Logo">
+                <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev Logo" width="140" height="36" fetchpriority="high" decoding="async">
             </a>
             <div class="nav-search">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -1200,27 +1215,9 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            requestAnimationFrame(() => document.body.classList.add("loaded"));
-        });
-
-        window.addEventListener("pageshow", (event) => {
-            if (event.persisted) document.body.classList.add("loaded");
-        });
-
-        document.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function (e) {
-                const target = this.getAttribute('href');
-                if (target && !target.startsWith('#') && !target.startsWith('javascript') && !target.startsWith('mailto') && this.target !== '_blank') {
-                    e.preventDefault();
-                    document.body.classList.remove("loaded");
-                    setTimeout(() => { window.location.href = target; }, 400);
-                }
-            });
-        });
 
         let SERVER_CATALOG = {};
         let PORTFOLIO_MAP = {};
@@ -1275,7 +1272,7 @@
                 const response = await fetch('/api/public_order');
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
-                
+
                 SERVER_CATALOG = data.catalog || {};
                 PORTFOLIO_MAP = data.portfolio || {};
                 renderCatalog();
@@ -1338,7 +1335,7 @@
                     }
 
                     const extIconHtml = linkedAppIcon
-                        ? `<img src="${linkedAppIcon}" class="ext-icon-img" alt="${item.name}">`
+                        ? `<img src="${linkedAppIcon}" class="ext-icon-img" width="72" height="72" loading="lazy" decoding="async" alt="${item.name}">`
                         : `<div class="ext-icon"><i class="fa-solid ${item.icon || 'fa-puzzle-piece'}"></i></div>`;
 
                     container.innerHTML += `
@@ -1358,7 +1355,7 @@
                             ${item.description || (portfolio ? portfolio.shortDesc : '') || 'Browser extension resmi dari Primadev Digital Technology.'}
                         </p>
                         <div class="browser-badges">${browserBadges}</div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:14px; border-top:1px solid var(--border-light);">
+                        <div class="ext-card-footer">
                             <div>
                                 <div style="font-size:0.7rem; color:var(--text-tertiary); font-weight:500;">Mulai dari</div>
                                 <div style="font-size:1.05rem; font-weight:800; color:#ea580c;">Rp ${minPrice.toLocaleString('id-ID')}</div>
@@ -1384,19 +1381,19 @@
                     const badgeHtml = badgeClass ? `<span class="card-badge ${badgeClass}">${badgeClass === 'badge-popular' ? '🔥 Popular' : badgeClass === 'badge-new' ? '✨ Baru' : '⚡ Hot'}</span>` : '';
 
                     const appIconHtml = linkedAppIcon
-                        ? `<img src="${linkedAppIcon}" class="app-icon-img" alt="${item.name}">`
+                        ? `<img src="${linkedAppIcon}" class="app-icon-img" width="72" height="72" loading="lazy" decoding="async" alt="${item.name}">`
                         : `<div class="app-icon app-icon-blue"><i class="fa-solid ${item.icon || 'fa-box'}"></i></div>`;
 
                     let screenshotsHtml = '';
                     if (portfolio && Array.isArray(portfolio.screenshots) && portfolio.screenshots.length > 0) {
                         screenshotsHtml = `
                         <div style="display:flex; gap:6px; overflow:hidden; border-radius:10px; margin-bottom:14px; max-height:80px; cursor:pointer;" onclick="location.href='/app/product-detail?id=${key}'">
-                            ${portfolio.screenshots.slice(0, 3).map(s => `<img src="${s}" style="width:33.33%; height:80px; object-fit:cover; border-radius:8px; border:1px solid var(--border-light);" alt="Screenshot">`).join('')}
+                            ${portfolio.screenshots.slice(0, 3).map(s => `<img src="${s}" style="width:33.33%; height:80px; object-fit:cover; border-radius:8px; border:1px solid var(--border-light);" loading="lazy" decoding="async" alt="Screenshot">`).join('')}
                         </div>`;
                     } else if (portfolio && portfolio.customImage) {
                         screenshotsHtml = `
                         <div style="display:flex; overflow:hidden; border-radius:10px; margin-bottom:14px; max-height:80px; cursor:pointer;" onclick="location.href='/app/product-detail?id=${key}'">
-                            <img src="${portfolio.customImage}" style="width:100%; height:80px; object-fit:cover; border-radius:8px; border:1px solid var(--border-light);" alt="Preview">
+                            <img src="${portfolio.customImage}" style="width:100%; height:80px; object-fit:cover; border-radius:8px; border:1px solid var(--border-light);" loading="lazy" decoding="async" alt="Preview">
                         </div>`;
                     } else {
                         screenshotsHtml = `
@@ -1495,10 +1492,10 @@
                 html: `
                     <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
                         <a href="/app/support" style="background: #2563eb; color: #ffffff; padding: 14px 20px; border-radius: 12px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(37,99,235,0.2);">
-                            <i class="fa-solid fa-comments"></i> Live Chat Support
+                            <i class="fa-solid fa-comments"></i> Contact Support
                         </a>
                         <a href="mailto:admin.primadev@gmail.com" style="background: #f8fafc; color: #1e293b; padding: 14px 20px; border-radius: 12px; font-weight: 600; text-decoration: none; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                            <i class="fa-solid fa-envelope"></i> Kirim Email Support
+                            <i class="fa-solid fa-envelope"></i> Send Email
                         </a>
                     </div>
                 `

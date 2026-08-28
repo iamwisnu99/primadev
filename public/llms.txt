@@ -1,0 +1,20 @@
+# Primadev Digital Technology
+
+> Solusi pengembangan website, aplikasi digital, dan lisensi software terpercaya untuk kebutuhan personal, UMKM, hingga bisnis skala kecil dan menengah di Indonesia.
+
+## About Primadev
+Primadev Digital Technology adalah perusahaan penyedia layanan pengembangan aplikasi, website profesional, dan toko lisensi software digital resmi berbadan hukum Kemenkumham RI (AHU-A104134.AH.01.30.Tahun 2026). Dipimpin oleh Direktur Utama PRIMA WISNU ABROR AZMI.
+
+## Layanan dan Produk
+- Jasa Pembuatan Website: Pembuatan website profesional, landing page, company profile, toko online, dan portal web custom untuk kebutuhan pribadi maupun bisnis skala kecil hingga menengah (UMKM).
+- Jasa Pembuatan Aplikasi: Pengembangan aplikasi berbasis web (Web App) dan mobile app yang dirancang efisien, responsif, modern, dan mudah digunakan sesuai kebutuhan bisnis Anda.
+- Toko Lisensi Software Digital: Penjualan lisensi software original siap pakai (seperti tools automasi bisnis, manajemen data, dan browser extension) dengan aktivasi instan otomatis 24/7 dan bergaransi resmi.
+- Solusi Custom & Integrasi API: Layanan kustomisasi sistem digital, otomatisasi alur kerja, integrasi payment gateway resmi, dan arsitektur database cloud.
+
+## Links
+- Website Resmi: https://primadev.id/
+- Store Lisensi: https://primadev.id/app/store
+- Konsultasi & Custom Order: https://primadev.id/app/custom-order
+- Karir: https://primadev.id/app/vacancies
+- Kontak Support: https://primadev.id/app/support
+- Email: support.primadev@gmail.com

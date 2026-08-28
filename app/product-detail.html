@@ -2,6 +2,7 @@
 <html lang="id">
 
 <head>
+    <meta name="color-scheme" content="light">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Primadev Store - Toko Lisensi Software Digital Resmi & Bergaransi</title>
@@ -102,6 +103,9 @@
     }
     </script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link rel="icon" type="image/png" href="/public/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
     <link rel="shortcut icon" href="/public/favicon.ico" />
@@ -111,13 +115,14 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/public/css/darkmode.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <style>
         :root {
+            color-scheme: light;
             --primary: #1865ca;
             --primary-dark: #1456a8;
             --primary-light: #e8f0fe;
@@ -159,14 +164,8 @@
         }
 
         #productDetailContainer {
-            opacity: 0;
-            transform: translateY(12px);
-            transition: opacity 0.35s ease, transform 0.35s ease;
-        }
-
-        #productDetailContainer.loaded {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
         }
 
         /* =================== SCROLLBAR =================== */
@@ -1043,7 +1042,7 @@
     <nav class="store-navbar">
         <div class="navbar-top">
             <a class="nav-logo" href="/">
-                <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev Logo">
+                <img src="https://i.imgur.com/BZ1xLO3.png" alt="Primadev Logo" width="140" height="36" fetchpriority="high" decoding="async">
             </a>
             <div class="nav-search">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
