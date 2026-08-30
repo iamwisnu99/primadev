@@ -1570,6 +1570,16 @@
             if (name) document.getElementById('buyerName').value = name;
             if (email) document.getElementById('buyerEmail').value = email;
 
+            // Bersihkan query params dari address bar browser agar URL tampil bersih (/renew)
+            if (key || name || email) {
+                try {
+                    const cleanUrl = window.location.origin + window.location.pathname;
+                    window.history.replaceState({}, document.title, cleanUrl);
+                } catch (e) {
+                    console.log('Clean URL error:', e);
+                }
+            }
+
             if (key && name && email) {
                 setTimeout(() => {
                     const fakeEvent = { preventDefault: () => {} };
