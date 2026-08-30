@@ -1563,7 +1563,19 @@
 
             const urlParams = new URLSearchParams(window.location.search);
             const key = urlParams.get('key');
+            const name = urlParams.get('name');
+            const email = urlParams.get('email');
+
             if (key) document.getElementById('licenseKey').value = key;
+            if (name) document.getElementById('buyerName').value = name;
+            if (email) document.getElementById('buyerEmail').value = email;
+
+            if (key && name && email) {
+                setTimeout(() => {
+                    const fakeEvent = { preventDefault: () => {} };
+                    checkLicense(fakeEvent);
+                }, 300);
+            }
         });
 
         window.addEventListener('pageshow', (e) => {
