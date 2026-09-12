@@ -60,17 +60,17 @@ if (!admin.apps.length) {
 const db = admin.database();
 
 const netlifyHandler = async (event, context) => {
-  const { id } = event.queryStringParameters;
-  if (!id) return { statusCode: 400, body: "Mana ID-nya bos?" };
+  const { id } = event.queryStringParameters || {};
+  if (!id) return { statusCode: 400, body: "Parameter ID tidak ditemukan" };
 
-  try {
-    const [snapshot, sigSnap] = await Promise.all([
-      db.ref('licenses/' + id).once('value'),
-      db.ref('settings/ceo_signature').once('value')
-    ]);
-    const data = snapshot.val();
-    const signatureDataUrl = sigSnap.val();
-    if (!data) return { statusCode: 404, body: "Data Invoice Tidak Ditemukan" };
+  // Redirect to official store invoice endpoint
+  return {
+    statusCode: 302,
+    headers: {
+      Location: `https://store.primadev.id/api/invoice?id=${encodeURIComponent(id)}`
+    },
+    body: ''
+  };
 
     return new Promise((resolve, reject) => {
       const doc = new PDFDocument({ size: 'A4', margin: 50 });
@@ -238,6 +238,15 @@ const netlifyHandler = async (event, context) => {
   }
 };
 module.exports = async (req, res) => {
+    const id = req.query?.id || (req.url ? new URL(req.url, 'http://localhost').searchParams.get('id') : '');
+    if (id) {
+        if (typeof res.redirect === 'function') {
+            return res.redirect(302, `https://store.primadev.id/api/invoice?id=${encodeURIComponent(id)}`);
+        }
+        res.setHeader('Location', `https://store.primadev.id/api/invoice?id=${encodeURIComponent(id)}`);
+        return res.status(302).send('');
+    }
+
     const event = {
         httpMethod: req.method,
         path: req.url.split('?')[0],

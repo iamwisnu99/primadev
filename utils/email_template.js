@@ -1,8 +1,8 @@
 
 const getPremiumTemplate = (data) => {
-    const BASE_URL = "https://primadev.id";
-    const LOGO_URL = "https://i.imgur.com/BZ1xLO3.png";
-    const HOME_URL = "https://primadev.id";
+    const BASE_URL = "https://store.primadev.id";
+    const LOGO_URL = "https://store.primadev.id/primadev_light.png";
+    const HOME_URL = "https://store.primadev.id";
     const LEGAL_URL = "https://primadev.id/app/legal/syarat-ketentuan";
 
     return `
@@ -20,7 +20,7 @@ const getPremiumTemplate = (data) => {
             .key-box { background-color: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 25px; text-align: center; margin: 30px 0; }
             .license-key { font-family: 'Courier New', monospace; font-size: 24px; font-weight: bold; color: #000000ff; letter-spacing: 2px; display: block; margin-bottom: 5px; }
             .label-key { font-size: 11px; text-transform: uppercase; color: #64748b; letter-spacing: 1px; font-weight: 600; }
-            .btn-invoice { background-color: #3a80e9ff; color: #ffffff !important; padding: 14px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3); }
+            .btn-invoice { background-color: #036EFD; color: #ffffff !important; padding: 14px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(3, 110, 253, 0.3); }
             .details-table td { padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
             .footer { background-color: #1e293b; color: #94a3b8; padding: 30px; text-align: center; font-size: 12px; line-height: 1.5; }
             .social-link { color: #ffffff; text-decoration: none; margin: 0 5px; }
@@ -29,7 +29,7 @@ const getPremiumTemplate = (data) => {
     <body>
         <div class="container">
             <div class="header">
-                <img src="${LOGO_URL}" alt="Primadev" width="160" style="display: block; margin: 0 auto;">
+                <img src="${LOGO_URL}" alt="Primadev Digital Technology" width="160" style="display: block; margin: 0 auto; max-width: 160px; height: auto;">
                 <h2 style="color: #334155; margin: 20px 0 0 0; font-weight: 600;">Pembayaran Diterima!</h2>
                 <p style="color: #64748b; margin: 5px 0 0 0; font-size: 14px;">Terima kasih telah bergabung dengan Primadev.</p>
             </div>
@@ -51,7 +51,7 @@ const getPremiumTemplate = (data) => {
                     </tr>
                     <tr>
                         <td style="color: #64748b;">Paket Durasi</td>
-                        <td style="font-weight: bold; text-align: right;">${data.type.toUpperCase()}</td>
+                        <td style="font-weight: bold; text-align: right;">${(data.type || 'MONTHLY').toUpperCase()}</td>
                     </tr>
                     <tr>
                         <td style="color: #64748b;">Expired Date</td>
@@ -75,12 +75,12 @@ const getPremiumTemplate = (data) => {
 
             <div class="footer">
                 <p style="margin-bottom: 10px; font-weight: bold; color: #ffffff;">PRIMADEV DIGITAL TECHNOLOGY</p>
-                <p>Wangon<br>Kelurahan Wangon, Kecamatan Wangon<br>Kabupaten Banyumas, Jawa Tengah, Indonesia<br>53176</p>
+                <p>Wangon, Kecamatan Wangon, Kabupaten Banyumas, Jawa Tengah 53176</p>
                 
                 <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
                     &copy; ${new Date().getFullYear()} Primadev Digital Technology. All rights reserved.<br>
-                    <a href="${HOME_URL}" style="color: #6366f1; text-decoration: none;">Visit Website</a> • 
-                    <a href="${LEGAL_URL}" style="color: #6366f1; text-decoration: none;">Privacy Policy</a>
+                    <a href="${HOME_URL}" style="color: #036EFD; text-decoration: none;">Visit Store</a> • 
+                    <a href="${LEGAL_URL}" style="color: #036EFD; text-decoration: none;">Privacy Policy</a>
                 </p>
             </div>
         </div>
@@ -91,8 +91,8 @@ const getPremiumTemplate = (data) => {
 
 
 const getRenewalTemplate = (data) => {
-    const BASE_URL = "https://primadev.id";
-    const LOGO_URL = "https://i.imgur.com/BZ1xLO3.png";
+    const BASE_URL = "https://store.primadev.id";
+    const LOGO_URL = "https://store.primadev.id/primadev_light.png";
 
     return `
     <!DOCTYPE html>
@@ -108,13 +108,14 @@ const getRenewalTemplate = (data) => {
             .content { padding: 40px 30px; color: #334155; line-height: 1.6; }
             .status-badge { background-color: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 50px; font-weight: bold; font-size: 12px; display: inline-block; margin-bottom: 20px; text-transform: uppercase; }
             .details-card { background-color: #f8fafc; border-radius: 12px; padding: 25px; margin: 20px 0; border: 1px solid #e2e8f0; }
+            .btn-invoice { background-color: #036EFD; color: #ffffff !important; padding: 14px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(3, 110, 253, 0.3); }
             .footer { background-color: #1e293b; color: #94a3b8; padding: 30px; text-align: center; font-size: 12px; }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
-                <img src="${LOGO_URL}" alt="Primadev" width="140" style="display: block; margin: 0 auto;">
+                <img src="${LOGO_URL}" alt="Primadev Digital Technology" width="140" style="display: block; margin: 0 auto; max-width: 140px; height: auto;">
                 <h2 style="color: #334155; margin: 20px 0 0 0;">Perpanjangan Berhasil!</h2>
             </div>
             <div class="content">
@@ -134,7 +135,10 @@ const getRenewalTemplate = (data) => {
                 <p style="font-size: 14px; color: #64748b;">Sekarang Anda dapat melanjutkan penggunaan aplikasi tanpa hambatan. Jika ada kendala, silakan hubungi tim support kami.</p>
                 
                 <div style="text-align: center; margin-top: 30px;">
-                    <p style="font-size: 12px; color: #94a3b8;">Order ID: ${data.orderId || data.transactionId}</p>
+                    <a href="${BASE_URL}/api/invoice?id=${data.key}" class="btn-invoice">
+                        Lihat INVOICE
+                    </a>
+                    <p style="margin-top: 15px; font-size: 12px; color: #94a3b8;">Order ID: ${data.orderId || data.transactionId}</p>
                 </div>
             </div>
             <div class="footer">
