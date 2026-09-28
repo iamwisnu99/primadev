@@ -1,13 +1,20 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '';
+let supabase = null;
+if (supabaseUrl && supabaseKey) {
+    try {
+        supabase = createClient(supabaseUrl, supabaseKey);
+    } catch (e) {
+        console.error('Supabase init error:', e.message);
+    }
+}
 
 const netlifyHandler = async (event, context) => {
     const headers = {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
     };
 
@@ -15,9 +22,16 @@ const netlifyHandler = async (event, context) => {
         return { statusCode: 200, headers, body: '' };
     }
 
+    if (!supabase) {
+        return {
+            statusCode: 500,
+            headers,
+            body: JSON.stringify({ error: 'Supabase credentials not configured' })
+        };
+    }
+
     try {
         const method = event.httpMethod;
-        const path = event.path.split('/').pop();
         const id = event.queryStringParameters ? event.queryStringParameters.id : null;
 
         if (method === 'GET') {
@@ -40,7 +54,7 @@ const netlifyHandler = async (event, context) => {
         }
 
         if (method === 'POST') {
-            const body = JSON.parse(event.body);
+            const body = JSON.parse(event.body || '{}');
             const { data, error } = await supabase
                 .from('apps')
                 .insert([body])
@@ -50,7 +64,7 @@ const netlifyHandler = async (event, context) => {
         }
 
         if (method === 'PUT') {
-            const body = JSON.parse(event.body);
+            const body = JSON.parse(event.body || '{}');
             if (!id) throw new Error('ID required for update');
             const { data, error } = await supabase
                 .from('apps')

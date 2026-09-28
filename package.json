@@ -1,7 +1,7 @@
 {
-  "name": "primadev-backend",
+  "name": "primadev-admin",
   "version": "1.0.0",
-  "description": "Backend Netlify",
+  "description": "Primadev Digital Technology - Admin Dashboard Portal",
   "main": "index.js",
   "dependencies": {
     "@supabase/supabase-js": "^2.93.3",

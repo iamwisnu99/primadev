@@ -33,17 +33,19 @@ const db = admin.database();
 
 const netlifyHandler = async (event, context) => {
     const allowedOrigins = [
+        'https://dash-admin.primadev.id',
         'https://primadev.id',
+        'https://store.primadev.id',
         process.env.ALLOWED_ORIGIN || ''
     ].filter(Boolean);
     const requestOrigin = event.headers.origin || event.headers.Origin || '';
-    const corsOrigin = (allowedOrigins.includes(requestOrigin) || !requestOrigin)
+    const corsOrigin = (allowedOrigins.includes(requestOrigin) || !requestOrigin || requestOrigin.includes('localhost'))
         ? (requestOrigin || allowedOrigins[0])
         : allowedOrigins[0];
 
     const headers = {
         'Access-Control-Allow-Origin': corsOrigin,
-        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-admin-token',
         'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
         'Vary': 'Origin'
     };

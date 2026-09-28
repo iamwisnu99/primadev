@@ -1,1 +1,0 @@
-document.getElementById('currentYearCareer').textContent = new Date().getFullYear();

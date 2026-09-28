@@ -6,6 +6,12 @@
       "includeFiles": "public/logo.png"
     }
   },
+  "redirects": [
+    { "source": "/", "destination": "/app/admin", "permanent": false },
+    { "source": "/login", "destination": "/app/admin", "permanent": false },
+    { "source": "/admin", "destination": "/app/admin", "permanent": false },
+    { "source": "/dashboard", "destination": "/app/admin-dashboard", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/public/(.*)",
@@ -42,7 +48,15 @@
         },
         {
           "key": "X-Robots-Tag",
-          "value": "index, follow, all"
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
         }
       ]
     }
@@ -52,4 +66,3 @@
     { "source": "/(.*)", "destination": "/$1" }
   ]
 }
-

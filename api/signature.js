@@ -70,14 +70,32 @@ const netlifyHandler = async (event) => {
         }
 
         if (event.httpMethod === 'POST') {
+            const authHeader = event.headers['authorization'] || event.headers['Authorization'] || '';
+            const bearerToken = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : '';
+            const token = event.headers['x-admin-token'] || event.headers['X-Admin-Token'] || bearerToken;
 
-            const token = event.headers['x-admin-token'] ||
-                event.headers['X-Admin-Token'];
-            if (token !== process.env.ADMIN_SECRET) {
+            let authorized = false;
+
+            if (process.env.ADMIN_SECRET && token === process.env.ADMIN_SECRET) {
+                authorized = true;
+            }
+
+            if (!authorized && token) {
+                try {
+                    const decoded = await admin.auth().verifyIdToken(token);
+                    if (decoded && decoded.uid) {
+                        authorized = true;
+                    }
+                } catch (e) {
+                    console.warn('[signature] Token verification failed:', e.message);
+                }
+            }
+
+            if (!authorized) {
                 return {
                     statusCode: 401,
                     headers: HEADERS,
-                    body: JSON.stringify({ error: 'Unauthorized' })
+                    body: JSON.stringify({ error: 'Unauthorized: Sesi login tidak valid' })
                 };
             }
 

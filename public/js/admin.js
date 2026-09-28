@@ -100,17 +100,33 @@
             try {
                 const dataURL = signaturePad.toDataURL('image/png');
 
-                const tokenRes = await fetch('/api/get-config');
-                const cfg = await tokenRes.json();
-                const adminToken = cfg.adminToken || '';
+                let adminToken = '';
+                try {
+                    if (window.auth && window.auth.currentUser) {
+                        adminToken = await window.auth.currentUser.getIdToken();
+                    } else {
+                        const tokenRes = await fetch('/api/get-config');
+                        const cfg = await tokenRes.json();
+                        adminToken = cfg.adminToken || '';
+                    }
+                } catch (e) {
+                    console.warn('Auth token lookup fallback:', e);
+                }
 
                 const res = await fetch('/api/signature', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'x-admin-token': adminToken,
+                        'Authorization': `Bearer ${adminToken}`
+                    },
                     body: JSON.stringify({ type: 'signature', data: dataURL })
                 });
 
-                if (!res.ok) throw new Error('Gagal menyimpan');
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.error || 'Gagal menyimpan');
+                }
 
                 showSigPreview(dataURL);
                 Swal.fire({ icon: 'success', title: 'Tersimpan!', text: 'Tanda tangan CEO berhasil disimpan dan siap diterapkan.' });
